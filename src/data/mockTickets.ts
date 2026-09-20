@@ -1,7 +1,7 @@
 import { CivicIssue } from '../types/civic';
 
 export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
-  // 1. Surat - Roads & Mobility (Pothole)
+  // ---------------- SURAT ----------------
   {
     id: 'TKT-SRT-8812',
     taxonomyId: 'RD-01',
@@ -17,11 +17,7 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     reporterId: 'usr-current',
     reporterName: 'Heer Patel',
     reporterDeviceHash: 'sha256-a9f872c01e',
-    location: {
-      lat: 21.1780,
-      lng: 72.8350,
-      accuracy: 3.8
-    },
+    location: { lat: 21.1780, lng: 72.8350, accuracy: 3.8 },
     address: 'Ring Road Flyover Junction, Near Majura Gate, Surat',
     upvoteCount: 18,
     upvotedBy: ['usr-901', 'usr-902', 'usr-905', 'usr-current'],
@@ -32,15 +28,11 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     imageUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
     imageAfterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
     aiConfidence: 0.95,
-    detectedObjects: [
-      { label: 'Deep Asphalt Cavity', confidence: 0.96, box: [20, 25, 75, 75] }
-    ],
+    detectedObjects: [{ label: 'Deep Asphalt Cavity', confidence: 0.96, box: [20, 25, 75, 75] }],
     detectedCvTriggers: ['Asphalt cavity', 'Edge depth shadow', 'Circular depression pattern'],
     formalComplaintDraft: 'FORMAL GRIEVANCE // SMC-RD-01\nTo: Executive Engineer (Roads), SMC\nLocation: Ring Road Majura Gate [21.1780, 72.8350]\nDepth > 85mm. Rapid cold-mix patching requested.',
     citizenVoiceTranscript: 'Deep pothole on Ring Road near Majura Gate. Two wheelers are swerving dangerously.'
   },
-
-  // 2. Surat - Solid Waste (Overflowing Community Bin)
   {
     id: 'TKT-SRT-9041',
     taxonomyId: 'SW-02',
@@ -56,11 +48,7 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     reporterId: 'usr-842',
     reporterName: 'Priya Shah',
     reporterDeviceHash: 'sha256-c33190ab71',
-    location: {
-      lat: 21.1920,
-      lng: 72.7950,
-      accuracy: 3.2
-    },
+    location: { lat: 21.1920, lng: 72.7950, accuracy: 3.2 },
     address: 'Adajan Patia Main Market, Near Star Bazaar, Surat',
     upvoteCount: 12,
     upvotedBy: ['usr-842', 'usr-845', 'usr-850'],
@@ -71,15 +59,11 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     imageUrl: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=800&q=80',
     imageAfterUrl: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80',
     aiConfidence: 0.94,
-    detectedObjects: [
-      { label: 'Overflowing Municipal Bin', confidence: 0.95, box: [15, 20, 85, 80] }
-    ],
+    detectedObjects: [{ label: 'Overflowing Municipal Bin', confidence: 0.95, box: [15, 20, 85, 80] }],
     detectedCvTriggers: ['Bin brim overflow volume > 85%', 'Spill periphery footprint'],
     formalComplaintDraft: 'FORMAL GRIEVANCE // SMC-SW-02\nTo: Zonal Sanitation Superintendent, West Zone\nLocation: Adajan Patia [21.1920, 72.7950]\nOverflow > 90%. Compactor truck dispatch requested.',
     citizenVoiceTranscript: 'The green waste bin at Adajan market is overflowing onto the road.'
   },
-
-  // 3. Surat - Water Bodies & Drainage (Clogged Tapi River Drain)
   {
     id: 'TKT-SRT-7734',
     taxonomyId: 'WB-02',
@@ -95,11 +79,7 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     reporterId: 'usr-412',
     reporterName: 'Vikram Desai',
     reporterDeviceHash: 'sha256-fa70195e2d',
-    location: {
-      lat: 21.2150,
-      lng: 72.8450,
-      accuracy: 5.0
-    },
+    location: { lat: 21.2150, lng: 72.8450, accuracy: 5.0 },
     address: 'Tapi Riverfront Promenade, Near Causeway, Surat',
     upvoteCount: 31,
     upvotedBy: ['usr-412', 'usr-415', 'usr-420', 'usr-431'],
@@ -110,15 +90,11 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     imageUrl: 'https://images.unsplash.com/photo-1621451537084-482c73073a0f?auto=format&fit=crop&w=800&q=80',
     imageAfterUrl: null,
     aiConfidence: 0.97,
-    detectedObjects: [
-      { label: 'Toxic Chemical Froth', confidence: 0.98, box: [25, 10, 70, 90] }
-    ],
+    detectedObjects: [{ label: 'Toxic Chemical Froth', confidence: 0.98, box: [25, 10, 70, 90] }],
     detectedCvTriggers: ['Chromatic water discoloration', 'Chemical lather/froth', 'Effluent outfall'],
     formalComplaintDraft: 'STATUTORY ESCALATION // GPCB-WB-02\nTo: Regional Environmental Officer\nLocation: Tapi Riverfront Causeway [21.2150, 72.8450]\nStatus: SLA EXCEEDED. Immediate sample collection and outfall plug required.',
     citizenVoiceTranscript: 'Chemical foam and dark wastewater spilling into Tapi river near Causeway.'
   },
-
-  // 4. Surat - Public Utilities (Open Manhole on Walkway)
   {
     id: 'TKT-SRT-6102',
     taxonomyId: 'RD-03',
@@ -134,11 +110,7 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     reporterId: 'usr-current',
     reporterName: 'Heer Patel',
     reporterDeviceHash: 'sha256-004318deaa',
-    location: {
-      lat: 21.1540,
-      lng: 72.7750,
-      accuracy: 2.5
-    },
+    location: { lat: 21.1540, lng: 72.7750, accuracy: 2.5 },
     address: 'Vesu Canal Road, Opposite University Campus, Surat',
     upvoteCount: 22,
     upvotedBy: ['usr-118', 'usr-120', 'usr-current'],
@@ -149,15 +121,11 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     imageUrl: 'https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80',
     imageAfterUrl: null,
     aiConfidence: 0.96,
-    detectedObjects: [
-      { label: 'Missing Manhole Cover', confidence: 0.97, box: [30, 30, 75, 75] }
-    ],
+    detectedObjects: [{ label: 'Missing Manhole Cover', confidence: 0.97, box: [30, 30, 75, 75] }],
     detectedCvTriggers: ['Open circular aperture', 'Exposed sewer flow', 'Missing chamber cover'],
     formalComplaintDraft: 'EMERGENCY DISPATCH // DRAIN-RD-03\nTo: Superintending Engineer (Drainage), SMC\nLocation: Vesu Canal Road [21.1540, 72.7750]\n600mm open drainage aperture on active pedestrian walkway.',
     citizenVoiceTranscript: 'The manhole cover is completely broken on Vesu canal road sidewalk.'
   },
-
-  // 5. Surat - Civic Assets (Fallen Tree Hazard - Resolved)
   {
     id: 'TKT-SRT-5590',
     taxonomyId: 'PA-01',
@@ -174,11 +142,7 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     reporterId: 'usr-339',
     reporterName: 'Rohit Kulkarni',
     reporterDeviceHash: 'sha256-99381ea55',
-    location: {
-      lat: 21.1750,
-      lng: 72.8150,
-      accuracy: 3.1
-    },
+    location: { lat: 21.1750, lng: 72.8150, accuracy: 3.1 },
     address: 'Athwa Lines Main Road, Near Chowpatty, Surat',
     upvoteCount: 15,
     upvotedBy: ['usr-339', 'usr-342'],
@@ -189,58 +153,269 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     imageUrl: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=800&q=80',
     imageAfterUrl: 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=800&q=80',
     aiConfidence: 0.93,
-    detectedObjects: [
-      { label: 'Uprooted Trunk Obstruction', confidence: 0.94, box: [20, 15, 80, 85] }
-    ],
+    detectedObjects: [{ label: 'Uprooted Trunk Obstruction', confidence: 0.94, box: [20, 15, 80, 85] }],
     detectedCvTriggers: ['Tree trunk horizontal carriage obstruction', 'Green foliage canopy fall'],
     formalComplaintDraft: 'RESOLVED DISPATCH // HORT-PA-01\nTo: Superintendent of Parks\nLocation: Athwa Lines [21.1750, 72.8150]\nObstruction cleared and carriageway reopened.',
-    citizenVoiceTranscript: 'Large tree branch fell on the main road at Athwa lines.',
-    verificationResult: {
-      verified: true,
-      confidence: 0.94,
-      reasoning: 'AI Computer Vision Diff verified complete clearing of tree trunk, restore of unobstructed asphalt road surface.',
-      distanceMeters: 3.4,
-      diffScore: 0.92,
-      verifiedAt: new Date(Date.now() - 9 * 3600 * 1000).toISOString()
-    }
+    citizenVoiceTranscript: 'Large tree branch fell on the main road at Athwa lines.'
   },
 
-  // 6. Surat - Streetlight Outage (Public Utilities)
+  // ---------------- AHMEDABAD ----------------
   {
-    id: 'TKT-SRT-4419',
-    taxonomyId: 'RD-04',
+    id: 'TKT-AMD-1001',
+    taxonomyId: 'RD-01',
     category: 'Roads & Mobility',
-    subCategory: 'Streetlight Outage / Dark Spot',
-    vertical: 'PUBLIC_UTILITIES',
+    subCategory: 'Potholes (Deep / Hazardous)',
+    vertical: 'ROADS_MOBILITY',
+    status: 'IN_PROGRESS',
+    priority: 'URGENT',
+    slaHours: 48,
+    slaDeadline: new Date(Date.now() + 30 * 3600 * 1000).toISOString(),
+    reportedAt: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
+    lastUpdatedAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
+    reporterId: 'usr-amd-01',
+    reporterName: 'Anand Mehta',
+    reporterDeviceHash: 'sha256-amd101',
+    location: { lat: 23.0330, lng: 72.5620, accuracy: 4.0 },
+    address: 'SG Highway, Near Iscon Cross Roads, Ahmedabad',
+    upvoteCount: 14,
+    upvotedBy: ['usr-amd-01', 'usr-amd-02'],
+    assignedDepartment: 'Ahmedabad Municipal Corporation (AMC PWD)',
+    l2EscalationRole: 'City Engineer (Roads)',
+    geofenceZone: 'SG Highway West Zone',
+    isEscalated: false,
+    imageUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+    imageAfterUrl: null,
+    aiConfidence: 0.94,
+    detectedObjects: [{ label: 'Pothole Cavity', confidence: 0.95, box: [20, 20, 80, 80] }],
+    detectedCvTriggers: ['Asphalt fracture', 'High-speed corridor cavity'],
+    formalComplaintDraft: 'AMC ROAD SAFETY TICKET // Iscon Crossroads SG Highway Ahmedabad.',
+    citizenVoiceTranscript: 'Huge pothole right in front of Iscon cross roads.'
+  },
+  {
+    id: 'TKT-AMD-1002',
+    taxonomyId: 'SW-01',
+    category: 'Solid Waste',
+    subCategory: 'Open Garbage Pile',
+    vertical: 'SOLID_WASTE',
     status: 'PENDING_INTERNAL',
     priority: 'HIGH',
     slaHours: 24,
-    slaDeadline: new Date(Date.now() + 18 * 3600 * 1000).toISOString(),
-    reportedAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
+    slaDeadline: new Date(Date.now() + 20 * 3600 * 1000).toISOString(),
+    reportedAt: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
+    lastUpdatedAt: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
+    reporterId: 'usr-amd-03',
+    reporterName: 'Kavita Joshi',
+    reporterDeviceHash: 'sha256-amd102',
+    location: { lat: 23.0180, lng: 72.5850, accuracy: 3.5 },
+    address: 'Sabarmati Riverfront Promenade, Paldi Sector, Ahmedabad',
+    upvoteCount: 9,
+    upvotedBy: ['usr-amd-03'],
+    assignedDepartment: 'AMC Solid Waste Management',
+    l2EscalationRole: 'Zonal Health Officer',
+    geofenceZone: 'Riverfront Corridor',
+    isEscalated: false,
+    imageUrl: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=800&q=80',
+    imageAfterUrl: null,
+    aiConfidence: 0.92,
+    detectedObjects: [{ label: 'Plastic & Organic Waste Dump', confidence: 0.93, box: [20, 20, 80, 80] }],
+    detectedCvTriggers: ['Open uncontained waste footprint'],
+    formalComplaintDraft: 'AMC SOLID WASTE TICKET // Paldi Sector Riverfront Ahmedabad.',
+    citizenVoiceTranscript: 'Garbage dump accumulating near Paldi walkway.'
+  },
+
+  // ---------------- MUMBAI ----------------
+  {
+    id: 'TKT-MUM-2001',
+    taxonomyId: 'RD-05',
+    category: 'Roads & Mobility',
+    subCategory: 'Roadway Waterlogging / Drainage Clog',
+    vertical: 'WATER_BODIES_ECOLOGY',
+    status: 'IN_PROGRESS',
+    priority: 'URGENT',
+    slaHours: 12,
+    slaDeadline: new Date(Date.now() + 6 * 3600 * 1000).toISOString(),
+    reportedAt: new Date(Date.now() - 6 * 3600 * 1000).toISOString(),
+    lastUpdatedAt: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
+    reporterId: 'usr-mum-01',
+    reporterName: 'Sanjay Shinde',
+    reporterDeviceHash: 'sha256-mum201',
+    location: { lat: 19.0550, lng: 72.8400, accuracy: 3.0 },
+    address: 'SV Road, Near Bandra Station West, Mumbai',
+    upvoteCount: 26,
+    upvotedBy: ['usr-mum-01', 'usr-mum-02', 'usr-mum-03'],
+    assignedDepartment: 'Brihanmumbai Municipal Corporation (BMC SWD)',
+    l2EscalationRole: 'Assistant Commissioner (H/West Ward)',
+    geofenceZone: 'Bandra West Ward Grid',
+    isEscalated: false,
+    imageUrl: 'https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80',
+    imageAfterUrl: null,
+    aiConfidence: 0.96,
+    detectedObjects: [{ label: 'Waterlogged Carriageway', confidence: 0.96, box: [10, 20, 90, 80] }],
+    detectedCvTriggers: ['Stormwater puddle inundation > 150mm'],
+    formalComplaintDraft: 'BMC DISASTER MANAGEMENT // SV Road Bandra Waterlogging Alert.',
+    citizenVoiceTranscript: 'Severe waterlogging under Bandra West bridge.'
+  },
+  {
+    id: 'TKT-MUM-2002',
+    taxonomyId: 'RD-01',
+    category: 'Roads & Mobility',
+    subCategory: 'Potholes (Deep / Hazardous)',
+    vertical: 'ROADS_MOBILITY',
+    status: 'IN_PROGRESS',
+    priority: 'HIGH',
+    slaHours: 48,
+    slaDeadline: new Date(Date.now() + 36 * 3600 * 1000).toISOString(),
+    reportedAt: new Date(Date.now() - 8 * 3600 * 1000).toISOString(),
     lastUpdatedAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
-    reporterId: 'usr-604',
-    reporterName: 'Sunita Patel',
-    reporterDeviceHash: 'sha256-887102ccaa',
-    location: {
-      lat: 21.2180,
-      lng: 72.8650,
-      accuracy: 4.0
-    },
-    address: 'Varachha Main Road, Near Diamond Market, Surat',
-    upvoteCount: 7,
-    upvotedBy: ['usr-604', 'usr-608'],
-    assignedDepartment: 'DGVCL / SMC Electrical Division',
-    l2EscalationRole: 'Assistant Engineer (Electrical)',
-    geofenceZone: 'Varachha East Zone',
+    reporterId: 'usr-mum-04',
+    reporterName: 'Alok Verma',
+    reporterDeviceHash: 'sha256-mum202',
+    location: { lat: 19.1150, lng: 72.8750, accuracy: 3.5 },
+    address: 'Andheri Kurla Road, Near Chakala Metro, Andheri East, Mumbai',
+    upvoteCount: 19,
+    upvotedBy: ['usr-mum-04', 'usr-mum-05'],
+    assignedDepartment: 'BMC Roads & Traffic Division',
+    l2EscalationRole: 'Chief Engineer (Roads)',
+    geofenceZone: 'Andheri East K/East Ward',
+    isEscalated: false,
+    imageUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+    imageAfterUrl: null,
+    aiConfidence: 0.95,
+    detectedObjects: [{ label: 'Asphalt Pothole', confidence: 0.95, box: [20, 20, 80, 80] }],
+    detectedCvTriggers: ['Road surface damage', 'Subbase exposure'],
+    formalComplaintDraft: 'BMC ROADS GRIEVANCE // Andheri Kurla Road Pothole.',
+    citizenVoiceTranscript: 'Deep crater on Andheri Kurla road near metro pillar.'
+  },
+
+  // ---------------- DELHI NCR ----------------
+  {
+    id: 'TKT-DEL-3001',
+    taxonomyId: 'SW-02',
+    category: 'Solid Waste',
+    subCategory: 'Overflowing Community Waste Bin',
+    vertical: 'SOLID_WASTE',
+    status: 'IN_PROGRESS',
+    priority: 'URGENT',
+    slaHours: 8,
+    slaDeadline: new Date(Date.now() + 4 * 3600 * 1000).toISOString(),
+    reportedAt: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
+    lastUpdatedAt: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
+    reporterId: 'usr-del-01',
+    reporterName: 'Rahul Sharma',
+    reporterDeviceHash: 'sha256-del301',
+    location: { lat: 28.6320, lng: 77.2190, accuracy: 3.2 },
+    address: 'Connaught Place Outer Circle, Near M-Block, New Delhi',
+    upvoteCount: 21,
+    upvotedBy: ['usr-del-01', 'usr-del-02'],
+    assignedDepartment: 'New Delhi Municipal Council (NDMC Sanitation)',
+    l2EscalationRole: 'Director (Public Health / NDMC)',
+    geofenceZone: 'Connaught Place Central Zone',
+    isEscalated: false,
+    imageUrl: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=800&q=80',
+    imageAfterUrl: null,
+    aiConfidence: 0.93,
+    detectedObjects: [{ label: 'Overflowing Dustbin', confidence: 0.94, box: [20, 20, 80, 80] }],
+    detectedCvTriggers: ['Commercial bin overflow footprint'],
+    formalComplaintDraft: 'NDMC SANITATION NOTICE // CP Outer Circle Bin Overflow.',
+    citizenVoiceTranscript: 'Bins are overflowing outside CP M-block market.'
+  },
+  {
+    id: 'TKT-DEL-3002',
+    taxonomyId: 'RD-01',
+    category: 'Roads & Mobility',
+    subCategory: 'Potholes (Deep / Hazardous)',
+    vertical: 'ROADS_MOBILITY',
+    status: 'VERIFIED_RESOLVED',
+    priority: 'HIGH',
+    slaHours: 48,
+    slaDeadline: new Date(Date.now() - 10 * 3600 * 1000).toISOString(),
+    reportedAt: new Date(Date.now() - 36 * 3600 * 1000).toISOString(),
+    lastUpdatedAt: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
+    resolvedAt: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
+    reporterId: 'usr-del-03',
+    reporterName: 'Neha Gupta',
+    reporterDeviceHash: 'sha256-del302',
+    location: { lat: 28.5850, lng: 77.2300, accuracy: 3.5 },
+    address: 'Ring Road Near Lodhi Road Flyover, New Delhi',
+    upvoteCount: 16,
+    upvotedBy: ['usr-del-03'],
+    assignedDepartment: 'Delhi PWD Central Division',
+    l2EscalationRole: 'Superintending Engineer (PWD)',
+    geofenceZone: 'South Delhi Arterial Ring Road',
+    isEscalated: false,
+    imageUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+    imageAfterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
+    aiConfidence: 0.95,
+    detectedObjects: [{ label: 'Repaired Asphalt Layer', confidence: 0.96, box: [20, 20, 80, 80] }],
+    detectedCvTriggers: ['Cold-mix asphalt patch confirmed'],
+    formalComplaintDraft: 'PWD DELHI // Lodhi Road Flyover Pothole Repaired.',
+    citizenVoiceTranscript: 'Pothole on Lodhi road flyover descent.'
+  },
+
+  // ---------------- BENGALURU ----------------
+  {
+    id: 'TKT-BLR-4001',
+    taxonomyId: 'RD-01',
+    category: 'Roads & Mobility',
+    subCategory: 'Potholes (Deep / Hazardous)',
+    vertical: 'ROADS_MOBILITY',
+    status: 'IN_PROGRESS',
+    priority: 'URGENT',
+    slaHours: 48,
+    slaDeadline: new Date(Date.now() + 28 * 3600 * 1000).toISOString(),
+    reportedAt: new Date(Date.now() - 10 * 3600 * 1000).toISOString(),
+    lastUpdatedAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
+    reporterId: 'usr-blr-01',
+    reporterName: 'Karthik Rao',
+    reporterDeviceHash: 'sha256-blr401',
+    location: { lat: 12.9780, lng: 77.6400, accuracy: 3.4 },
+    address: '100 Feet Road, Near 12th Main Junction, Indiranagar, Bengaluru',
+    upvoteCount: 28,
+    upvotedBy: ['usr-blr-01', 'usr-blr-02', 'usr-blr-03'],
+    assignedDepartment: 'Bruhat Bengaluru Mahanagara Palike (BBMP Major Roads)',
+    l2EscalationRole: 'Executive Engineer (East Zone)',
+    geofenceZone: 'Indiranagar East Ward',
+    isEscalated: false,
+    imageUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+    imageAfterUrl: null,
+    aiConfidence: 0.96,
+    detectedObjects: [{ label: 'Deep Crater in Asphalt', confidence: 0.96, box: [20, 20, 80, 80] }],
+    detectedCvTriggers: ['Carriageway depression', 'Exposed gravel aggregate'],
+    formalComplaintDraft: 'BBMP GRIEVANCE // Indiranagar 100 Feet Road Pothole.',
+    citizenVoiceTranscript: 'Dangerous pothole on 100 feet road right at 12th main signal.'
+  },
+
+  // ---------------- PUNE ----------------
+  {
+    id: 'TKT-PUN-5001',
+    taxonomyId: 'RD-04',
+    category: 'Roads & Mobility',
+    subCategory: 'Streetlight Outage / Dark Spot',
+    vertical: 'CIVIC_ASSETS',
+    status: 'IN_PROGRESS',
+    priority: 'HIGH',
+    slaHours: 24,
+    slaDeadline: new Date(Date.now() + 14 * 3600 * 1000).toISOString(),
+    reportedAt: new Date(Date.now() - 6 * 3600 * 1000).toISOString(),
+    lastUpdatedAt: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
+    reporterId: 'usr-pun-01',
+    reporterName: 'Aditya Kulkarni',
+    reporterDeviceHash: 'sha256-pun501',
+    location: { lat: 18.5280, lng: 73.8450, accuracy: 3.6 },
+    address: 'JM Road, Near Deccan Gymkhana, Shivajinagar, Pune',
+    upvoteCount: 11,
+    upvotedBy: ['usr-pun-01', 'usr-pun-02'],
+    assignedDepartment: 'Pune Municipal Corporation (PMC Electrical Dept)',
+    l2EscalationRole: 'Executive Engineer (Electrical)',
+    geofenceZone: 'Shivajinagar Central Ward',
     isEscalated: false,
     imageUrl: 'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80',
     imageAfterUrl: null,
-    aiConfidence: 0.91,
-    detectedObjects: [
-      { label: 'Non-functional Streetlight Pole', confidence: 0.92, box: [20, 20, 80, 80] }
-    ],
-    detectedCvTriggers: ['Street pole asset tag match', 'Dark spot telemetry'],
-    formalComplaintDraft: 'FORMAL GRIEVANCE // ELEC-RD-04\nTo: Assistant Engineer (Electrical)\nLocation: Varachha Diamond Market [21.2180, 72.8650]\n3 consecutive LED poles non-functional at night.',
-    citizenVoiceTranscript: 'Streetlights on Varachha main road are completely off at night.'
+    aiConfidence: 0.92,
+    detectedObjects: [{ label: 'Dark Spot Streetlight', confidence: 0.93, box: [20, 20, 80, 80] }],
+    detectedCvTriggers: ['Illumination outage telemetry'],
+    formalComplaintDraft: 'PMC ELECTRICAL NOTICE // JM Road Deccan Dark Spot.',
+    citizenVoiceTranscript: 'Streetlights near Deccan Gymkhana are not turning on at night.'
   }
 ];
+

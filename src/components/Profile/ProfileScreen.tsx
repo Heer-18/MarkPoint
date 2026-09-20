@@ -191,18 +191,14 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
             </div>
 
             {/* Impact Metric Chips */}
-            <div className="grid grid-cols-3 gap-2.5 pt-3 border-t border-slate-800/80 text-center">
-              <div className="p-2.5 rounded-2xl bg-slate-950/70 border border-slate-800/90">
-                <div className="text-lg font-black text-emerald-400">{myReports.length}</div>
-                <div className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">My Reports</div>
+            <div className="grid grid-cols-2 gap-2.5 pt-3 border-t border-slate-800/80 text-center">
+              <div className="p-3 rounded-2xl bg-slate-950/70 border border-slate-800/90">
+                <div className="text-xl font-black text-emerald-400">{myReports.length}</div>
+                <div className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">My Submitted Reports</div>
               </div>
-              <div className="p-2.5 rounded-2xl bg-slate-950/70 border border-slate-800/90">
-                <div className="text-lg font-black text-cyan-400">{resolvedCount}</div>
-                <div className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">Resolved</div>
-              </div>
-              <div className="p-2.5 rounded-2xl bg-slate-950/70 border border-slate-800/90">
-                <div className="text-lg font-black text-amber-400">920</div>
-                <div className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">Karma Pts</div>
+              <div className="p-3 rounded-2xl bg-slate-950/70 border border-slate-800/90">
+                <div className="text-xl font-black text-cyan-400">{resolvedCount}</div>
+                <div className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">Verified Resolved</div>
               </div>
             </div>
           </div>

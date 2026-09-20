@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, X, MapPin, Search, ChevronDown, Check, Crosshair, Sparkles } from 'lucide-react';
+import { ArrowLeft, X, MapPin, Search, ChevronDown, Check, Crosshair } from 'lucide-react';
 
 interface TopSearchBarProps {
   searchQuery: string;
@@ -28,27 +28,26 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
   isLocating
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const displayCityName = selectedCity === 'Your Location' ? 'Live GPS' : selectedCity;
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-slate-950/95 backdrop-blur-2xl border-b border-slate-800/80 px-4 pt-safe pt-3 pb-2.5 transition-all">
+    <header className="sticky top-0 z-40 w-full bg-slate-950/95 backdrop-blur-2xl border-b border-slate-800/80 px-3.5 pt-2 pb-2 transition-all">
       <div className="max-w-3xl mx-auto space-y-2">
         
         {/* Main Header & Search Row */}
-        <div className="flex items-center space-x-2.5">
+        <div className="flex items-center space-x-2">
           
-          {/* MarkPoint App Logo Icon */}
-          <div className="flex items-center space-x-2 flex-shrink-0">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-cyan-400 p-0.5 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
-              <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-                <span className="text-transparent bg-clip-text bg-gradient-to-tr from-emerald-400 to-cyan-300 font-black text-xs tracking-tight">
-                  MP
-                </span>
+          {/* Minimal MarkPoint Geometric Icon (NO TEXT) */}
+          <div className="flex items-center flex-shrink-0">
+            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-cyan-400 p-0.5 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
+              <div className="w-full h-full bg-slate-950 rounded-[13px] flex items-center justify-center">
+                <span className="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-300 shadow-sm animate-pulse" />
               </div>
             </div>
           </div>
 
           {/* Search Box */}
-          <div className="relative flex-1 flex items-center bg-slate-900/90 hover:bg-slate-900 border border-slate-700/80 rounded-2xl shadow-lg px-3.5 py-2 transition-all focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20">
+          <div className="relative flex-1 flex items-center bg-slate-900/90 hover:bg-slate-900 border border-slate-700/80 rounded-2xl shadow-lg px-3 py-1.5 transition-all focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20">
             
             <button 
               type="button" 
@@ -88,7 +87,7 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
             )}
           </div>
 
-          {/* City / GPS Selector Button in Top Right */}
+          {/* City / GPS Selector Button in Top Right (Fixed Width & No Cut-Off) */}
           <button
             type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -96,8 +95,8 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
             className="flex items-center space-x-1.5 px-3 py-2 rounded-2xl bg-slate-900 hover:bg-slate-850 border border-slate-700/90 text-xs font-bold text-emerald-400 shadow-md transition-all flex-shrink-0"
           >
             <MapPin className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-            <span className="truncate max-w-[80px]">{selectedCity}</span>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+            <span className="whitespace-nowrap font-bold">{displayCityName}</span>
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400 flex-shrink-0 ml-0.5" />
           </button>
         </div>
 
@@ -114,7 +113,7 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
                   onLocateMe();
                   setIsDropdownOpen(false);
                 }}
-                className="text-xs text-emerald-400 font-bold hover:underline flex items-center space-x-1 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20"
+                className="text-xs text-emerald-400 font-bold hover:underline flex items-center space-x-1 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20"
               >
                 <Crosshair className={`w-3.5 h-3.5 ${isLocating ? 'animate-spin' : ''}`} />
                 <span>{isLocating ? 'Detecting GPS...' : 'Use Current GPS'}</span>

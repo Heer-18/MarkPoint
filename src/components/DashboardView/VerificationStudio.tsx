@@ -71,8 +71,8 @@ export const VerificationStudio: React.FC<VerificationStudioProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in overflow-y-auto">
-      <div className="w-full max-w-3xl p-6 rounded-2xl glass-panel-glow border border-emerald-500/30 text-white shadow-2xl relative my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-[max(env(safe-area-inset-top,28px),28px)] pb-[max(env(safe-area-inset-bottom,28px),28px)] bg-black/80 backdrop-blur-md animate-in fade-in overflow-y-auto">
+      <div className="w-full max-w-3xl p-6 rounded-2xl glass-panel-glow border border-emerald-500/30 text-white shadow-2xl relative my-auto">
         
         {/* Header */}
         <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">

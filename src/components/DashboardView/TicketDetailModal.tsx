@@ -31,13 +31,13 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
   const isResolved = ticket.status === 'VERIFIED_RESOLVED' || ticket.status === 'RESOLVED_DEMO';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in overflow-y-auto">
-      <div className="w-full max-w-3xl p-6 rounded-2xl glass-panel-glow border border-emerald-500/30 text-white shadow-2xl relative my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-[max(env(safe-area-inset-top,28px),28px)] pb-[max(env(safe-area-inset-bottom,28px),28px)] bg-black/85 backdrop-blur-md animate-in fade-in overflow-y-auto">
+      <div className="w-full max-w-3xl p-5 sm:p-6 rounded-3xl bg-slate-900 border border-slate-700/80 text-white shadow-2xl relative my-auto">
         
         {/* Close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white"
+          className="absolute top-4 right-4 p-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition-colors"
         >
           <X className="w-5 h-5" />
         </button>

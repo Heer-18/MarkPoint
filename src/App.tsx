@@ -11,6 +11,7 @@ import { DeduplicationModal } from './components/CitizenView/DeduplicationModal'
 import { AIAnalysisModal } from './components/CitizenView/AIAnalysisModal';
 import { TicketDetailModal } from './components/DashboardView/TicketDetailModal';
 import { VerificationStudio } from './components/DashboardView/VerificationStudio';
+import { AppSplashScreen } from './components/Navigation/AppSplashScreen';
 
 import { INITIAL_MOCK_TICKETS } from './data/mockTickets';
 import { CivicIssue, CVAnalysisResult, SpatialCoordinate } from './types/civic';
@@ -27,6 +28,7 @@ export const App: React.FC = () => {
   const [gpsCoords, setGpsCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   // Tickets & Telemetry State
+  const [showSplash, setShowSplash] = useState<boolean>(true);
   const [tickets, setTickets] = useState<CivicIssue[]>(INITIAL_MOCK_TICKETS);
   const [likedTickets, setLikedTickets] = useState<string[]>(['TKT-101', 'TKT-103']);
   const [spamPreventedCount, setSpamPreventedCount] = useState<number>(42);
@@ -359,6 +361,11 @@ export const App: React.FC = () => {
           onClose={() => setVerificationTicket(null)}
           onResolvedSuccessfully={handleResolveTicket}
         />
+      )}
+
+      {/* Opening Splash Animation */}
+      {showSplash && (
+        <AppSplashScreen onComplete={() => setShowSplash(false)} />
       )}
 
     </div>

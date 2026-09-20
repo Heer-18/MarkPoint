@@ -11,10 +11,9 @@ import {
   Crosshair,
   AlertTriangle,
   Upload,
-  Video,
-  VideoOff,
   Image as ImageIcon,
-  CheckCircle2
+  CheckCircle2,
+  RotateCcw
 } from 'lucide-react';
 import { SpatialCoordinate } from '../../types/civic';
 import { QuickPresets, PresetScenario } from '../CitizenView/QuickPresets';
@@ -38,7 +37,6 @@ export const NewRequestScreen: React.FC<NewRequestScreenProps> = ({
   selectedCity,
   userCoords
 }) => {
-  const [cameraActive, setCameraActive] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [voiceTranscript, setVoiceTranscript] = useState('');
   const [uploadStatus, setUploadStatus] = useState<string>('');
@@ -48,9 +46,8 @@ export const NewRequestScreen: React.FC<NewRequestScreenProps> = ({
     accuracy: 3.5
   });
 
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   // Sync user location
   React.useEffect(() => {
@@ -61,53 +58,7 @@ export const NewRequestScreen: React.FC<NewRequestScreenProps> = ({
     });
   }, [userCoords.lat, userCoords.lng]);
 
-  // Start Camera
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment', width: { ideal: 1280 } }
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-      setCameraActive(true);
-      setCapturedImage(null);
-    } catch (err) {
-      console.warn('Camera access error, opening photo picker:', err);
-      // Automatically trigger file picker if live video stream fails
-      if (fileInputRef.current) {
-        fileInputRef.current.click();
-      }
-    }
-  };
-
-  // Stop Camera
-  const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
-    }
-    setCameraActive(false);
-  };
-
-  // Snap photo from video feed
-  const takeSnapshot = () => {
-    if (videoRef.current) {
-      const canvas = document.createElement('canvas');
-      canvas.width = videoRef.current.videoWidth || 800;
-      canvas.height = videoRef.current.videoHeight || 600;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-        setCapturedImage(dataUrl);
-        stopCamera();
-      }
-    }
-  };
-
-  // Process and resize uploaded photo
+  // Process and resize uploaded/captured photo
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -142,13 +93,14 @@ export const NewRequestScreen: React.FC<NewRequestScreenProps> = ({
           const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
           setCapturedImage(compressedDataUrl);
           setUploadStatus('');
-          stopCamera();
         }
       };
       img.src = event.target?.result as string;
     };
 
     reader.readAsDataURL(file);
+    // Reset file inputs so the same photo can be re-selected if needed
+    e.target.value = '';
   };
 
   const handleSubmit = () => {
@@ -175,7 +127,7 @@ export const NewRequestScreen: React.FC<NewRequestScreenProps> = ({
       {/* Header */}
       <div>
         <h2 className="text-xl font-black tracking-tight text-white">
-          Report a Problem in {selectedCity}
+          Report a Problem in {selectedCity === 'Your Location' ? 'Your Area' : selectedCity}
         </h2>
         <p className="text-xs text-slate-400 mt-0.5">
           Snap a photo or say what is broken. AI automatically categorizes and routes it to the right department.
@@ -201,44 +153,32 @@ export const NewRequestScreen: React.FC<NewRequestScreenProps> = ({
           </div>
           <div className="flex items-center space-x-1.5 text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-xl border border-emerald-500/30">
             <MapPin className="w-3.5 h-3.5" />
-            <span>{selectedCity} GPS</span>
+            <span>{selectedCity === 'Your Location' ? 'GPS Active' : selectedCity}</span>
           </div>
         </div>
 
         {/* Viewport Frame */}
         <div className="relative aspect-video max-h-72 w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 flex items-center justify-center shadow-inner">
-          {cameraActive && (
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              className="w-full h-full object-cover"
-            />
-          )}
-
-          {!cameraActive && capturedImage && (
+          {capturedImage ? (
             <div className="relative w-full h-full">
               <img
                 src={capturedImage}
                 alt="Hazard snapshot"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-2.5 left-2.5 px-2 py-1 rounded-md bg-black/75 backdrop-blur-md border border-emerald-500/30 text-[10px] font-mono text-emerald-300 flex items-center space-x-1">
+              <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-lg bg-black/75 backdrop-blur-md border border-emerald-500/30 text-[10px] font-mono text-emerald-300 flex items-center space-x-1">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Photo Ready</span>
               </div>
             </div>
-          )}
-
-          {!cameraActive && !capturedImage && (
+          ) : (
             <div className="text-center p-6 space-y-2">
-              <div className="w-14 h-14 mx-auto rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400">
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 shadow-md">
                 <Camera className="w-7 h-7 text-emerald-400" />
               </div>
               <p className="text-xs font-bold text-slate-200">No Photo Selected Yet</p>
               <p className="text-[11px] text-slate-400 max-w-xs">
-                Tap "Open Camera" or "Choose from Gallery" below to report an issue
+                Tap <strong className="text-emerald-400">Open Camera</strong> or <strong className="text-cyan-400">Choose from Gallery</strong> below
               </p>
             </div>
           )}
@@ -247,50 +187,42 @@ export const NewRequestScreen: React.FC<NewRequestScreenProps> = ({
         {/* Controls */}
         <div className="flex flex-wrap items-center justify-between gap-2.5 pt-1">
           <div className="flex items-center space-x-2">
-            {!cameraActive ? (
-              <button
-                type="button"
-                onClick={startCamera}
-                className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition-all shadow-sm"
-              >
-                <Video className="w-4 h-4 text-emerald-400" />
-                <span>{capturedImage ? 'Retake Photo' : 'Open Camera'}</span>
-              </button>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  onClick={takeSnapshot}
-                  className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-bold shadow-lg animate-pulse"
-                >
-                  <Camera className="w-4 h-4" />
-                  <span>Snap Photo</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={stopCamera}
-                  className="p-2.5 rounded-xl bg-slate-800 text-slate-400"
-                >
-                  <VideoOff className="w-4 h-4" />
-                </button>
-              </>
-            )}
-
-            {/* Direct File & Gallery Picker */}
+            
+            {/* 1. Native Camera Button (Opens Phone Camera App) */}
             <button
               type="button"
-              onClick={() => fileInputRef.current?.click()}
+              onClick={() => cameraInputRef.current?.click()}
+              className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition-all shadow-sm border border-slate-700/60"
+            >
+              <Camera className="w-4 h-4 text-emerald-400" />
+              <span>{capturedImage ? 'Retake Photo' : 'Open Camera'}</span>
+            </button>
+
+            {/* Hidden Camera Input with capture="environment" */}
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+
+            {/* 2. Gallery / File Picker Button (Opens Gallery / Drive / Photos) */}
+            <button
+              type="button"
+              onClick={() => galleryInputRef.current?.click()}
               className="flex items-center space-x-1.5 px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all cursor-pointer shadow-sm border border-slate-700/60"
             >
               <ImageIcon className="w-4 h-4 text-cyan-400" />
               <span>Choose from Gallery</span>
             </button>
-            
+
+            {/* Hidden Gallery Input WITHOUT capture attribute */}
             <input
-              ref={fileInputRef}
+              ref={galleryInputRef}
               type="file"
               accept="image/*"
-              capture="environment"
               onChange={handleFileChange}
               className="hidden"
             />

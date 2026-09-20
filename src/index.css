@@ -35,14 +35,14 @@
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    margin: 0;
+    padding: 0;
   }
 }
 
 /* Safe area padding utilities for mobile phones */
 .pt-safe {
-  padding-top: max(12px, env(safe-area-inset-top, 12px));
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .pb-safe {
