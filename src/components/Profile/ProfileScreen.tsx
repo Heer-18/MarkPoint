@@ -62,7 +62,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
 
   // All reports the user has either directly reported OR liked/supported (co-reported)
   const myReports = tickets.filter(
-    (t) => t.reporterId === 'usr-current' || likedTickets.includes(t.id) || t.reporterName.includes('Heer') || t.id === 'TKT-101' || t.id === 'TKT-102'
+    (t) => t.reporterId === 'usr-current' || likedTickets.includes(t.id)
   );
 
   const pendingVotes = myReports.filter((t) => t.status === 'GOV_RESOLVED_PENDING_VOTE' || t.status === 'WORK_SUBMITTED');

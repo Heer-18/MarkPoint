@@ -31,7 +31,7 @@ export const App: React.FC = () => {
   // Tickets & Telemetry State: Preserves all location reports across all cities
   const [showSplash, setShowSplash] = useState<boolean>(true);
   const [tickets, setTickets] = useState<CivicIssue[]>(ALL_LOCATIONS_INITIAL_TICKETS);
-  const [likedTickets, setLikedTickets] = useState<string[]>(['TKT-101', 'TKT-103', 'TKT-SRT-8812']);
+  const [likedTickets, setLikedTickets] = useState<string[]>([]);
   const [spamPreventedCount, setSpamPreventedCount] = useState<number>(42);
   const [isLoadingAnalysis, setIsLoadingAnalysis] = useState<boolean>(false);
   const [apiKey, setApiKey] = useState<string>('');
