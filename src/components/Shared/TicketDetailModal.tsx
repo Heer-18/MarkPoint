@@ -2,16 +2,7 @@ import React from 'react';
 import { 
   X, 
   MapPin, 
-  Building2, 
-  Clock, 
-  ShieldAlert, 
-  ThumbsUp, 
   FileText, 
-  Sparkles, 
-  CheckCircle2, 
-  Sliders,
-  ExternalLink,
-  Crosshair
 } from 'lucide-react';
 import { CivicIssue } from '../../types/civic';
 
@@ -26,8 +17,6 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
   onClose
 }) => {
   if (!ticket) return null;
-
-  const isResolved = ticket.status === 'VERIFIED_RESOLVED' || ticket.status === 'RESOLVED_DEMO';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-[max(env(safe-area-inset-top,28px),28px)] pb-[max(env(safe-area-inset-bottom,28px),28px)] bg-black/85 backdrop-blur-md animate-in fade-in overflow-y-auto">

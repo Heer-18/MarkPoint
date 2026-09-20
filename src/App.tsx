@@ -10,7 +10,7 @@ import { NoticesScreen } from './components/Notices/NoticesScreen';
 import { ProfileScreen } from './components/Profile/ProfileScreen';
 import { DeduplicationModal } from './components/CitizenView/DeduplicationModal';
 import { AIAnalysisModal } from './components/CitizenView/AIAnalysisModal';
-import { TicketDetailModal } from './components/DashboardView/TicketDetailModal';
+import { TicketDetailModal } from './components/Shared/TicketDetailModal';
 import { AppSplashScreen } from './components/Navigation/AppSplashScreen';
 
 import { INITIAL_MOCK_TICKETS, getTicketsForCity, ALL_LOCATIONS_INITIAL_TICKETS } from './data/mockTickets';
