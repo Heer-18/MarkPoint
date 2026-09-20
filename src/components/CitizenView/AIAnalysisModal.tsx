@@ -35,7 +35,7 @@ export const AIAnalysisModal: React.FC<AIAnalysisModalProps> = ({
   const isNonCivic = analysis.isValid === false || analysis.taxonomyId === 'NON-CIVIC';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-[max(env(safe-area-inset-top,24px),24px)] pb-[max(env(safe-area-inset-bottom,24px),24px)] bg-black/85 backdrop-blur-md animate-in fade-in overflow-y-auto">
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 pt-[max(env(safe-area-inset-top,24px),24px)] pb-[max(env(safe-area-inset-bottom,24px),24px)] bg-black/85 backdrop-blur-md animate-in fade-in overflow-y-auto">
       <div className="w-full max-w-2xl p-5 sm:p-6 rounded-3xl bg-slate-900 border border-slate-700/80 text-white shadow-2xl relative my-auto">
         
         {/* Close Button */}

@@ -19,7 +19,7 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
   if (!ticket) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-[max(env(safe-area-inset-top,28px),28px)] pb-[max(env(safe-area-inset-bottom,28px),28px)] bg-black/85 backdrop-blur-md animate-in fade-in overflow-y-auto">
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 pt-[max(env(safe-area-inset-top,28px),28px)] pb-[max(env(safe-area-inset-bottom,28px),28px)] bg-black/85 backdrop-blur-md animate-in fade-in overflow-y-auto">
       <div className="w-full max-w-3xl p-5 sm:p-6 rounded-3xl bg-slate-900 border border-slate-700/80 text-white shadow-2xl relative my-auto">
         
         {/* Close */}

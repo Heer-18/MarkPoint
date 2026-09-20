@@ -36,11 +36,15 @@ export const App: React.FC = () => {
   const [isLoadingAnalysis, setIsLoadingAnalysis] = useState<boolean>(false);
   const [apiKey, setApiKey] = useState<string>('');
 
-  // Notices read-state: tracks which notice IDs the user has opened
+  // Notices & Requests read-state
   const TOTAL_NOTICE_IDS = ['NTC-01', 'NTC-02', 'NTC-03'];
+  const [hasSeenNoticesTab, setHasSeenNoticesTab] = useState<boolean>(false);
+  const [hasSeenRequestsTab, setHasSeenRequestsTab] = useState<boolean>(false);
   const [readNoticeIds, setReadNoticeIds] = useState<string[]>([]);
-  const hasUnreadNotices = TOTAL_NOTICE_IDS.some(id => !readNoticeIds.includes(id));
-  const handleNoticeRead = (id: string) => setReadNoticeIds(prev => prev.includes(id) ? prev : [...prev, id]);
+  const hasUnreadNotices = !hasSeenNoticesTab && TOTAL_NOTICE_IDS.some(id => !readNoticeIds.includes(id));
+  const handleNoticeRead = (id: string) => {
+    setReadNoticeIds(prev => prev.includes(id) ? prev : [...prev, id]);
+  };
 
   // Modals
   const [dedupModalData, setDedupModalData] = useState<{
@@ -444,13 +448,25 @@ export const App: React.FC = () => {
     );
   };
 
-  // Badge only counts unresolved tickets that belong to the currently selected city
-  const unresolvedCount = tickets.filter(
-    (t) =>
-      t.status !== 'VERIFIED_RESOLVED' &&
-      t.status !== 'RESOLVED_DEMO' &&
-      t.address.toLowerCase().includes(selectedCity.toLowerCase())
-  ).length;
+  const handleTabChange = (tab: NavTab) => {
+    setActiveTab(tab);
+    if (tab === 'notices') {
+      setHasSeenNoticesTab(true);
+    }
+    if (tab === 'requests') {
+      setHasSeenRequestsTab(true);
+    }
+  };
+
+  // Badge only counts unresolved tickets that belong to the currently selected city (cleared once viewed)
+  const unresolvedCount = hasSeenRequestsTab
+    ? 0
+    : tickets.filter(
+        (t) =>
+          t.status !== 'VERIFIED_RESOLVED' &&
+          t.status !== 'RESOLVED_DEMO' &&
+          t.address.toLowerCase().includes(selectedCity.toLowerCase())
+      ).length;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
@@ -469,7 +485,7 @@ export const App: React.FC = () => {
       <main className="flex-1 px-4 sm:px-6 pt-3">
         {activeTab === 'home' && (
           <HomeScreen
-            onNavigateTab={setActiveTab}
+            onNavigateTab={handleTabChange}
             tickets={tickets}
             selectedCity={selectedCity}
             centerCoords={currentCityCoords}
@@ -522,7 +538,7 @@ export const App: React.FC = () => {
       {/* Bottom Navigation Bar */}
       <BottomNavBar
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
         unresolvedCount={unresolvedCount}
         hasUnreadNotices={hasUnreadNotices}
       />

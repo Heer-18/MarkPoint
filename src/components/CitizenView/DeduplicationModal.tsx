@@ -30,7 +30,7 @@ export const DeduplicationModal: React.FC<DeduplicationModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-[max(env(safe-area-inset-top,28px),28px)] pb-[max(env(safe-area-inset-bottom,28px),28px)] bg-black/80 backdrop-blur-md animate-in fade-in overflow-y-auto">
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 pt-[max(env(safe-area-inset-top,28px),28px)] pb-[max(env(safe-area-inset-bottom,28px),28px)] bg-black/80 backdrop-blur-md animate-in fade-in overflow-y-auto">
       <div className="w-full max-w-xl p-6 rounded-2xl glass-panel-glow border border-emerald-500/30 text-white shadow-2xl relative overflow-hidden my-auto">
         
         {/* Close Button */}

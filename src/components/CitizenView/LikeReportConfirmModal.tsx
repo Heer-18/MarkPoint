@@ -18,7 +18,7 @@ export const LikeReportConfirmModal: React.FC<LikeReportConfirmModalProps> = ({
   if (!isOpen || !ticket) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in">
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in">
       <div className="w-full max-w-md p-5 sm:p-6 rounded-3xl bg-slate-900 border border-slate-700/90 text-white shadow-2xl relative space-y-4 animate-in zoom-in-95 duration-200">
         
         {/* Top Close Button */}

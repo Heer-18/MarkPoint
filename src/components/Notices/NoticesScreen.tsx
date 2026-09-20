@@ -145,21 +145,21 @@ export const NoticesScreen: React.FC<NoticesScreenProps> = ({ selectedCity, onNo
       {/* Detail Modal */}
       {selectedNotice && (
         <div
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm px-3 pb-4 sm:pb-0 animate-in fade-in duration-200"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 pt-[max(env(safe-area-inset-top,24px),24px)] pb-[max(env(safe-area-inset-bottom,24px),24px)] animate-in fade-in duration-200 overflow-y-auto"
           onClick={() => setSelectedNotice(null)}
         >
           <div
-            className="w-full max-w-lg bg-slate-900 rounded-3xl border border-slate-700 shadow-2xl overflow-hidden animate-in slide-in-from-bottom-6 duration-300"
+            className="w-full max-w-lg bg-slate-900 rounded-3xl border border-slate-700/80 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 my-auto max-h-[85vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className={`p-4 border-b border-slate-800 flex items-start justify-between gap-3 ${
-              selectedNotice.type === 'URGENT' ? 'bg-rose-950/30' :
-              selectedNotice.type === 'UPDATE' ? 'bg-cyan-950/30' : 'bg-emerald-950/20'
+            <div className={`p-4 sm:p-5 border-b border-slate-800 flex items-start justify-between gap-3 ${
+              selectedNotice.type === 'URGENT' ? 'bg-rose-950/40' :
+              selectedNotice.type === 'UPDATE' ? 'bg-cyan-950/40' : 'bg-emerald-950/30'
             }`}>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-2 mb-2">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center space-x-1 border ${typeConfig[selectedNotice.type].bg} ${typeConfig[selectedNotice.type].text} ${typeConfig[selectedNotice.type].border}`}>
+                  <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center space-x-1 border ${typeConfig[selectedNotice.type].bg} ${typeConfig[selectedNotice.type].text} ${typeConfig[selectedNotice.type].border}`}>
                     {typeConfig[selectedNotice.type].icon}
                     <span>{selectedNotice.type}</span>
                   </span>
@@ -168,33 +168,33 @@ export const NoticesScreen: React.FC<NoticesScreenProps> = ({ selectedCity, onNo
                     <span>{selectedNotice.date}</span>
                   </span>
                 </div>
-                <h3 className="text-base font-bold text-white leading-snug">{selectedNotice.title}</h3>
+                <h3 className="text-base sm:text-lg font-bold text-white leading-snug">{selectedNotice.title}</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedNotice(null)}
-                className="flex-shrink-0 p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-all"
+                className="flex-shrink-0 p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-all border border-slate-700"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="p-4 space-y-4 max-h-[60vh] overflow-y-auto">
+            <div className="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
               {/* Department + Location */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 space-y-0.5">
+                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-0.5">
                   <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Department</div>
-                  <div className="flex items-center space-x-1.5 text-xs text-slate-300">
+                  <div className="flex items-center space-x-1.5 text-xs text-slate-200">
                     <Building2 className="w-3.5 h-3.5 text-indigo-400 flex-shrink-0" />
-                    <span className="leading-tight">{selectedNotice.department}</span>
+                    <span className="leading-tight font-medium">{selectedNotice.department}</span>
                   </div>
                 </div>
-                <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 space-y-0.5">
+                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-0.5">
                   <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Location</div>
-                  <div className="flex items-center space-x-1.5 text-xs text-slate-300">
+                  <div className="flex items-center space-x-1.5 text-xs text-slate-200">
                     <MapPin className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
-                    <span className="leading-tight">{selectedNotice.location}</span>
+                    <span className="leading-tight font-medium">{selectedNotice.location}</span>
                   </div>
                 </div>
               </div>
@@ -202,16 +202,27 @@ export const NoticesScreen: React.FC<NoticesScreenProps> = ({ selectedCity, onNo
               {/* Full Details */}
               <div className="space-y-1.5">
                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Full Notice</div>
-                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 leading-relaxed whitespace-pre-line font-sans">
                   {selectedNotice.details || selectedNotice.content}
                 </div>
               </div>
 
               {/* CTA */}
-              <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/20 flex items-center space-x-2 text-[11px] text-emerald-300">
+              <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/20 flex items-center space-x-2.5 text-[11px] text-emerald-300">
                 <Zap className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>See a related issue? Use the <strong>Report</strong> tab to submit a complaint instantly.</span>
+                <span>See a related issue? Use the <strong>Report</strong> tab to submit a complaint.</span>
               </div>
+            </div>
+
+            {/* Modal Footer with Close Button */}
+            <div className="p-4 border-t border-slate-800 bg-slate-950/60 flex items-center justify-end">
+              <button
+                type="button"
+                onClick={() => setSelectedNotice(null)}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-xs shadow-lg transition-all text-center active:scale-95"
+              >
+                Acknowledge & Close
+              </button>
             </div>
           </div>
         </div>
