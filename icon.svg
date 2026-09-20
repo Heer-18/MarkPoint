@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050811" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+  </defs>
+  <!-- Background Squircle -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+  <!-- Glowing Outer Pulse Ring -->
+  <circle cx="256" cy="256" r="176" fill="none" stroke="url(#glowGrad)" stroke-width="24" stroke-opacity="0.9" />
+  <!-- Minimal Geometric Pin Point -->
+  <path d="M256 120 C185 120 132 173 132 244 C132 328 256 400 256 400 C256 400 380 328 380 244 C380 173 327 120 256 120 Z" fill="#ffffff" />
+  <!-- Center Beacon Core Aperture -->
+  <circle cx="256" cy="236" r="38" fill="#050811" />
+  <circle cx="256" cy="236" r="16" fill="url(#glowGrad)" />
+</svg>
