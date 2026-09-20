@@ -54,7 +54,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('heer.patel@gmail.com');
   const [password, setPassword] = useState('password123');
-  const [name, setName] = useState('Heer Patel');
+  const [name, setName] = useState('Heer Khunt');
   const [activeReportTab, setActiveReportTab] = useState<'ALL' | 'VOTING_PENDING' | 'IN_PROGRESS' | 'RESOLVED'>('ALL');
 
   // Voting State for each card

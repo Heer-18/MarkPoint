@@ -36,6 +36,12 @@ export const App: React.FC = () => {
   const [isLoadingAnalysis, setIsLoadingAnalysis] = useState<boolean>(false);
   const [apiKey, setApiKey] = useState<string>('');
 
+  // Notices read-state: tracks which notice IDs the user has opened
+  const TOTAL_NOTICE_IDS = ['NTC-01', 'NTC-02', 'NTC-03'];
+  const [readNoticeIds, setReadNoticeIds] = useState<string[]>([]);
+  const hasUnreadNotices = TOTAL_NOTICE_IDS.some(id => !readNoticeIds.includes(id));
+  const handleNoticeRead = (id: string) => setReadNoticeIds(prev => prev.includes(id) ? prev : [...prev, id]);
+
   // Modals
   const [dedupModalData, setDedupModalData] = useState<{
     masterTicket: CivicIssue;
@@ -308,7 +314,7 @@ export const App: React.FC = () => {
       reportedAt: new Date().toISOString(),
       lastUpdatedAt: new Date().toISOString(),
       reporterId: 'usr-current',
-      reporterName: 'Heer Patel',
+      reporterName: 'Heer Khunt',
       reporterDeviceHash: 'sha256-auth',
       location,
       address: `${selectedCity}, ${geofence.zoneName}`,
@@ -388,7 +394,7 @@ export const App: React.FC = () => {
           const updatedRemarks = [
             ...(currentVotes.citizenRemarks || []),
             {
-              user: 'Heer Patel (You)',
+              user: 'Heer Khunt (You)',
               text: citizenRemark || (approved ? 'Confirmed fixed by citizen inspection.' : 'Defect still persists on site.'),
               votedApproved: approved,
               time: 'Just now'
@@ -438,8 +444,12 @@ export const App: React.FC = () => {
     );
   };
 
+  // Badge only counts unresolved tickets that belong to the currently selected city
   const unresolvedCount = tickets.filter(
-    (t) => t.status !== 'VERIFIED_RESOLVED' && t.status !== 'RESOLVED_DEMO'
+    (t) =>
+      t.status !== 'VERIFIED_RESOLVED' &&
+      t.status !== 'RESOLVED_DEMO' &&
+      t.address.toLowerCase().includes(selectedCity.toLowerCase())
   ).length;
 
   return (
@@ -489,7 +499,11 @@ export const App: React.FC = () => {
         )}
 
         {activeTab === 'notices' && (
-          <NoticesScreen selectedCity={selectedCity} />
+          <NoticesScreen
+            selectedCity={selectedCity}
+            readNoticeIds={readNoticeIds}
+            onNoticeRead={handleNoticeRead}
+          />
         )}
 
         {activeTab === 'profile' && (
@@ -510,6 +524,7 @@ export const App: React.FC = () => {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         unresolvedCount={unresolvedCount}
+        hasUnreadNotices={hasUnreadNotices}
       />
 
       {/* Modal 1: 25m Spatial Anti-Spam Duplicate Alert */}

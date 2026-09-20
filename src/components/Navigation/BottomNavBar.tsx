@@ -7,12 +7,14 @@ interface BottomNavBarProps {
   activeTab: NavTab;
   onTabChange: (tab: NavTab) => void;
   unresolvedCount?: number;
+  hasUnreadNotices?: boolean;
 }
 
 export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   activeTab,
   onTabChange,
-  unresolvedCount = 0
+  unresolvedCount = 0,
+  hasUnreadNotices = false,
 }) => {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-slate-950/95 backdrop-blur-2xl border-t border-slate-800/90 pt-1.5 pb-6 sm:pb-3 px-4 shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.5)]">
@@ -32,7 +34,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
           <span className="text-[11px] tracking-tight">Home</span>
         </button>
 
-        {/* 2. Notices */}
+        {/* 2. Notices — blue dot only when there are unread notices */}
         <button
           type="button"
           onClick={() => onTabChange('notices')}
@@ -44,7 +46,9 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
         >
           <Mail className="w-5 h-5 mb-0.5" />
           <span className="text-[11px] tracking-tight">Notices</span>
-          <span className="absolute top-1 right-3 w-2 h-2 rounded-full bg-cyan-400 ring-2 ring-slate-950" />
+          {hasUnreadNotices && (
+            <span className="absolute top-1 right-3 w-2 h-2 rounded-full bg-cyan-400 ring-2 ring-slate-950" />
+          )}
         </button>
 
         {/* 3. New Request (Prominent Center Action) */}
@@ -59,7 +63,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
           <span className="text-[11px] font-bold text-emerald-400 mt-0.5">Report</span>
         </button>
 
-        {/* 4. Requests / Problem Map */}
+        {/* 4. Requests — badge shows unresolved count for current city */}
         <button
           type="button"
           onClick={() => onTabChange('requests')}
