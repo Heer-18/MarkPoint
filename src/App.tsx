@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Lenis from 'lenis';
 import { TopSearchBar, CITIES } from './components/Navigation/TopSearchBar';
 import { BottomNavBar, NavTab } from './components/Navigation/BottomNavBar';
@@ -24,9 +24,11 @@ export const App: React.FC = () => {
   const [selectedCity, setSelectedCity] = useState<string>('Surat');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isLocating, setIsLocating] = useState<boolean>(false);
+  const [gpsCoords, setGpsCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   // Tickets & Telemetry State
   const [tickets, setTickets] = useState<CivicIssue[]>(INITIAL_MOCK_TICKETS);
+  const [likedTickets, setLikedTickets] = useState<string[]>(['TKT-101', 'TKT-103']);
   const [spamPreventedCount, setSpamPreventedCount] = useState<number>(42);
   const [isLoadingAnalysis, setIsLoadingAnalysis] = useState<boolean>(false);
   const [apiKey, setApiKey] = useState<string>('');
@@ -69,6 +71,15 @@ export const App: React.FC = () => {
     };
   }, []);
 
+  // Compute Active City Coordinates
+  const currentCityCoords = useMemo(() => {
+    if (gpsCoords && selectedCity === 'Your Location') {
+      return gpsCoords;
+    }
+    const matched = CITIES.find((c) => c.name.toLowerCase() === selectedCity.toLowerCase());
+    return matched ? { lat: matched.lat, lng: matched.lng } : { lat: 21.1702, lng: 72.8311 }; // Surat default
+  }, [selectedCity, gpsCoords]);
+
   // GPS Locate Me Handler
   const handleLocateMe = () => {
     setIsLocating(true);
@@ -76,6 +87,7 @@ export const App: React.FC = () => {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           setIsLocating(false);
+          setGpsCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
           setSelectedCity('Your Location');
           setSearchQuery('Current GPS Location');
         },
@@ -90,17 +102,30 @@ export const App: React.FC = () => {
     }
   };
 
-  // Upvote Ticket Handler
-  const handleUpvote = (ticketId: string) => {
-    setTickets((prev) =>
-      prev.map((t) =>
-        t.id === ticketId ? { ...t, upvoteCount: t.upvoteCount + 1 } : t
-      )
-    );
-    speakText('Priority upvote added.');
+  // Toggle Upvote / Like Handler (1 click = like, 2nd click = remove like)
+  const handleToggleUpvote = (ticketId: string) => {
+    const alreadyLiked = likedTickets.includes(ticketId);
+
+    if (alreadyLiked) {
+      setLikedTickets((prev) => prev.filter((id) => id !== ticketId));
+      setTickets((prev) =>
+        prev.map((t) =>
+          t.id === ticketId ? { ...t, upvoteCount: Math.max(0, t.upvoteCount - 1) } : t
+        )
+      );
+      speakText('Upvote removed.');
+    } else {
+      setLikedTickets((prev) => [...prev, ticketId]);
+      setTickets((prev) =>
+        prev.map((t) =>
+          t.id === ticketId ? { ...t, upvoteCount: t.upvoteCount + 1 } : t
+        )
+      );
+      speakText('Priority upvote added.');
+    }
   };
 
-  // Ingest Report Handler (Camera or Preset)
+  // Ingest Report Handler (Camera, Gallery or Preset)
   const handleIngestReport = async (payload: {
     imageUrl: string;
     location: SpatialCoordinate;
@@ -126,9 +151,13 @@ export const App: React.FC = () => {
 
       if (dedupCheck.isDuplicate && dedupCheck.masterTicket) {
         // Increment Master Ticket Upvotes
+        const masterId = dedupCheck.masterTicket.id;
+        if (!likedTickets.includes(masterId)) {
+          setLikedTickets((prev) => [...prev, masterId]);
+        }
         setTickets((prev) =>
           prev.map((t) =>
-            t.id === dedupCheck.masterTicket!.id
+            t.id === masterId
               ? { ...t, upvoteCount: t.upvoteCount + 1 }
               : t
           )
@@ -176,13 +205,13 @@ export const App: React.FC = () => {
       slaDeadline: new Date(Date.now() + analysis.slaHours * 3600 * 1000).toISOString(),
       reportedAt: new Date().toISOString(),
       lastUpdatedAt: new Date().toISOString(),
-      reporterId: 'usr-client',
-      reporterName: 'Citizen',
+      reporterId: 'usr-current',
+      reporterName: 'Heer Patel',
       reporterDeviceHash: 'sha256-auth',
       location,
       address: `${selectedCity}, ${geofence.zoneName}`,
       upvoteCount: 1,
-      upvotedBy: ['usr-client'],
+      upvotedBy: ['usr-current'],
       assignedDepartment: analysis.responsibleDepartment,
       l2EscalationRole: analysis.l2EscalationRole,
       geofenceZone: geofence.zoneName,
@@ -196,8 +225,9 @@ export const App: React.FC = () => {
     };
 
     setTickets((prev) => [newTicket, ...prev]);
+    setLikedTickets((prev) => [...prev, newId]);
     setAiAnalysisModalData(null);
-    setActiveTab('requests'); // Take user to requests to view their ticket on map!
+    setActiveTab('requests'); // Switch to map and focus on the new report!
   };
 
   // Resolve Ticket in Verification Studio
@@ -223,7 +253,7 @@ export const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
       
-      {/* Top Search Bar matching reference screenshot */}
+      {/* Top Search Bar matching reference screenshot with MarkPoint logo */}
       <TopSearchBar
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -234,12 +264,13 @@ export const App: React.FC = () => {
       />
 
       {/* Main Tab Screen Content */}
-      <main className="flex-1 px-4 sm:px-6 pt-4">
+      <main className="flex-1 px-4 sm:px-6 pt-3">
         {activeTab === 'home' && (
           <HomeScreen
             onNavigateTab={setActiveTab}
             tickets={tickets}
             selectedCity={selectedCity}
+            centerCoords={currentCityCoords}
             onSelectTicket={setInspectTicket}
             spamPreventedCount={spamPreventedCount}
           />
@@ -249,8 +280,10 @@ export const App: React.FC = () => {
           <RequestsScreen
             tickets={tickets}
             onSelectTicket={setInspectTicket}
-            onUpvoteTicket={handleUpvote}
+            onUpvoteTicket={handleToggleUpvote}
             selectedCity={selectedCity}
+            centerCoords={currentCityCoords}
+            likedTickets={likedTickets}
           />
         )}
 
@@ -259,6 +292,7 @@ export const App: React.FC = () => {
             onCaptureAndIngest={handleIngestReport}
             isLoading={isLoadingAnalysis}
             selectedCity={selectedCity}
+            userCoords={currentCityCoords}
           />
         )}
 
@@ -270,15 +304,14 @@ export const App: React.FC = () => {
           <ProfileScreen
             tickets={tickets}
             spamPreventedCount={spamPreventedCount}
-            apiKey={apiKey}
-            setApiKey={setApiKey}
             onOpenVerificationStudio={(t) => setVerificationTicket(t)}
+            onSelectTicket={setInspectTicket}
             selectedCity={selectedCity}
           />
         )}
       </main>
 
-      {/* Bottom Navigation Bar matching reference screenshot */}
+      {/* Bottom Navigation Bar */}
       <BottomNavBar
         activeTab={activeTab}
         onTabChange={setActiveTab}

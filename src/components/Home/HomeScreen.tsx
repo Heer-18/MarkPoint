@@ -23,6 +23,7 @@ interface HomeScreenProps {
   selectedCity: string;
   onSelectTicket: (ticket: CivicIssue) => void;
   spamPreventedCount: number;
+  centerCoords?: { lat: number; lng: number };
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
@@ -30,7 +31,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   tickets,
   selectedCity,
   onSelectTicket,
-  spamPreventedCount
+  spamPreventedCount,
+  centerCoords
 }) => {
   const activeTickets = tickets.filter(
     (t) => t.status !== 'VERIFIED_RESOLVED' && t.status !== 'RESOLVED_DEMO'
@@ -153,6 +155,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           tickets={tickets}
           selectedTicket={null}
           onSelectTicket={onSelectTicket}
+          centerCoords={centerCoords}
           heightClass="h-64 sm:h-80"
         />
       </div>

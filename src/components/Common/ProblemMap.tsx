@@ -17,7 +17,7 @@ export const ProblemMap: React.FC<ProblemMapProps> = ({
   tickets,
   selectedTicket,
   onSelectTicket,
-  centerCoords = { lat: 28.6345, lng: 77.2182 },
+  centerCoords = { lat: 21.1702, lng: 72.8311 }, // Default to Surat, Gujarat
   heightClass = 'h-[360px] sm:h-[480px]',
   showFilters = true
 }) => {
@@ -41,7 +41,7 @@ export const ProblemMap: React.FC<ProblemMapProps> = ({
 
       L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-      // Minimal Dark / Carto Style OpenStreetMap Tiles
+      // CartoDB Dark Matter / Clean OpenStreetMap Tiles
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         subdomains: ['a', 'b', 'c']
@@ -62,7 +62,7 @@ export const ProblemMap: React.FC<ProblemMapProps> = ({
     };
   }, []);
 
-  // Update Center when city changes
+  // Update Center when city / coordinates change
   useEffect(() => {
     if (mapInstanceRef.current && centerCoords) {
       mapInstanceRef.current.setView([centerCoords.lat, centerCoords.lng], 13, {
@@ -82,9 +82,13 @@ export const ProblemMap: React.FC<ProblemMapProps> = ({
       const isResolved = ticket.status === 'VERIFIED_RESOLVED' || ticket.status === 'RESOLVED_DEMO';
       const isBreached = ticket.status === 'ESCALATED_SLA_BREACH';
 
-      let markerColor = '#f59e0b'; // amber for waste
+      let markerColor = '#f59e0b'; // amber for waste default
       if (ticket.vertical === 'ROADS_MOBILITY') markerColor = '#f97316'; // orange for road
-      if (ticket.vertical === 'WATER_BODIES_ECOLOGY') markerColor = '#3b82f6'; // blue for water
+      else if (ticket.vertical === 'WATER_BODIES_ECOLOGY') markerColor = '#06b6d4'; // cyan for water
+      else if (ticket.vertical === 'CIVIC_ASSETS') markerColor = '#a855f7'; // purple for assets / power
+      else if (ticket.vertical === 'SOLID_WASTE') markerColor = '#eab308'; // yellow-amber for waste
+      else markerColor = '#ec4899'; // pink for other
+
       if (isResolved) markerColor = '#10b981'; // emerald for resolved
       if (isBreached) markerColor = '#ef4444'; // red for breached
 
@@ -156,23 +160,31 @@ export const ProblemMap: React.FC<ProblemMapProps> = ({
       {/* Map Element */}
       <div ref={mapContainerRef} className="w-full h-full z-10" />
 
-      {/* Floating Legend */}
-      <div className="absolute top-3 right-3 z-20 px-3 py-2 rounded-xl bg-slate-950/90 backdrop-blur-md border border-slate-800 text-[11px] text-slate-300 shadow-xl pointer-events-none">
-        <div className="flex items-center space-x-3">
+      {/* Floating Category Legend */}
+      <div className="absolute top-2.5 right-2.5 z-20 px-3 py-1.5 rounded-xl bg-slate-950/90 backdrop-blur-md border border-slate-800 text-[10px] text-slate-300 shadow-xl pointer-events-none">
+        <div className="flex flex-wrap items-center gap-2.5">
           <div className="flex items-center space-x-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-orange-500" />
+            <span className="w-2 h-2 rounded-full bg-orange-500" />
             <span>Roads</span>
           </div>
           <div className="flex items-center space-x-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+            <span className="w-2 h-2 rounded-full bg-yellow-500" />
             <span>Waste</span>
           </div>
           <div className="flex items-center space-x-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+            <span className="w-2 h-2 rounded-full bg-cyan-500" />
             <span>Water</span>
           </div>
           <div className="flex items-center space-x-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+            <span className="w-2 h-2 rounded-full bg-purple-500" />
+            <span>Assets</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <span className="w-2 h-2 rounded-full bg-pink-500" />
+            <span>Other</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
             <span>Fixed</span>
           </div>
         </div>

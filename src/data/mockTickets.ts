@@ -1,8 +1,9 @@
 import { CivicIssue } from '../types/civic';
 
 export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
+  // 1. Surat - Roads & Mobility (Pothole)
   {
-    id: 'TKT-2026-8812',
+    id: 'TKT-SRT-8812',
     taxonomyId: 'RD-01',
     category: 'Roads & Mobility',
     subCategory: 'Potholes (Deep / Hazardous)',
@@ -10,37 +11,38 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     status: 'IN_PROGRESS',
     priority: 'URGENT',
     slaHours: 48,
-    slaDeadline: new Date(Date.now() + 18 * 3600 * 1000).toISOString(),
-    reportedAt: new Date(Date.now() - 30 * 3600 * 1000).toISOString(),
-    lastUpdatedAt: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
-    reporterId: 'usr-901',
-    reporterName: 'Aarav Sharma',
+    slaDeadline: new Date(Date.now() + 24 * 3600 * 1000).toISOString(),
+    reportedAt: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
+    lastUpdatedAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
+    reporterId: 'usr-current',
+    reporterName: 'Heer Patel',
     reporterDeviceHash: 'sha256-a9f872c01e',
     location: {
-      lat: 28.6345,
-      lng: 77.2182,
-      accuracy: 4.2
+      lat: 21.1780,
+      lng: 72.8350,
+      accuracy: 3.8
     },
-    address: 'Ring Road Outer Flyover Pillar 42, Connaught Sector',
-    upvoteCount: 14,
-    upvotedBy: ['usr-901', 'usr-902', 'usr-905', 'usr-910', 'usr-912'],
-    assignedDepartment: 'Public Works Department (PWD) / Municipal Roads Division',
+    address: 'Ring Road Flyover Junction, Near Majura Gate, Surat',
+    upvoteCount: 18,
+    upvotedBy: ['usr-901', 'usr-902', 'usr-905', 'usr-current'],
+    assignedDepartment: 'Surat Municipal Corporation (PWD / Roads)',
     l2EscalationRole: 'Executive Engineer (Roads)',
-    geofenceZone: 'State Highway Arterial Corridor (Ring Road PWD)',
+    geofenceZone: 'Surat Central Ring Road Zone',
     isEscalated: false,
     imageUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
     imageAfterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
-    aiConfidence: 0.94,
+    aiConfidence: 0.95,
     detectedObjects: [
-      { label: 'Deep Asphalt Cavity', confidence: 0.96, box: [20, 25, 75, 75] },
-      { label: 'Exposed Granular Base', confidence: 0.89, box: [35, 40, 60, 65] }
+      { label: 'Deep Asphalt Cavity', confidence: 0.96, box: [20, 25, 75, 75] }
     ],
     detectedCvTriggers: ['Asphalt cavity', 'Edge depth shadow', 'Circular depression pattern'],
-    formalComplaintDraft: 'FORMAL CIVIC GRIEVANCE // PWD-RD-01\nTo: Executive Engineer (Roads), State PWD Circle-1\nSubject: Critical Road Safety Hazard - Severe Carriageway Cavity\nLocation: Ring Road Outer Flyover Pillar 42 [28.6345, 77.2182]\nTelemetry: Depth > 85mm, Sharp asphalt perimeter detected. SLA Window: 48h.',
-    citizenVoiceTranscript: 'Huge dangerous pothole on the right lane near pillar 42. Two bikers almost slipped this morning!'
+    formalComplaintDraft: 'FORMAL GRIEVANCE // SMC-RD-01\nTo: Executive Engineer (Roads), SMC\nLocation: Ring Road Majura Gate [21.1780, 72.8350]\nDepth > 85mm. Rapid cold-mix patching requested.',
+    citizenVoiceTranscript: 'Deep pothole on Ring Road near Majura Gate. Two wheelers are swerving dangerously.'
   },
+
+  // 2. Surat - Solid Waste (Overflowing Community Bin)
   {
-    id: 'TKT-2026-9041',
+    id: 'TKT-SRT-9041',
     taxonomyId: 'SW-02',
     category: 'Solid Waste',
     subCategory: 'Overflowing Community Waste Bin',
@@ -52,33 +54,34 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     reportedAt: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
     lastUpdatedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
     reporterId: 'usr-842',
-    reporterName: 'Priya Mehra',
+    reporterName: 'Priya Shah',
     reporterDeviceHash: 'sha256-c33190ab71',
     location: {
-      lat: 28.6480,
-      lng: 77.1850,
-      accuracy: 3.8
+      lat: 21.1920,
+      lng: 72.7950,
+      accuracy: 3.2
     },
-    address: 'Block C Community Center, Wholesale Market Road',
-    upvoteCount: 9,
+    address: 'Adajan Patia Main Market, Near Star Bazaar, Surat',
+    upvoteCount: 12,
     upvotedBy: ['usr-842', 'usr-845', 'usr-850'],
-    assignedDepartment: 'Concessionaire Waste Collection Agency / Ward Inspector',
+    assignedDepartment: 'SMC Health & Sanitation Division (West Zone)',
     l2EscalationRole: 'Zonal Sanitation Superintendent',
-    geofenceZone: 'Industrial & Wholesale Market Sanitation Sector',
+    geofenceZone: 'Adajan West Municipal Ward',
     isEscalated: false,
     imageUrl: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=800&q=80',
     imageAfterUrl: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80',
-    aiConfidence: 0.92,
+    aiConfidence: 0.94,
     detectedObjects: [
-      { label: 'Overflowing Municipal Bin', confidence: 0.95, box: [15, 20, 85, 80] },
-      { label: 'Spilled Solid Debris', confidence: 0.88, box: [60, 10, 95, 90] }
+      { label: 'Overflowing Municipal Bin', confidence: 0.95, box: [15, 20, 85, 80] }
     ],
     detectedCvTriggers: ['Bin brim overflow volume > 85%', 'Spill periphery footprint'],
-    formalComplaintDraft: 'FORMAL CIVIC GRIEVANCE // SANI-SW-02\nTo: Zonal Sanitation Superintendent, Central Zone\nSubject: Public Health Emergency - Solid Waste Overflow\nLocation: Block C Community Center [28.6480, 77.1850]\nTelemetry: Overflow volume calculated > 90%. Stray vector hazard detected.',
-    citizenVoiceTranscript: 'The green waste bin is totally overflowing onto the street, garbage is everywhere and smelling terrible.'
+    formalComplaintDraft: 'FORMAL GRIEVANCE // SMC-SW-02\nTo: Zonal Sanitation Superintendent, West Zone\nLocation: Adajan Patia [21.1920, 72.7950]\nOverflow > 90%. Compactor truck dispatch requested.',
+    citizenVoiceTranscript: 'The green waste bin at Adajan market is overflowing onto the road.'
   },
+
+  // 3. Surat - Water Bodies & Drainage (Clogged Tapi River Drain)
   {
-    id: 'TKT-2026-7734',
+    id: 'TKT-SRT-7734',
     taxonomyId: 'WB-02',
     category: 'Water Bodies',
     subCategory: 'Industrial Chemical Effluent Discharge',
@@ -86,37 +89,38 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     status: 'ESCALATED_SLA_BREACH',
     priority: 'CRITICAL',
     slaHours: 12,
-    slaDeadline: new Date(Date.now() - 3 * 3600 * 1000).toISOString(), // Expired
+    slaDeadline: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
     reportedAt: new Date(Date.now() - 15 * 3600 * 1000).toISOString(),
     lastUpdatedAt: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
     reporterId: 'usr-412',
-    reporterName: 'Vikramaditya Sen',
+    reporterName: 'Vikram Desai',
     reporterDeviceHash: 'sha256-fa70195e2d',
     location: {
-      lat: 28.6520,
-      lng: 77.2550,
-      accuracy: 6.1
+      lat: 21.2150,
+      lng: 72.8450,
+      accuracy: 5.0
     },
-    address: 'Yamuna Barrage Drain Outfall #7, Near Old Iron Bridge',
-    upvoteCount: 28,
+    address: 'Tapi Riverfront Promenade, Near Causeway, Surat',
+    upvoteCount: 31,
     upvotedBy: ['usr-412', 'usr-415', 'usr-420', 'usr-431'],
-    assignedDepartment: 'State Pollution Control Board (Enforcement Wing)',
-    l2EscalationRole: 'Member Secretary (SPCB)',
-    geofenceZone: 'Yamuna River & Riparian Eco-Buffer (100m)',
+    assignedDepartment: 'Gujarat Pollution Control Board (GPCB) / SMC Drainage',
+    l2EscalationRole: 'Regional Environmental Officer (GPCB)',
+    geofenceZone: 'Tapi River Eco-Buffer Zone',
     isEscalated: true,
     imageUrl: 'https://images.unsplash.com/photo-1621451537084-482c73073a0f?auto=format&fit=crop&w=800&q=80',
     imageAfterUrl: null,
-    aiConfidence: 0.96,
+    aiConfidence: 0.97,
     detectedObjects: [
-      { label: 'Toxic Chemical Froth Layer', confidence: 0.98, box: [25, 10, 70, 90] },
-      { label: 'Industrial Discharge Outfall', confidence: 0.91, box: [10, 60, 50, 95] }
+      { label: 'Toxic Chemical Froth', confidence: 0.98, box: [25, 10, 70, 90] }
     ],
     detectedCvTriggers: ['Chromatic water discoloration', 'Chemical lather/froth', 'Effluent outfall'],
-    formalComplaintDraft: 'ESCALATED L2 STATUTORY NOTICE // SPCB-WB-02\nTo: Member Secretary, State Pollution Control Board\nSubject: IMMEDIATE INTERVENTION - Toxic Industrial Froth in River Course\nLocation: Yamuna Barrage Drain Outfall #7 [28.6520, 77.2550]\nStatus: SLA BREACH (12h Exceeded). Mandatory factory inspection and drain interception order requested.',
-    citizenVoiceTranscript: 'Chemical foam and black water gushing straight into the river near the barrage. Strong chemical odor.'
+    formalComplaintDraft: 'STATUTORY ESCALATION // GPCB-WB-02\nTo: Regional Environmental Officer\nLocation: Tapi Riverfront Causeway [21.2150, 72.8450]\nStatus: SLA EXCEEDED. Immediate sample collection and outfall plug required.',
+    citizenVoiceTranscript: 'Chemical foam and dark wastewater spilling into Tapi river near Causeway.'
   },
+
+  // 4. Surat - Public Utilities (Open Manhole on Walkway)
   {
-    id: 'TKT-2026-6102',
+    id: 'TKT-SRT-6102',
     taxonomyId: 'RD-03',
     category: 'Roads & Mobility',
     subCategory: 'Open / Broken Manhole',
@@ -127,34 +131,35 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     slaDeadline: new Date(Date.now() + 1.5 * 3600 * 1000).toISOString(),
     reportedAt: new Date(Date.now() - 4.5 * 3600 * 1000).toISOString(),
     lastUpdatedAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
-    reporterId: 'usr-118',
-    reporterName: 'Neha Deshmukh',
+    reporterId: 'usr-current',
+    reporterName: 'Heer Patel',
     reporterDeviceHash: 'sha256-004318deaa',
     location: {
-      lat: 28.6180,
-      lng: 77.2150,
+      lat: 21.1540,
+      lng: 72.7750,
       accuracy: 2.5
     },
-    address: 'Janpath Pedestrian Crossing, Ward 4',
-    upvoteCount: 19,
-    upvotedBy: ['usr-118', 'usr-120'],
-    assignedDepartment: 'Jal Board / Underground Drainage (Sewerage) Cell',
+    address: 'Vesu Canal Road, Opposite University Campus, Surat',
+    upvoteCount: 22,
+    upvotedBy: ['usr-118', 'usr-120', 'usr-current'],
+    assignedDepartment: 'SMC Drainage & Sewerage Operations Cell',
     l2EscalationRole: 'Superintending Engineer (Drainage)',
-    geofenceZone: 'Central Municipal Ward & Colony Grid',
+    geofenceZone: 'Vesu South-West Ward Grid',
     isEscalated: false,
     imageUrl: 'https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80',
     imageAfterUrl: null,
-    aiConfidence: 0.95,
+    aiConfidence: 0.96,
     detectedObjects: [
-      { label: 'Missing Manhole Cover', confidence: 0.97, box: [30, 30, 75, 75] },
-      { label: 'Exposed Sewer Cavity', confidence: 0.93, box: [35, 35, 70, 70] }
+      { label: 'Missing Manhole Cover', confidence: 0.97, box: [30, 30, 75, 75] }
     ],
     detectedCvTriggers: ['Open circular aperture', 'Exposed sewer flow', 'Missing chamber cover'],
-    formalComplaintDraft: 'EMERGENCY CIVIC DISPATCH // DRAIN-RD-03\nTo: Superintending Engineer (Drainage), Jal Board\nSubject: Severe Public Safety Hazard - Open Sewer Aperture\nLocation: Janpath Pedestrian Crossing [28.6180, 77.2150]\nTelemetry: 600mm diameter open aperture on active walkway.',
-    citizenVoiceTranscript: 'The manhole cover is completely broken and open on Janpath. Pedestrians can fall in at night!'
+    formalComplaintDraft: 'EMERGENCY DISPATCH // DRAIN-RD-03\nTo: Superintending Engineer (Drainage), SMC\nLocation: Vesu Canal Road [21.1540, 72.7750]\n600mm open drainage aperture on active pedestrian walkway.',
+    citizenVoiceTranscript: 'The manhole cover is completely broken on Vesu canal road sidewalk.'
   },
+
+  // 5. Surat - Civic Assets (Fallen Tree Hazard - Resolved)
   {
-    id: 'TKT-2026-5590',
+    id: 'TKT-SRT-5590',
     taxonomyId: 'PA-01',
     category: 'Civic Assets',
     subCategory: 'Fallen Tree / Roadway Obstruction',
@@ -170,16 +175,16 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     reporterName: 'Rohit Kulkarni',
     reporterDeviceHash: 'sha256-99381ea55',
     location: {
-      lat: 28.6250,
-      lng: 77.2340,
+      lat: 21.1750,
+      lng: 72.8150,
       accuracy: 3.1
     },
-    address: 'Kasturba Gandhi Marg, Near Gate 3',
-    upvoteCount: 7,
+    address: 'Athwa Lines Main Road, Near Chowpatty, Surat',
+    upvoteCount: 15,
     upvotedBy: ['usr-339', 'usr-342'],
-    assignedDepartment: 'Horticulture Wing / Disaster Management & Fire Service',
-    l2EscalationRole: 'Superintendent of Horticulture',
-    geofenceZone: 'Central Municipal Ward & Colony Grid',
+    assignedDepartment: 'SMC Parks & Horticulture Wing / Fire Brigade',
+    l2EscalationRole: 'Superintendent of Parks',
+    geofenceZone: 'Athwa Zonal Ward Grid',
     isEscalated: false,
     imageUrl: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=800&q=80',
     imageAfterUrl: 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=800&q=80',
@@ -188,52 +193,54 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
       { label: 'Uprooted Trunk Obstruction', confidence: 0.94, box: [20, 15, 80, 85] }
     ],
     detectedCvTriggers: ['Tree trunk horizontal carriage obstruction', 'Green foliage canopy fall'],
-    formalComplaintDraft: 'RESOLVED DISPATCH // HORT-PA-01\nTo: Superintendent of Horticulture\nSubject: Roadway Cleared - Uprooted Tree Removed\nLocation: KG Marg [28.6250, 77.2340]\nTelemetry: Verified by AI Diff Matcher (Confidence 0.92). Carriageway transit restored.',
-    citizenVoiceTranscript: 'Big neem tree fell down across the road after the storm.',
+    formalComplaintDraft: 'RESOLVED DISPATCH // HORT-PA-01\nTo: Superintendent of Parks\nLocation: Athwa Lines [21.1750, 72.8150]\nObstruction cleared and carriageway reopened.',
+    citizenVoiceTranscript: 'Large tree branch fell on the main road at Athwa lines.',
     verificationResult: {
       verified: true,
-      confidence: 0.92,
-      reasoning: 'AI Computer Vision Diff verified complete clearing of tree trunk, restore of unobstructed asphalt road surface, and matching street geometry.',
-      distanceMeters: 4.8,
-      diffScore: 0.88,
+      confidence: 0.94,
+      reasoning: 'AI Computer Vision Diff verified complete clearing of tree trunk, restore of unobstructed asphalt road surface.',
+      distanceMeters: 3.4,
+      diffScore: 0.92,
       verifiedAt: new Date(Date.now() - 9 * 3600 * 1000).toISOString()
     }
   },
+
+  // 6. Surat - Streetlight Outage (Public Utilities)
   {
-    id: 'TKT-2026-4419',
-    taxonomyId: 'SW-01',
-    category: 'Solid Waste',
-    subCategory: 'Open Garbage Dumping (Illegal Spot)',
-    vertical: 'SOLID_WASTE',
+    id: 'TKT-SRT-4419',
+    taxonomyId: 'RD-04',
+    category: 'Roads & Mobility',
+    subCategory: 'Streetlight Outage / Dark Spot',
+    vertical: 'PUBLIC_UTILITIES',
     status: 'PENDING_INTERNAL',
-    priority: 'URGENT',
-    slaHours: 12,
-    slaDeadline: new Date(Date.now() + 10 * 3600 * 1000).toISOString(),
+    priority: 'HIGH',
+    slaHours: 24,
+    slaDeadline: new Date(Date.now() + 18 * 3600 * 1000).toISOString(),
     reportedAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
     lastUpdatedAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
     reporterId: 'usr-604',
     reporterName: 'Sunita Patel',
     reporterDeviceHash: 'sha256-887102ccaa',
     location: {
-      lat: 28.6430,
-      lng: 77.1920,
+      lat: 21.2180,
+      lng: 72.8650,
       accuracy: 4.0
     },
-    address: 'Corner of Subhash Road & Market Lane',
-    upvoteCount: 5,
+    address: 'Varachha Main Road, Near Diamond Market, Surat',
+    upvoteCount: 7,
     upvotedBy: ['usr-604', 'usr-608'],
-    assignedDepartment: 'Municipal Health & Sanitation Division',
-    l2EscalationRole: 'Chief Sanitation Officer',
-    geofenceZone: 'Industrial & Wholesale Market Sanitation Sector',
+    assignedDepartment: 'DGVCL / SMC Electrical Division',
+    l2EscalationRole: 'Assistant Engineer (Electrical)',
+    geofenceZone: 'Varachha East Zone',
     isEscalated: false,
-    imageUrl: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80',
     imageAfterUrl: null,
     aiConfidence: 0.91,
     detectedObjects: [
-      { label: 'Unsanctioned Waste Accumulation', confidence: 0.93, box: [25, 20, 85, 80] }
+      { label: 'Non-functional Streetlight Pole', confidence: 0.92, box: [20, 20, 80, 80] }
     ],
-    detectedCvTriggers: ['Polythene clusters', 'Mixed municipal waste', 'Roadside footprint'],
-    formalComplaintDraft: 'FORMAL CIVIC GRIEVANCE // SANI-SW-01\nTo: Chief Sanitation Officer, Health & Sanitation Wing\nSubject: Illegal Waste Accumulation Report\nLocation: Subhash Road Corner [28.6430, 77.1920]\nTelemetry: Mixed plastic/organic dumping footprint > 15 sq meters.',
-    citizenVoiceTranscript: 'People are constantly dumping garbage at the corner of Subhash road. Needs urgent cleaning.'
+    detectedCvTriggers: ['Street pole asset tag match', 'Dark spot telemetry'],
+    formalComplaintDraft: 'FORMAL GRIEVANCE // ELEC-RD-04\nTo: Assistant Engineer (Electrical)\nLocation: Varachha Diamond Market [21.2180, 72.8650]\n3 consecutive LED poles non-functional at night.',
+    citizenVoiceTranscript: 'Streetlights on Varachha main road are completely off at night.'
   }
 ];

@@ -4,10 +4,9 @@
 
 @layer base {
   :root {
-    --bg-primary: #0b0f19;
-    --bg-surface: #111827;
-    --bg-card: rgba(17, 24, 39, 0.8);
-    --border-color: rgba(255, 255, 255, 0.08);
+    --bg-primary: #050811;
+    --bg-surface: #0f172a;
+    --bg-card: rgba(15, 23, 42, 0.85);
   }
 
   html.lenis, html.lenis body {
@@ -31,17 +30,28 @@
   }
 
   body {
-    background-color: #080c14;
-    color: #f3f4f6;
+    background-color: #050811;
+    color: #f1f5f9;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
 
-/* Modern Minimal Card / Inspira Glass Effect */
+/* Safe area padding utilities for mobile phones */
+.pt-safe {
+  padding-top: max(12px, env(safe-area-inset-top, 12px));
+}
+
+.pb-safe {
+  padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
+}
+
+/* Modern Minimal Card Effects */
 .card-modern {
-  background: rgba(17, 24, 39, 0.7);
+  background: rgba(15, 23, 42, 0.75);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -49,15 +59,10 @@
 }
 
 .card-highlight {
-  background: rgba(17, 24, 39, 0.85);
+  background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(16, 185, 129, 0.3);
   box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.2);
-}
-
-.card-warm {
-  background: linear-gradient(135deg, rgba(234, 88, 12, 0.15) 0%, rgba(17, 24, 39, 0.8) 100%);
-  border: 1px solid rgba(249, 115, 22, 0.3);
 }
 
 /* Custom Scrollbar */
@@ -67,21 +72,21 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #080c14;
+  background: #050811;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1f2937;
+  background: #1e293b;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #374151;
+  background: #334155;
 }
 
 /* Leaflet Dark & Minimal Tile Filter */
 .leaflet-container {
-  background: #0b0f19 !important;
+  background: #050811 !important;
   font-family: 'Inter', sans-serif !important;
 }
 

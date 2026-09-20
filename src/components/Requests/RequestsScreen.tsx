@@ -10,7 +10,8 @@ import {
   Filter, 
   Search,
   Eye,
-  Building2
+  Building2,
+  Check
 } from 'lucide-react';
 import { CivicIssue } from '../../types/civic';
 import { ProblemMap } from '../Common/ProblemMap';
@@ -20,13 +21,17 @@ interface RequestsScreenProps {
   onSelectTicket: (ticket: CivicIssue) => void;
   onUpvoteTicket: (ticketId: string) => void;
   selectedCity: string;
+  centerCoords?: { lat: number; lng: number };
+  likedTickets?: string[];
 }
 
 export const RequestsScreen: React.FC<RequestsScreenProps> = ({
   tickets,
   onSelectTicket,
   onUpvoteTicket,
-  selectedCity
+  selectedCity,
+  centerCoords,
+  likedTickets = []
 }) => {
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [selectedVertical, setSelectedVertical] = useState<string>('ALL');
@@ -34,7 +39,13 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
   const [filterText, setFilterText] = useState<string>('');
 
   const filteredTickets = tickets.filter((t) => {
-    if (selectedVertical !== 'ALL' && t.vertical !== selectedVertical) return false;
+    if (selectedVertical !== 'ALL') {
+      if (selectedVertical === 'OTHER' && (t.vertical === 'ROADS_MOBILITY' || t.vertical === 'SOLID_WASTE' || t.vertical === 'WATER_BODIES_ECOLOGY' || t.vertical === 'CIVIC_ASSETS')) {
+        return false;
+      } else if (selectedVertical !== 'OTHER' && t.vertical !== selectedVertical) {
+        return false;
+      }
+    }
     if (selectedStatus === 'ACTIVE' && (t.status === 'VERIFIED_RESOLVED' || t.status === 'RESOLVED_DEMO')) return false;
     if (selectedStatus === 'FIXED' && t.status !== 'VERIFIED_RESOLVED' && t.status !== 'RESOLVED_DEMO') return false;
     if (selectedStatus === 'BREACHED' && t.status !== 'ESCALATED_SLA_BREACH') return false;
@@ -45,12 +56,12 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
   });
 
   return (
-    <div className="space-y-4 pb-24 max-w-3xl mx-auto animate-in fade-in duration-300">
+    <div className="space-y-4 pb-28 max-w-3xl mx-auto animate-in fade-in duration-300">
       
       {/* Header & View Switcher */}
-      <div className="flex items-center justify-between gap-2 pb-2">
+      <div className="flex items-center justify-between gap-2 pb-1">
         <div>
-          <h2 className="text-xl font-bold text-white">
+          <h2 className="text-xl font-black tracking-tight text-white">
             Civic Problem Map & Requests
           </h2>
           <p className="text-xs text-slate-400">
@@ -88,22 +99,23 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
         </div>
       </div>
 
-      {/* Filter Chips Bar */}
-      <div className="flex flex-wrap items-center gap-1.5 overflow-x-auto pb-1">
+      {/* Category Filter Chips Bar */}
+      <div className="flex items-center space-x-1.5 overflow-x-auto pb-1.5 scrollbar-none">
         {[
           { id: 'ALL', label: 'All Issues' },
           { id: 'ROADS_MOBILITY', label: '🛣️ Roads & Potholes' },
           { id: 'SOLID_WASTE', label: '🗑️ Garbage & Bins' },
           { id: 'WATER_BODIES_ECOLOGY', label: '🌊 Water & Drains' },
-          { id: 'CIVIC_ASSETS', label: '🌳 Fallen Trees & Assets' }
+          { id: 'CIVIC_ASSETS', label: '💡 Power & Trees' },
+          { id: 'OTHER', label: '📌 Other' }
         ].map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setSelectedVertical(tab.id)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex-shrink-0 ${
               selectedVertical === tab.id
-                ? 'bg-slate-800 text-emerald-400 border border-emerald-500/30'
+                ? 'bg-slate-800 text-emerald-400 border border-emerald-500/40 shadow-sm'
                 : 'bg-slate-900/80 text-slate-400 hover:text-slate-200 border border-slate-800'
             }`}
           >
@@ -119,50 +131,59 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
             tickets={filteredTickets}
             selectedTicket={null}
             onSelectTicket={onSelectTicket}
+            centerCoords={centerCoords}
             heightClass="h-[420px] sm:h-[480px]"
           />
 
           {/* Quick List Below Map */}
           <div className="space-y-2">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 px-1">
-              Recent Issues Near You
+              Issues in {selectedCity}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {filteredTickets.slice(0, 4).map((ticket) => (
-                <div
-                  key={ticket.id}
-                  onClick={() => onSelectTicket(ticket)}
-                  className="p-3 rounded-2xl bg-slate-900/80 hover:bg-slate-850 border border-slate-800 hover:border-slate-700 cursor-pointer transition-all flex items-center justify-between"
-                >
-                  <div className="flex items-center space-x-3 min-w-0">
-                    <img
-                      src={ticket.imageUrl}
-                      alt={ticket.subCategory}
-                      className="w-10 h-10 rounded-xl object-cover flex-shrink-0 border border-slate-700"
-                    />
-                    <div className="min-w-0">
-                      <div className="text-xs font-bold text-white truncate">
-                        {ticket.subCategory}
-                      </div>
-                      <div className="text-[11px] text-slate-400 truncate">
-                        {ticket.address}
+              {filteredTickets.slice(0, 6).map((ticket) => {
+                const isLiked = likedTickets.includes(ticket.id);
+                return (
+                  <div
+                    key={ticket.id}
+                    onClick={() => onSelectTicket(ticket)}
+                    className="p-3 rounded-2xl bg-slate-900/80 hover:bg-slate-850 border border-slate-800 hover:border-slate-700 cursor-pointer transition-all flex items-center justify-between shadow-md"
+                  >
+                    <div className="flex items-center space-x-3 min-w-0">
+                      <img
+                        src={ticket.imageUrl}
+                        alt={ticket.subCategory}
+                        className="w-11 h-11 rounded-xl object-cover flex-shrink-0 border border-slate-700"
+                      />
+                      <div className="min-w-0">
+                        <div className="text-xs font-bold text-white truncate">
+                          {ticket.subCategory}
+                        </div>
+                        <div className="text-[11px] text-slate-400 truncate">
+                          {ticket.address}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onUpvoteTicket(ticket.id);
-                    }}
-                    className="flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-emerald-950/40 text-emerald-400 text-xs font-bold transition-all ml-2"
-                  >
-                    <ThumbsUp className="w-3 h-3" />
-                    <span>{ticket.upvoteCount}</span>
-                  </button>
-                </div>
-              ))}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onUpvoteTicket(ticket.id);
+                      }}
+                      title={isLiked ? "Click to remove like" : "Click to like / upvote"}
+                      className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ml-2 flex-shrink-0 ${
+                        isLiked 
+                          ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20' 
+                          : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                      }`}
+                    >
+                      <ThumbsUp className={`w-3.5 h-3.5 ${isLiked ? 'fill-current' : ''}`} />
+                      <span>{ticket.upvoteCount}</span>
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -174,6 +195,7 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
           {filteredTickets.map((ticket) => {
             const isResolved = ticket.status === 'VERIFIED_RESOLVED' || ticket.status === 'RESOLVED_DEMO';
             const isBreached = ticket.status === 'ESCALATED_SLA_BREACH';
+            const isLiked = likedTickets.includes(ticket.id);
 
             return (
               <div
@@ -226,10 +248,15 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
                   <button
                     type="button"
                     onClick={() => onUpvoteTicket(ticket.id)}
-                    className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-emerald-950/40 border border-slate-700 text-emerald-300 text-xs font-bold transition-all"
+                    title={isLiked ? "Click to remove like" : "Click to like"}
+                    className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                      isLiked
+                        ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'
+                    }`}
                   >
-                    <ThumbsUp className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>{ticket.upvoteCount} Upvotes</span>
+                    <ThumbsUp className={`w-3.5 h-3.5 ${isLiked ? 'fill-current' : ''}`} />
+                    <span>{ticket.upvoteCount} {isLiked ? 'Liked' : 'Like'}</span>
                   </button>
 
                   <button
