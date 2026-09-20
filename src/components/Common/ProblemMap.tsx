@@ -163,13 +163,14 @@ export const ProblemMap: React.FC<ProblemMapProps> = ({
       }
 
       // Custom Clean HTML Pin
+      const pinBg = isResolved ? '#10b981' : markerColor;
       const customIcon = L.divIcon({
         className: 'custom-problem-marker',
         html: `
           <div class="relative flex items-center justify-center cursor-pointer -translate-x-1/2 -translate-y-1/2 group">
             ${!isResolved ? `<span class="absolute w-7 h-7 rounded-full problem-pin-pulse" style="background: ${markerColor}35;"></span>` : ''}
-            <div class="relative flex items-center justify-center w-7 h-7 rounded-full shadow-lg border-2 text-white font-bold text-[10px]" style="background: ${markerColor}; border-color: #0f172a;">
-              ${ticket.upvoteCount > 1 ? ticket.upvoteCount : '•'}
+            <div class="relative flex items-center justify-center w-7 h-7 rounded-full shadow-lg border-2 text-white font-bold text-[10px]" style="background: ${pinBg}; border-color: #0f172a;">
+              ${isResolved ? '✓' : (ticket.upvoteCount > 1 ? ticket.upvoteCount : '•')}
             </div>
           </div>
         `,

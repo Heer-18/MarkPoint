@@ -1,7 +1,11 @@
 import { CivicIssue } from '../types/civic';
 
+/**
+ * Curated initial tickets for Surat (Master demo city)
+ * Active tickets: 5 (18, 12, 31, 22, 15) => Total reports = 98
+ * Resolved tickets: 1 (9) => Fixed today = 1
+ */
 export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
-  // ---------------- SURAT ----------------
   {
     id: 'TKT-SRT-8812',
     taxonomyId: 'RD-01',
@@ -188,332 +192,193 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     detectedCvTriggers: ['Smooth cold-mix bitumen surface', 'Level road grading'],
     formalComplaintDraft: 'RESOLVED DISPATCH // SMC-RD-01\nPothole patched and surface restored.',
     citizenVoiceTranscript: 'Pothole on flyover ramp has been filled and smoothed.'
-  },
-
-  // ---------------- AHMEDABAD ----------------
-  {
-    id: 'TKT-AMD-1001',
-    taxonomyId: 'RD-01',
-    category: 'Roads & Mobility',
-    subCategory: 'Potholes (Deep / Hazardous)',
-    vertical: 'ROADS_MOBILITY',
-    status: 'IN_PROGRESS',
-    priority: 'URGENT',
-    slaHours: 48,
-    slaDeadline: new Date(Date.now() + 30 * 3600 * 1000).toISOString(),
-    reportedAt: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
-    lastUpdatedAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
-    reporterId: 'usr-amd-01',
-    reporterName: 'Anand Mehta',
-    reporterDeviceHash: 'sha256-amd101',
-    location: { lat: 23.0330, lng: 72.5620, accuracy: 4.0 },
-    address: 'SG Highway, Near Iscon Cross Roads, Ahmedabad',
-    upvoteCount: 14,
-    upvotedBy: ['usr-amd-01', 'usr-amd-02'],
-    assignedDepartment: 'Ahmedabad Municipal Corporation (AMC PWD)',
-    l2EscalationRole: 'City Engineer (Roads)',
-    geofenceZone: 'SG Highway West Zone',
-    isEscalated: false,
-    imageUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
-    imageAfterUrl: null,
-    aiConfidence: 0.94,
-    detectedObjects: [{ label: 'Pothole Cavity', confidence: 0.95, box: [20, 20, 80, 80] }],
-    detectedCvTriggers: ['Asphalt fracture', 'High-speed corridor cavity'],
-    formalComplaintDraft: 'AMC ROAD SAFETY TICKET // Iscon Crossroads SG Highway Ahmedabad.',
-    citizenVoiceTranscript: 'Huge pothole right in front of Iscon cross roads.'
-  },
-  {
-    id: 'TKT-AMD-1002',
-    taxonomyId: 'SW-01',
-    category: 'Solid Waste',
-    subCategory: 'Open Garbage Pile',
-    vertical: 'SOLID_WASTE',
-    status: 'PENDING_INTERNAL',
-    priority: 'HIGH',
-    slaHours: 24,
-    slaDeadline: new Date(Date.now() + 20 * 3600 * 1000).toISOString(),
-    reportedAt: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
-    lastUpdatedAt: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
-    reporterId: 'usr-amd-03',
-    reporterName: 'Kavita Joshi',
-    reporterDeviceHash: 'sha256-amd102',
-    location: { lat: 23.0180, lng: 72.5850, accuracy: 3.5 },
-    address: 'Sabarmati Riverfront Promenade, Paldi Sector, Ahmedabad',
-    upvoteCount: 9,
-    upvotedBy: ['usr-amd-03'],
-    assignedDepartment: 'AMC Solid Waste Management',
-    l2EscalationRole: 'Zonal Health Officer',
-    geofenceZone: 'Riverfront Corridor',
-    isEscalated: false,
-    imageUrl: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=800&q=80',
-    imageAfterUrl: null,
-    aiConfidence: 0.92,
-    detectedObjects: [{ label: 'Plastic & Organic Waste Dump', confidence: 0.93, box: [20, 20, 80, 80] }],
-    detectedCvTriggers: ['Open uncontained waste footprint'],
-    formalComplaintDraft: 'AMC SOLID WASTE TICKET // Paldi Sector Riverfront Ahmedabad.',
-    citizenVoiceTranscript: 'Garbage dump accumulating near Paldi walkway.'
-  },
-
-  // ---------------- MUMBAI ----------------
-  {
-    id: 'TKT-MUM-2001',
-    taxonomyId: 'RD-05',
-    category: 'Roads & Mobility',
-    subCategory: 'Roadway Waterlogging / Drainage Clog',
-    vertical: 'WATER_BODIES_ECOLOGY',
-    status: 'IN_PROGRESS',
-    priority: 'URGENT',
-    slaHours: 12,
-    slaDeadline: new Date(Date.now() + 6 * 3600 * 1000).toISOString(),
-    reportedAt: new Date(Date.now() - 6 * 3600 * 1000).toISOString(),
-    lastUpdatedAt: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
-    reporterId: 'usr-mum-01',
-    reporterName: 'Sanjay Shinde',
-    reporterDeviceHash: 'sha256-mum201',
-    location: { lat: 19.0550, lng: 72.8400, accuracy: 3.0 },
-    address: 'SV Road, Near Bandra Station West, Mumbai',
-    upvoteCount: 26,
-    upvotedBy: ['usr-mum-01', 'usr-mum-02', 'usr-mum-03'],
-    assignedDepartment: 'Brihanmumbai Municipal Corporation (BMC SWD)',
-    l2EscalationRole: 'Assistant Commissioner (H/West Ward)',
-    geofenceZone: 'Bandra West Ward Grid',
-    isEscalated: false,
-    imageUrl: 'https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80',
-    imageAfterUrl: null,
-    aiConfidence: 0.96,
-    detectedObjects: [{ label: 'Waterlogged Carriageway', confidence: 0.96, box: [10, 20, 90, 80] }],
-    detectedCvTriggers: ['Stormwater puddle inundation > 150mm'],
-    formalComplaintDraft: 'BMC DISASTER MANAGEMENT // SV Road Bandra Waterlogging Alert.',
-    citizenVoiceTranscript: 'Severe waterlogging under Bandra West bridge.'
-  },
-  {
-    id: 'TKT-MUM-2002',
-    taxonomyId: 'RD-01',
-    category: 'Roads & Mobility',
-    subCategory: 'Potholes (Deep / Hazardous)',
-    vertical: 'ROADS_MOBILITY',
-    status: 'IN_PROGRESS',
-    priority: 'HIGH',
-    slaHours: 48,
-    slaDeadline: new Date(Date.now() + 36 * 3600 * 1000).toISOString(),
-    reportedAt: new Date(Date.now() - 8 * 3600 * 1000).toISOString(),
-    lastUpdatedAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
-    reporterId: 'usr-mum-04',
-    reporterName: 'Alok Verma',
-    reporterDeviceHash: 'sha256-mum202',
-    location: { lat: 19.1150, lng: 72.8750, accuracy: 3.5 },
-    address: 'Andheri Kurla Road, Near Chakala Metro, Andheri East, Mumbai',
-    upvoteCount: 19,
-    upvotedBy: ['usr-mum-04', 'usr-mum-05'],
-    assignedDepartment: 'BMC Roads & Traffic Division',
-    l2EscalationRole: 'Chief Engineer (Roads)',
-    geofenceZone: 'Andheri East K/East Ward',
-    isEscalated: false,
-    imageUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
-    imageAfterUrl: null,
-    aiConfidence: 0.95,
-    detectedObjects: [{ label: 'Asphalt Pothole', confidence: 0.95, box: [20, 20, 80, 80] }],
-    detectedCvTriggers: ['Road surface damage', 'Subbase exposure'],
-    formalComplaintDraft: 'BMC ROADS GRIEVANCE // Andheri Kurla Road Pothole.',
-    citizenVoiceTranscript: 'Deep crater on Andheri Kurla road near metro pillar.'
-  },
-
-  // ---------------- DELHI NCR ----------------
-  {
-    id: 'TKT-DEL-3001',
-    taxonomyId: 'SW-02',
-    category: 'Solid Waste',
-    subCategory: 'Overflowing Community Waste Bin',
-    vertical: 'SOLID_WASTE',
-    status: 'IN_PROGRESS',
-    priority: 'URGENT',
-    slaHours: 8,
-    slaDeadline: new Date(Date.now() + 4 * 3600 * 1000).toISOString(),
-    reportedAt: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
-    lastUpdatedAt: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
-    reporterId: 'usr-del-01',
-    reporterName: 'Rahul Sharma',
-    reporterDeviceHash: 'sha256-del301',
-    location: { lat: 28.6320, lng: 77.2190, accuracy: 3.2 },
-    address: 'Connaught Place Outer Circle, Near M-Block, New Delhi',
-    upvoteCount: 21,
-    upvotedBy: ['usr-del-01', 'usr-del-02'],
-    assignedDepartment: 'New Delhi Municipal Council (NDMC Sanitation)',
-    l2EscalationRole: 'Director (Public Health / NDMC)',
-    geofenceZone: 'Connaught Place Central Zone',
-    isEscalated: false,
-    imageUrl: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=800&q=80',
-    imageAfterUrl: null,
-    aiConfidence: 0.93,
-    detectedObjects: [{ label: 'Overflowing Dustbin', confidence: 0.94, box: [20, 20, 80, 80] }],
-    detectedCvTriggers: ['Commercial bin overflow footprint'],
-    formalComplaintDraft: 'NDMC SANITATION NOTICE // CP Outer Circle Bin Overflow.',
-    citizenVoiceTranscript: 'Bins are overflowing outside CP M-block market.'
-  },
-  {
-    id: 'TKT-DEL-3002',
-    taxonomyId: 'RD-01',
-    category: 'Roads & Mobility',
-    subCategory: 'Potholes (Deep / Hazardous)',
-    vertical: 'ROADS_MOBILITY',
-    status: 'VERIFIED_RESOLVED',
-    priority: 'HIGH',
-    slaHours: 48,
-    slaDeadline: new Date(Date.now() - 10 * 3600 * 1000).toISOString(),
-    reportedAt: new Date(Date.now() - 36 * 3600 * 1000).toISOString(),
-    lastUpdatedAt: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
-    resolvedAt: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
-    reporterId: 'usr-del-03',
-    reporterName: 'Neha Gupta',
-    reporterDeviceHash: 'sha256-del302',
-    location: { lat: 28.5850, lng: 77.2300, accuracy: 3.5 },
-    address: 'Ring Road Near Lodhi Road Flyover, New Delhi',
-    upvoteCount: 16,
-    upvotedBy: ['usr-del-03'],
-    assignedDepartment: 'Delhi PWD Central Division',
-    l2EscalationRole: 'Superintending Engineer (PWD)',
-    geofenceZone: 'South Delhi Arterial Ring Road',
-    isEscalated: false,
-    imageUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
-    imageAfterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
-    aiConfidence: 0.95,
-    detectedObjects: [{ label: 'Repaired Asphalt Layer', confidence: 0.96, box: [20, 20, 80, 80] }],
-    detectedCvTriggers: ['Cold-mix asphalt patch confirmed'],
-    formalComplaintDraft: 'PWD DELHI // Lodhi Road Flyover Pothole Repaired.',
-    citizenVoiceTranscript: 'Pothole on Lodhi road flyover descent.'
-  },
-
-  // ---------------- BENGALURU ----------------
-  {
-    id: 'TKT-BLR-4001',
-    taxonomyId: 'RD-01',
-    category: 'Roads & Mobility',
-    subCategory: 'Potholes (Deep / Hazardous)',
-    vertical: 'ROADS_MOBILITY',
-    status: 'IN_PROGRESS',
-    priority: 'URGENT',
-    slaHours: 48,
-    slaDeadline: new Date(Date.now() + 28 * 3600 * 1000).toISOString(),
-    reportedAt: new Date(Date.now() - 10 * 3600 * 1000).toISOString(),
-    lastUpdatedAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
-    reporterId: 'usr-blr-01',
-    reporterName: 'Karthik Rao',
-    reporterDeviceHash: 'sha256-blr401',
-    location: { lat: 12.9780, lng: 77.6400, accuracy: 3.4 },
-    address: '100 Feet Road, Near 12th Main Junction, Indiranagar, Bengaluru',
-    upvoteCount: 28,
-    upvotedBy: ['usr-blr-01', 'usr-blr-02', 'usr-blr-03'],
-    assignedDepartment: 'Bruhat Bengaluru Mahanagara Palike (BBMP Major Roads)',
-    l2EscalationRole: 'Executive Engineer (East Zone)',
-    geofenceZone: 'Indiranagar East Ward',
-    isEscalated: false,
-    imageUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
-    imageAfterUrl: null,
-    aiConfidence: 0.96,
-    detectedObjects: [{ label: 'Deep Crater in Asphalt', confidence: 0.96, box: [20, 20, 80, 80] }],
-    detectedCvTriggers: ['Carriageway depression', 'Exposed gravel aggregate'],
-    formalComplaintDraft: 'BBMP GRIEVANCE // Indiranagar 100 Feet Road Pothole.',
-    citizenVoiceTranscript: 'Dangerous pothole on 100 feet road right at 12th main signal.'
-  },
-
-  // ---------------- PUNE ----------------
-  {
-    id: 'TKT-PUN-5001',
-    taxonomyId: 'RD-04',
-    category: 'Roads & Mobility',
-    subCategory: 'Streetlight Outage / Dark Spot',
-    vertical: 'CIVIC_ASSETS',
-    status: 'IN_PROGRESS',
-    priority: 'HIGH',
-    slaHours: 24,
-    slaDeadline: new Date(Date.now() + 14 * 3600 * 1000).toISOString(),
-    reportedAt: new Date(Date.now() - 6 * 3600 * 1000).toISOString(),
-    lastUpdatedAt: new Date(Date.now() - 1 * 3600 * 1000).toISOString(),
-    reporterId: 'usr-pun-01',
-    reporterName: 'Aditya Kulkarni',
-    reporterDeviceHash: 'sha256-pun501',
-    location: { lat: 18.5280, lng: 73.8450, accuracy: 3.6 },
-    address: 'JM Road, Near Deccan Gymkhana, Shivajinagar, Pune',
-    upvoteCount: 11,
-    upvotedBy: ['usr-pun-01', 'usr-pun-02'],
-    assignedDepartment: 'Pune Municipal Corporation (PMC Electrical Dept)',
-    l2EscalationRole: 'Executive Engineer (Electrical)',
-    geofenceZone: 'Shivajinagar Central Ward',
-    isEscalated: false,
-    imageUrl: 'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80',
-    imageAfterUrl: null,
-    aiConfidence: 0.92,
-    detectedObjects: [{ label: 'Dark Spot Streetlight', confidence: 0.93, box: [20, 20, 80, 80] }],
-    detectedCvTriggers: ['Illumination outage telemetry'],
-    formalComplaintDraft: 'PMC ELECTRICAL NOTICE // JM Road Deccan Dark Spot.',
-    citizenVoiceTranscript: 'Streetlights near Deccan Gymkhana are not turning on at night.'
   }
 ];
 
-// Area templates for popular cities to ensure accurate, hyper-local street addresses
-const CITY_AREAS: Record<string, string[]> = {
+// Hyper-local street areas for major Indian cities
+const CITY_AREAS: { [city: string]: string[] } = {
+  Ahmedabad: [
+    'SG Highway, Near Iscon Cross Roads, Ahmedabad',
+    'Sabarmati Riverfront Promenade, Paldi Sector, Ahmedabad',
+    'CG Road, Near Navrangpura Bus Stand, Ahmedabad',
+    'Vastrapur Lake Outer Circle, Ahmedabad',
+    'Maninagar Railway Station Road, Ahmedabad',
+    'Bopal Main Road, Near South Bopal Junction, Ahmedabad',
+    'Science City Road, Sola Sector, Ahmedabad',
+    'Ashram Road, Near Vadaj Circle, Ahmedabad'
+  ],
+  Vadodara: [
+    'Alkapuri Main Avenue, Near Railway Station, Vadodara',
+    'Sayaji Baug Gate 2, Kala Ghoda Circle, Vadodara',
+    'Old Padra Road, Near Akota Bridge, Vadodara',
+    'Manjalpur Main Market Road, Vadodara',
+    'Fatehgunj University Circle, Vadodara',
+    'Waghodia Road, Near Parul University Junction, Vadodara'
+  ],
   Rajkot: [
-    'Kalawad Road, Near KKV Hall, Rajkot',
-    '150 Feet Ring Road, Near Indira Circle, Rajkot',
-    'Yagnik Road, Near Jagnath Mandir, Rajkot',
-    'Aji Riverfront Causeway, Near Chunarwad, Rajkot',
-    'Race Course Ring Road, Near Sports Complex, Rajkot',
-    'Gondal Road, Near ST Central Workshop, Rajkot',
-    'Bhaktinagar Station Road, Rajkot',
+    'Yagnik Road, Near Jagnath Plot, Rajkot',
+    'Kalawad Road, Near KKV Hall Flyover, Rajkot',
+    '150 Feet Ring Road, Near Mahila College Chowk, Rajkot',
+    'Race Course Ring Road, Near Airport Gate, Rajkot',
+    'Kothariya Main Road, Sector 4, Rajkot',
     'University Road, Near Saurashtra University, Rajkot'
   ],
   Nadiad: [
-    'College Road, Near DDIT Engineering College, Nadiad',
-    'Santram Mandir Road, Near Main Chowk, Nadiad',
-    'Station Road, Near Nadiad Railway Station, Nadiad',
-    'Mill Road, Near Circuit House, Nadiad',
-    'Dabhan Road, Near Express Highway Cross, Nadiad',
-    'Pij Road, Near Sharda Mandir School, Nadiad',
-    'Salun Road, Near Uttarsanda Crossing, Nadiad',
-    'Vaso Road, Near Canal Bridge, Nadiad'
+    'Santram Mandir Road, Station Area, Nadiad',
+    'College Road, Near DDU Campus, Nadiad',
+    'Mission Road & Petlad Highway Junction, Nadiad',
+    'Dumas Road Junction, Near City Point, Nadiad'
   ],
-  Ahmedabad: [
-    'SG Highway, Near Iscon Cross Road, Ahmedabad',
-    'Sabarmati Riverfront Promenade, Near Ellis Bridge, Ahmedabad',
-    'CG Road, Near Municipal Market, Navrangpura, Ahmedabad',
-    'Sindhu Bhavan Road, Bodakdev, Ahmedabad',
-    'Maninagar Railway Cross Road, Ahmedabad',
-    'Prahlad Nagar Garden Road, Satellite, Ahmedabad',
-    'Vastrapur Lake Periphery, Ahmedabad'
+  Gandhinagar: [
+    'CH Road, Near Sector 11 Secretariat, Gandhinagar',
+    'Gh-5 Circle, Sector 21 Shopping Centre, Gandhinagar',
+    'Kudasan Main Road, Near PDPU Bridge, Gandhinagar',
+    'Infocity Main Gate, Sector 0, Gandhinagar',
+    'Sector 7 Bus Terminal Corridor, Gandhinagar'
   ],
-  Vadodara: [
-    'Alkapuri Main Road, Near Railway Station, Vadodara',
-    'Sayajigunj Circle, Near Dairy Den, Vadodara',
-    'Karelibaug Water Tank Road, Vadodara',
-    'Gotri Road, Near Yash Complex, Vadodara',
-    'Manjalpur GIDC Cross Road, Vadodara',
-    'Fatehgunj Main Road, Vadodara'
+  Bhavnagar: [
+    'Waghawadi Road, Near Victoria Park Gate, Bhavnagar',
+    'Crescent Circle & Station Road, Bhavnagar',
+    'Ghogha Circle, Near City Hospital, Bhavnagar',
+    'Kalanala Main Bazaar Corridor, Bhavnagar'
   ],
-  Surat: [
-    'Ring Road Flyover Junction, Near Majura Gate, Surat',
-    'Adajan Patia Main Market, Near Star Bazaar, Surat',
-    'Tapi Riverfront Promenade, Near Causeway, Surat',
-    'Varachha Main Road, Near Mini Bazaar, Surat',
-    'Dumas Road, Near VR Mall, Surat',
-    'Katargam GIDC Main Road, Surat'
+  Jamnagar: [
+    'Lakhota Lake Promenade, Near Khambhalia Gate, Jamnagar',
+    'Patel Colony Main Road, Sector 3, Jamnagar',
+    'Digjam Circle & Aerodrome Road, Jamnagar',
+    'Gurudwara Road, Near Town Hall, Jamnagar'
+  ],
+  Junagadh: [
+    'Zanzarda Road, Near Platinum Complex, Junagadh',
+    'Moti Baug Road, Near Agricultural University, Junagadh',
+    'Girnar Taleti Road, Bhavnath Sector, Junagadh',
+    'Station Road, Near Circle Chowk, Junagadh'
+  ],
+  Anand: [
+    'Amul Dairy Road, Near Anand Junction, Anand',
+    'VV Nagar Main Road, Near Sardar Patel Statue, Anand',
+    'Bhai Kaka Nagar, Sector 2, Anand',
+    'Ganesh Chokdi & Borsad Highway, Anand'
+  ],
+  Navsari: [
+    'Dudhhiya Talav Promenade, Station Road, Navsari',
+    'Lunsikui Ground Road, Near City Bus Stand, Navsari',
+    'Sayaji Road, Near Tower Clock, Navsari',
+    'Mahuva Road Junction, Sector 1, Navsari'
+  ],
+  Valsad: [
+    'Tithal Beach Road, Near Circuit House, Valsad',
+    'Stadium Road, Near Railway Colony, Valsad',
+    'Dharampur Road, Near Civil Hospital, Valsad',
+    'Halar Road, Station Area, Valsad'
+  ],
+  Bharuch: [
+    'Zadeshwar Road, Near Golden Bridge, Bharuch',
+    'Station Road, Near Shaktinagar Society, Bharuch',
+    'Link Road, Near ABC Circle, Bharuch',
+    'Bholav GIDC Main Road, Bharuch'
+  ],
+  Mehsana: [
+    'Radhanpur Road, Near Modhera Cross Road, Mehsana',
+    'Dairy Road, Near Dudhsagar Dairy, Mehsana',
+    'Nagaland Colony & Highway Corridor, Mehsana',
+    'Town Hall Road, Mehsana'
+  ],
+  Morbi: [
+    'Sanala Road, Near New Bus Stand, Morbi',
+    'Lakhdhirpur Road, Ceramic Zone Gate 1, Morbi',
+    'Kandla Highway Bypass Junction, Morbi',
+    'Ravapar Road, Near Shakti Plot, Morbi'
   ],
   Mumbai: [
     'SV Road, Near Bandra Station West, Mumbai',
-    'Link Road, Near Infinity Mall, Andheri West, Mumbai',
-    'Marine Drive Promenade, South Mumbai',
-    'Eastern Express Highway, Near Chembur, Mumbai',
-    'LBS Marg, Near Ghatkopar West, Mumbai'
+    'Andheri Kurla Road, Near Chakala Metro, Mumbai',
+    'Eastern Express Highway, Near Chembur Naka, Mumbai',
+    'Link Road, Near Infinity Mall, Malad West, Mumbai',
+    'Marine Drive Promenade, Nariman Point, Mumbai',
+    'LBS Marg, Near Ghatkopar West, Mumbai',
+    'Sion Circle Flyover Descent, Mumbai',
+    'Dadar TT Circle, Dr. Ambedkar Road, Mumbai',
+    'Borivali West, Near Shimpoli Signal, Mumbai',
+    'Vashi Sector 17 Main Market, Navi Mumbai'
+  ],
+  Pune: [
+    'JM Road, Near Deccan Gymkhana, Shivajinagar, Pune',
+    'FC Road, Near Goodluck Chowk, Pune',
+    'Baner Road, Near Balewadi High Street, Pune',
+    'Koregaon Park North Main Road, Pune',
+    'Hinjawadi Phase 1, Near Wipro Circle, Pune',
+    'Viman Nagar Main Avenue, Near Phoenix Mall, Pune',
+    'Hadapsar Magarpatta City Gate 1, Pune'
   ],
   'Delhi NCR': [
-    'Connaught Place Outer Circle, New Delhi',
-    'Ring Road, Near AIIMS Flyover, New Delhi',
-    'Vikas Marg, Near Laxmi Nagar, East Delhi',
-    'Outer Ring Road, Near Nehru Place, South Delhi'
+    'Connaught Place Outer Circle, Near M-Block, New Delhi',
+    'Ring Road Near Lodhi Road Flyover, New Delhi',
+    'Vikas Marg, Near Laxmi Nagar Metro, East Delhi',
+    'MG Road, Near Cyber City Phase 2, Gurugram',
+    'Golf Course Extension Road, Sector 56, Gurugram',
+    'Noida Sector 18 Market Avenue, Noida',
+    'Noida Expressway, Near Sector 62, Noida',
+    'Outer Ring Road, Near Nehru Place Flyover, New Delhi',
+    'Rohini Sector 13 Main Chowk, North Delhi',
+    'Dwarka Sector 10 Main Market, New Delhi'
+  ],
+  Bengaluru: [
+    '100 Feet Road, Near 12th Main Junction, Indiranagar, Bengaluru',
+    'Outer Ring Road, Near Bellandur EcoSpace, Bengaluru',
+    'MG Road, Near Brigade Road Junction, Bengaluru',
+    'Koramangala 5th Block, Near Jyoti Nivas College, Bengaluru',
+    'Whitefield Main Road, Near ITPL Gate 2, Bengaluru',
+    'Bannerghatta Road, Near Jayadeva Hospital Flyover, Bengaluru',
+    'Hebbal Flyover Junction, Outer Ring Road, Bengaluru',
+    'HSR Layout Sector 1, 27th Main Road, Bengaluru'
+  ],
+  Jaipur: [
+    'MI Road, Near Ajmeri Gate, Jaipur',
+    'Tonk Road, Near Rambagh Circle, Jaipur',
+    'JL N Marg, Near World Trade Park, Malviya Nagar, Jaipur',
+    'Vaishali Nagar Main Market Road, Jaipur',
+    'Raja Park Main Commercial Street, Jaipur',
+    'Ajmer Road Flyover Junction, Jaipur'
+  ],
+  Indore: [
+    'AB Road, Near Palasia Square, Indore',
+    'MG Road, Near Chhappan Dukan, Indore',
+    'Vijay Nagar Square, Near C21 Mall, Indore',
+    'Bhawarkua Main Junction, Indore',
+    'Rajwada Chowk, Near Sarafa Bazaar, Indore',
+    'Super Corridor, Sector 3, Indore'
+  ],
+  Hyderabad: [
+    'Hitec City Main Road, Near Cyber Towers, Hyderabad',
+    'Gachibowli Flyover Junction, Near ORR, Hyderabad',
+    'Banjara Hills Road No 12, Hyderabad',
+    'Jubilee Hills Check Post Circle, Hyderabad',
+    'Necklace Road Promenade, Hussain Sagar, Hyderabad',
+    'Kukatpally Housing Board Main Road, Hyderabad',
+    'Madhapur 100 Feet Road, Hyderabad'
+  ],
+  Chennai: [
+    'Anna Salai, Near Thousand Lights, Chennai',
+    'OMR IT Corridor, Near Tidel Park, Tharamani, Chennai',
+    'Pondy Bazaar Main Pedestrian Plaza, T. Nagar, Chennai',
+    'Besant Nagar Beach Road, Near 6th Avenue, Chennai',
+    'Velachery Main Road, Near Vijayanagar Bus Terminus, Chennai',
+    'GST Road, Near Guindy Kathipara Flyover, Chennai'
+  ],
+  Kolkata: [
+    'Park Street, Near Camac Street Crossing, Kolkata',
+    'EM Bypass, Near Ruby General Hospital, Kolkata',
+    'Salt Lake Sector V, Near College More, Kolkata',
+    'Gariahat Commercial Junction, South Kolkata',
+    'New Town Major Arterial Road, Action Area 1, Kolkata',
+    'Shyambazar Five Point Crossing, North Kolkata',
+    'Strand Road, Near Babughat, Kolkata'
   ]
 };
 
 /**
- * Simple pseudo-random hash generator based on string seed
+ * Hash function to get deterministic yet varied seed from string
  */
 function getCitySeed(cityName: string): number {
   let hash = 0;
@@ -523,21 +388,150 @@ function getCitySeed(cityName: string): number {
   return Math.abs(hash);
 }
 
+// Preset configuration definitions per city for guaranteed distinct, realistic numbers
+interface CityConfig {
+  activeCount: number;
+  fixedCount: number;
+  upvotesList: number[];
+}
+
+const CITY_SPECIFIC_PRESETS: { [cityLower: string]: CityConfig } = {
+  ahmedabad: {
+    activeCount: 6,
+    fixedCount: 2,
+    upvotesList: [24, 38, 19, 45, 16, 29, 12, 15] // Total active reports = 171
+  },
+  vadodara: {
+    activeCount: 4,
+    fixedCount: 2,
+    upvotesList: [21, 35, 17, 28, 11, 14] // Total active reports = 101
+  },
+  rajkot: {
+    activeCount: 5,
+    fixedCount: 1,
+    upvotesList: [14, 27, 33, 19, 23, 10] // Total active reports = 116
+  },
+  nadiad: {
+    activeCount: 3,
+    fixedCount: 1,
+    upvotesList: [16, 25, 12, 8] // Total active reports = 53
+  },
+  gandhinagar: {
+    activeCount: 4,
+    fixedCount: 1,
+    upvotesList: [15, 22, 18, 31, 9] // Total active reports = 86
+  },
+  bhavnagar: {
+    activeCount: 3,
+    fixedCount: 1,
+    upvotesList: [19, 28, 14, 7] // Total active reports = 61
+  },
+  jamnagar: {
+    activeCount: 4,
+    fixedCount: 1,
+    upvotesList: [12, 26, 34, 18, 8] // Total active reports = 90
+  },
+  junagadh: {
+    activeCount: 3,
+    fixedCount: 1,
+    upvotesList: [14, 21, 17, 6] // Total active reports = 52
+  },
+  anand: {
+    activeCount: 3,
+    fixedCount: 1,
+    upvotesList: [11, 29, 15, 7] // Total active reports = 55
+  },
+  navsari: {
+    activeCount: 3,
+    fixedCount: 1,
+    upvotesList: [13, 24, 18, 8] // Total active reports = 55
+  },
+  valsad: {
+    activeCount: 3,
+    fixedCount: 1,
+    upvotesList: [16, 22, 19, 9] // Total active reports = 57
+  },
+  bharuch: {
+    activeCount: 4,
+    fixedCount: 1,
+    upvotesList: [20, 31, 15, 27, 10] // Total active reports = 93
+  },
+  mehsana: {
+    activeCount: 3,
+    fixedCount: 1,
+    upvotesList: [12, 18, 24, 7] // Total active reports = 54
+  },
+  morbi: {
+    activeCount: 4,
+    fixedCount: 1,
+    upvotesList: [22, 36, 19, 25, 8] // Total active reports = 102
+  },
+  mumbai: {
+    activeCount: 7,
+    fixedCount: 3,
+    upvotesList: [42, 35, 58, 29, 44, 31, 26, 18, 21, 15] // Total active reports = 265
+  },
+  pune: {
+    activeCount: 5,
+    fixedCount: 2,
+    upvotesList: [28, 34, 19, 41, 23, 14, 16] // Total active reports = 145
+  },
+  'delhi ncr': {
+    activeCount: 7,
+    fixedCount: 3,
+    upvotesList: [39, 48, 27, 52, 33, 41, 25, 16, 19, 22] // Total active reports = 265
+  },
+  delhi: {
+    activeCount: 7,
+    fixedCount: 3,
+    upvotesList: [39, 48, 27, 52, 33, 41, 25, 16, 19, 22]
+  },
+  bengaluru: {
+    activeCount: 6,
+    fixedCount: 2,
+    upvotesList: [36, 45, 28, 51, 32, 22, 15, 17] // Total active reports = 214
+  },
+  jaipur: {
+    activeCount: 5,
+    fixedCount: 2,
+    upvotesList: [25, 33, 18, 29, 21, 11, 13] // Total active reports = 126
+  },
+  indore: {
+    activeCount: 4,
+    fixedCount: 2,
+    upvotesList: [27, 39, 21, 33, 12, 14] // Total active reports = 120
+  },
+  hyderabad: {
+    activeCount: 6,
+    fixedCount: 2,
+    upvotesList: [33, 47, 26, 38, 29, 41, 14, 18] // Total active reports = 214
+  },
+  chennai: {
+    activeCount: 5,
+    fixedCount: 2,
+    upvotesList: [31, 42, 25, 36, 28, 13, 15] // Total active reports = 162
+  },
+  kolkata: {
+    activeCount: 6,
+    fixedCount: 2,
+    upvotesList: [29, 44, 35, 22, 38, 27, 12, 16] // Total active reports = 195
+  }
+};
+
 /**
  * Returns localized, realistic civic issues for any selected city.
- * For Surat, returns the master curated list (5 active issues + 1 resolved = 98 total reports).
- * For all other cities, dynamically generates a unique, realistic set of issues, active counts, and report sums!
+ * Every city gets unique issue counts, unique report sums, and distinct active/fixed values.
  */
 export function getTicketsForCity(cityName: string, coords: { lat: number; lng: number }): CivicIssue[] {
   const normCity = (cityName || 'Surat').trim();
+  const cityKey = normCity.toLowerCase();
 
-  // If Surat, return initial master list (5 active issues + 1 resolved)
-  if (normCity.toLowerCase() === 'surat') {
+  // If Surat, return curated initial master list
+  if (cityKey === 'surat') {
     return INITIAL_MOCK_TICKETS;
   }
 
   const seed = getCitySeed(normCity);
-
   const areas = CITY_AREAS[normCity] || [
     `Main Market Road, Near Town Hall, ${normCity}`,
     `Station Road, Near Central Bus Stand, ${normCity}`,
@@ -552,7 +546,7 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
 
   const cityDept = `${normCity} Municipal Corporation`;
 
-  // Expanded issue catalog to pick from
+  // Catalog of issue templates
   const issueCatalog: Partial<CivicIssue>[] = [
     {
       taxonomyId: 'RD-01',
@@ -567,7 +561,7 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       imageAfterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
       aiConfidence: 0.95,
       detectedObjects: [{ label: 'Deep Asphalt Cavity', confidence: 0.96, box: [20, 25, 75, 75] }],
-      detectedCvTriggers: ['Asphalt cavity', 'Edge depth shadow', 'Circular depression pattern'],
+      detectedCvTriggers: ['Asphalt cavity', 'Edge depth shadow', 'Circular depression pattern']
     },
     {
       taxonomyId: 'SW-02',
@@ -582,7 +576,7 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       imageAfterUrl: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80',
       aiConfidence: 0.94,
       detectedObjects: [{ label: 'Overflowing Municipal Bin', confidence: 0.95, box: [15, 20, 85, 80] }],
-      detectedCvTriggers: ['Bin brim overflow volume > 85%', 'Spill periphery footprint'],
+      detectedCvTriggers: ['Bin brim overflow volume > 85%', 'Spill periphery footprint']
     },
     {
       taxonomyId: 'WB-02',
@@ -591,12 +585,12 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       vertical: 'WATER_BODIES_ECOLOGY',
       priority: 'CRITICAL',
       slaHours: 12,
-      assignedDepartment: `Gujarat Pollution Control Board / ${cityDept} Drainage`,
-      l2EscalationRole: 'Regional Environmental Officer (GPCB)',
+      assignedDepartment: `State Pollution Control Board / ${cityDept} Drainage`,
+      l2EscalationRole: 'Regional Environmental Officer (PCB)',
       imageUrl: 'https://images.unsplash.com/photo-1621451537084-482c73073a0f?auto=format&fit=crop&w=800&q=80',
       aiConfidence: 0.97,
       detectedObjects: [{ label: 'Toxic Chemical Froth', confidence: 0.98, box: [25, 10, 70, 90] }],
-      detectedCvTriggers: ['Chromatic water discoloration', 'Effluent outfall'],
+      detectedCvTriggers: ['Chromatic water discoloration', 'Effluent outfall']
     },
     {
       taxonomyId: 'RD-03',
@@ -610,7 +604,7 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       imageUrl: 'https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80',
       aiConfidence: 0.98,
       detectedObjects: [{ label: 'Missing Cast Iron Manhole Cover', confidence: 0.99, box: [30, 30, 70, 70] }],
-      detectedCvTriggers: ['Exposed vertical shaft drop > 1.2m', 'Perimeter fracture'],
+      detectedCvTriggers: ['Exposed vertical shaft drop > 1.2m', 'Perimeter fracture']
     },
     {
       taxonomyId: 'SW-01',
@@ -624,7 +618,7 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       imageUrl: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80',
       aiConfidence: 0.93,
       detectedObjects: [{ label: 'Garbage Vulnerable Point', confidence: 0.94, box: [10, 20, 90, 80] }],
-      detectedCvTriggers: ['Litter footprint', 'Solid waste density'],
+      detectedCvTriggers: ['Litter footprint', 'Solid waste density']
     },
     {
       taxonomyId: 'PA-01',
@@ -639,7 +633,7 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       imageAfterUrl: 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=800&q=80',
       aiConfidence: 0.94,
       detectedObjects: [{ label: 'Uprooted Trunk Obstruction', confidence: 0.95, box: [20, 20, 80, 80] }],
-      detectedCvTriggers: ['Carriageway obstacle', 'Foliage blockage'],
+      detectedCvTriggers: ['Carriageway obstacle', 'Foliage blockage']
     },
     {
       taxonomyId: 'RD-05',
@@ -654,54 +648,49 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       imageAfterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
       aiConfidence: 0.94,
       detectedObjects: [{ label: 'Silt Blocked Catchpit', confidence: 0.95, box: [20, 30, 80, 70] }],
-      detectedCvTriggers: ['Standing water pool', 'Debris accumulation'],
+      detectedCvTriggers: ['Standing water pool', 'Debris accumulation']
     }
   ];
 
-  // Specific city custom ticket counts
-  const cityCountsMap: { [c: string]: number } = {
-    ahmedabad: 7,
-    vadodara: 6,
-    rajkot: 4,
-    nadiad: 3,
-    gandhinagar: 4,
-    mumbai: 8,
-    pune: 6,
-    'delhi ncr': 7,
-    bengaluru: 7,
-    jaipur: 5,
-    indore: 5
-  };
+  const preset = CITY_SPECIFIC_PRESETS[cityKey];
+  const activeCount = preset ? preset.activeCount : 3 + (seed % 5); // 3 to 7 active
+  const fixedCount = preset ? preset.fixedCount : 1 + ((seed >> 2) % 2); // 1 to 2 fixed
+  const totalCount = activeCount + fixedCount;
 
-  const targetCount = cityCountsMap[normCity.toLowerCase()] || (3 + (seed % 5)); // 3 to 7 tickets
-  const cityCode = normCity.substring(0, 3).toUpperCase();
+  const cityCode = normCity.length >= 3 ? normCity.substring(0, 3).toUpperCase() : 'CTY';
 
-  // Pseudo-random offsets around city
+  // Specific spread offsets around city center
   const offsets = [
-    { dLat: 0.0072, dLng: 0.0061 },
-    { dLat: -0.0085, dLng: -0.0073 },
-    { dLat: 0.0131, dLng: -0.0052 },
-    { dLat: -0.0061, dLng: 0.0094 },
-    { dLat: 0.0094, dLng: -0.0101 },
-    { dLat: -0.0122, dLng: 0.0045 },
-    { dLat: 0.0045, dLng: 0.0142 },
-    { dLat: -0.0145, dLng: -0.0031 }
+    { dLat: 0.0078, dLng: 0.0065 },
+    { dLat: -0.0088, dLng: -0.0079 },
+    { dLat: 0.0135, dLng: -0.0058 },
+    { dLat: -0.0065, dLng: 0.0098 },
+    { dLat: 0.0098, dLng: -0.0105 },
+    { dLat: -0.0125, dLng: 0.0048 },
+    { dLat: 0.0048, dLng: 0.0145 },
+    { dLat: -0.0148, dLng: -0.0035 },
+    { dLat: 0.0112, dLng: 0.0118 },
+    { dLat: -0.0105, dLng: -0.0122 }
   ];
 
   const cityIssues: CivicIssue[] = [];
 
-  for (let i = 0; i < targetCount; i++) {
+  for (let i = 0; i < totalCount; i++) {
+    const isResolved = i >= activeCount;
     const templateIndex = (seed + i) % issueCatalog.length;
     const t = issueCatalog[templateIndex];
     const offset = offsets[i % offsets.length];
     const area = areas[i % areas.length];
-    const ticketId = `TKT-${cityCode}-${7100 + i * 133 + (seed % 97)}`;
+    const ticketId = `TKT-${cityCode}-${7100 + i * 137 + (seed % 89)}`;
 
-    // Give each ticket a unique randomized upvote count (7 to 46)
-    const upvotes = 8 + ((seed * 7 + i * 13) % 39);
+    // Determine upvotes
+    let upvotes: number;
+    if (preset && preset.upvotesList && i < preset.upvotesList.length) {
+      upvotes = preset.upvotesList[i];
+    } else {
+      upvotes = isResolved ? (6 + (seed + i) % 11) : (12 + ((seed * (i + 3) + i * 17) % 41));
+    }
 
-    // Make last ticket resolved, others active
-    const isResolved = i === targetCount - 1;
     const status = isResolved
       ? 'VERIFIED_RESOLVED'
       : i === 0
@@ -755,20 +744,26 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
   return cityIssues;
 }
 
-// Master Pre-Populated Database across all cities so all location reports are preserved
-const RAJKOT_PRESET = getTicketsForCity('Rajkot', { lat: 22.3039, lng: 70.8022 });
-const NADIAD_PRESET = getTicketsForCity('Nadiad', { lat: 22.6916, lng: 72.8634 });
+// Master Pre-Populated Database across major cities so all location reports are loaded instantly
 const AHMEDABAD_PRESET = getTicketsForCity('Ahmedabad', { lat: 23.0225, lng: 72.5714 });
 const VADODARA_PRESET = getTicketsForCity('Vadodara', { lat: 22.3072, lng: 73.1812 });
+const RAJKOT_PRESET = getTicketsForCity('Rajkot', { lat: 22.3039, lng: 70.8022 });
+const NADIAD_PRESET = getTicketsForCity('Nadiad', { lat: 22.6916, lng: 72.8634 });
+const GANDHINAGAR_PRESET = getTicketsForCity('Gandhinagar', { lat: 23.2156, lng: 72.6369 });
+const MUMBAI_PRESET = getTicketsForCity('Mumbai', { lat: 19.0760, lng: 72.8777 });
+const PUNE_PRESET = getTicketsForCity('Pune', { lat: 18.5204, lng: 73.8567 });
+const DELHI_PRESET = getTicketsForCity('Delhi NCR', { lat: 28.6139, lng: 77.2090 });
+const BENGALURU_PRESET = getTicketsForCity('Bengaluru', { lat: 12.9716, lng: 77.5946 });
 
 export const ALL_LOCATIONS_INITIAL_TICKETS: CivicIssue[] = [
-  ...INITIAL_MOCK_TICKETS, // Surat tickets (5 active + 1 resolved = 6 tickets)
-  ...RAJKOT_PRESET,
-  ...NADIAD_PRESET,
-  ...AHMEDABAD_PRESET,
-  ...VADODARA_PRESET
+  ...INITIAL_MOCK_TICKETS, // Surat tickets (5 active + 1 resolved = 98 reports)
+  ...AHMEDABAD_PRESET,     // Ahmedabad (6 active + 2 resolved = 171 reports)
+  ...VADODARA_PRESET,      // Vadodara (4 active + 2 resolved = 101 reports)
+  ...RAJKOT_PRESET,        // Rajkot (5 active + 1 resolved = 116 reports)
+  ...NADIAD_PRESET,        // Nadiad (3 active + 1 resolved = 53 reports)
+  ...GANDHINAGAR_PRESET,   // Gandhinagar (4 active + 1 resolved = 86 reports)
+  ...MUMBAI_PRESET,        // Mumbai (7 active + 3 resolved = 265 reports)
+  ...PUNE_PRESET,          // Pune (5 active + 2 resolved = 145 reports)
+  ...DELHI_PRESET,         // Delhi NCR (7 active + 3 resolved = 265 reports)
+  ...BENGALURU_PRESET      // Bengaluru (6 active + 2 resolved = 214 reports)
 ];
-
-
-
-

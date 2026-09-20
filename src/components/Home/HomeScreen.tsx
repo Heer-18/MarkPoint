@@ -46,7 +46,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const resolvedCityTickets = cityTickets.filter(
     (t) => t.status === 'VERIFIED_RESOLVED' || t.status === 'RESOLVED_DEMO'
   );
-  // Total citizen reports & bundled endorsements in this city (matches pin reports sum)
   const totalCityReports = activeCityTickets.reduce((sum, t) => sum + (t.upvoteCount || 1), 0);
   const resolvedCount = resolvedCityTickets.length > 0 ? resolvedCityTickets.length : 1;
 
@@ -161,7 +160,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
         {/* Embedded Problem Map */}
         <ProblemMap
-          tickets={tickets}
+          tickets={cityTickets.length > 0 ? cityTickets : tickets}
           selectedTicket={null}
           onSelectTicket={onSelectTicket}
           centerCoords={centerCoords}
