@@ -10,6 +10,8 @@ export type TicketStatus =
   | 'IN_REVIEW'
   | 'IN_PROGRESS'
   | 'WORK_SUBMITTED'
+  | 'GOV_RESOLVED_PENDING_VOTE'
+  | 'RE_DISPATCHED_TO_GOV'
   | 'RESOLVED_DEMO'
   | 'VERIFIED_RESOLVED'
   | 'ESCALATED_SLA_BREACH'
@@ -79,8 +81,24 @@ export interface CivicIssue {
   detectedCvTriggers: string[];
   formalComplaintDraft: string;
   citizenVoiceTranscript?: string;
+  citizenComment?: string;
   
-  // Verification Info (No Fake Closures)
+  // Verification & Citizen 70% Consensus Workflow
+  communityVotes?: {
+    totalVotes: number;
+    approvedVotes: number;
+    rejectedVotes: number;
+    citizenRemarks?: { user: string; text: string; votedApproved: boolean; time: string }[];
+  };
+  govResolutionDetails?: {
+    resolvedByWorker: string;
+    department: string;
+    resolvedAt: string;
+    repairNotes: string;
+    imageAfterUrl: string;
+    aiProofScore: number;
+    aiAuthenticityCheck: 'PASSED_GENUINE' | 'FLAGGED_SYNTHETIC';
+  };
   verificationResult?: {
     verified: boolean;
     confidence: number;

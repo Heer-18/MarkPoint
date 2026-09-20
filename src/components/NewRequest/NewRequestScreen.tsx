@@ -24,6 +24,7 @@ interface NewRequestScreenProps {
     imageUrl: string;
     location: SpatialCoordinate;
     voiceTranscript: string;
+    userComment?: string;
     presetHint?: string;
   }) => void;
   isLoading: boolean;
@@ -39,6 +40,7 @@ export const NewRequestScreen: React.FC<NewRequestScreenProps> = ({
 }) => {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [voiceTranscript, setVoiceTranscript] = useState('');
+  const [userComment, setUserComment] = useState('');
   const [uploadStatus, setUploadStatus] = useState<string>('');
   const [location, setLocation] = useState<SpatialCoordinate>({
     lat: userCoords.lat,
@@ -108,7 +110,8 @@ export const NewRequestScreen: React.FC<NewRequestScreenProps> = ({
     onCaptureAndIngest({
       imageUrl: capturedImage,
       location,
-      voiceTranscript
+      voiceTranscript,
+      userComment
     });
   };
 
@@ -182,6 +185,21 @@ export const NewRequestScreen: React.FC<NewRequestScreenProps> = ({
               </p>
             </div>
           )}
+        </div>
+
+        {/* 3. Additional Citizen Remarks / Notes Input */}
+        <div className="pt-2 border-t border-slate-800/80">
+          <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+            <span>Additional Remarks / Landmark Notes (Optional)</span>
+            <span className="text-[10px] text-slate-500 font-normal">Help AI & Municipal Crew</span>
+          </label>
+          <textarea
+            rows={2}
+            value={userComment}
+            onChange={(e) => setUserComment(e.target.value)}
+            placeholder="e.g., Near City Mall opposite bus stand. Deep cavity dangerous for two-wheelers..."
+            className="w-full rounded-xl bg-slate-950/80 border border-slate-700/80 p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all resize-none shadow-inner"
+          />
         </div>
 
         {/* Controls */}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Lenis from 'lenis';
+import { App as CapacitorApp } from '@capacitor/app';
 import { TopSearchBar, CITIES } from './components/Navigation/TopSearchBar';
 import { BottomNavBar, NavTab } from './components/Navigation/BottomNavBar';
 import { HomeScreen } from './components/Home/HomeScreen';
@@ -73,6 +74,36 @@ export const App: React.FC = () => {
     };
   }, []);
 
+  // Android Hardware Back Button Handler (Prevents app exiting when switching tabs/closing modals)
+  useEffect(() => {
+    let handlerPromise: any = null;
+    try {
+      handlerPromise = CapacitorApp.addListener('backButton', () => {
+        if (dedupModalData) {
+          setDedupModalData(null);
+        } else if (aiAnalysisModalData) {
+          setAiAnalysisModalData(null);
+        } else if (inspectTicket) {
+          setInspectTicket(null);
+        } else if (verificationTicket) {
+          setVerificationTicket(null);
+        } else if (activeTab !== 'home') {
+          setActiveTab('home');
+        } else {
+          CapacitorApp.exitApp();
+        }
+      });
+    } catch (e) {
+      console.warn('Capacitor backButton listener unavailable in browser environment:', e);
+    }
+
+    return () => {
+      if (handlerPromise && typeof handlerPromise.then === 'function') {
+        handlerPromise.then((h: any) => h?.remove?.());
+      }
+    };
+  }, [dedupModalData, aiAnalysisModalData, inspectTicket, verificationTicket, activeTab]);
+
   // Compute Active City Coordinates
   const currentCityCoords = useMemo(() => {
     if (gpsCoords && selectedCity === 'Your Location') {
@@ -127,20 +158,25 @@ export const App: React.FC = () => {
     }
   };
 
-  // Ingest Report Handler (Camera, Gallery or Preset)
+  // Ingest Report Handler (Camera, Gallery or Preset + Additional Comment)
   const handleIngestReport = async (payload: {
     imageUrl: string;
     location: SpatialCoordinate;
     voiceTranscript: string;
+    userComment?: string;
     presetHint?: string;
   }) => {
     setIsLoadingAnalysis(true);
 
     try {
+      const combinedHints = [payload.voiceTranscript, payload.userComment, payload.presetHint]
+        .filter(Boolean)
+        .join(' | ');
+
       // 1. Run AI Vision Screening
       const analysis = await runCvInference(payload.imageUrl, {
         apiKey,
-        voiceTranscript: payload.voiceTranscript,
+        voiceTranscript: combinedHints,
         presetHint: payload.presetHint
       });
 
@@ -177,7 +213,7 @@ export const App: React.FC = () => {
           analysis,
           imageUrl: payload.imageUrl,
           location: payload.location,
-          voiceTranscript: payload.voiceTranscript
+          voiceTranscript: combinedHints,
         });
       }
     } catch (err) {
@@ -223,13 +259,103 @@ export const App: React.FC = () => {
       detectedObjects: analysis.detectedObjects,
       detectedCvTriggers: analysis.detectedTriggers,
       formalComplaintDraft: analysis.formalComplaintDraft,
-      citizenVoiceTranscript: voiceTranscript
+      citizenVoiceTranscript: voiceTranscript,
+      citizenComment: voiceTranscript,
+      communityVotes: {
+        totalVotes: 1,
+        approvedVotes: 0,
+        rejectedVotes: 0,
+        citizenRemarks: []
+      }
     };
 
     setTickets((prev) => [newTicket, ...prev]);
     setLikedTickets((prev) => [...prev, newId]);
     setAiAnalysisModalData(null);
     setActiveTab('requests'); // Switch to map and focus on the new report!
+  };
+
+  // Simulate Government Crew Uploading Repair Photo & AI Check
+  const handleSimulateGovFix = (ticketId: string) => {
+    setTickets((prev) =>
+      prev.map((t) => {
+        if (t.id === ticketId) {
+          return {
+            ...t,
+            status: 'GOV_RESOLVED_PENDING_VOTE',
+            imageAfterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
+            govResolutionDetails: {
+              resolvedByWorker: 'Municipal Ground Rapid Response Unit #4',
+              department: t.assignedDepartment,
+              resolvedAt: new Date().toISOString(),
+              repairNotes: 'Applied high-grade cold asphalt mix and roller compaction to seal cavity.',
+              imageAfterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
+              aiProofScore: 94,
+              aiAuthenticityCheck: 'PASSED_GENUINE'
+            },
+            communityVotes: t.communityVotes || {
+              totalVotes: 3,
+              approvedVotes: 2,
+              rejectedVotes: 0,
+              citizenRemarks: [
+                { user: 'Suresh M.', text: 'Road surface is smooth now.', votedApproved: true, time: '10m ago' },
+                { user: 'Priya K.', text: 'Checked during morning commute, cavity closed.', votedApproved: true, time: '5m ago' }
+              ]
+            }
+          };
+        }
+        return t;
+      })
+    );
+    speakText('Government work proof uploaded. AI authenticity verified. Awaiting citizen voting.');
+  };
+
+  // Citizen 70% Consensus Voting Handler
+  const handleVoteOnGovResolution = (ticketId: string, approved: boolean, citizenRemark?: string) => {
+    setTickets((prev) =>
+      prev.map((t) => {
+        if (t.id === ticketId) {
+          const currentVotes = t.communityVotes || { totalVotes: 2, approvedVotes: 1, rejectedVotes: 0, citizenRemarks: [] };
+          const newApproved = approved ? currentVotes.approvedVotes + 1 : currentVotes.approvedVotes;
+          const newRejected = !approved ? currentVotes.rejectedVotes + 1 : currentVotes.rejectedVotes;
+          const newTotal = currentVotes.totalVotes + 1;
+          const approvalPct = Math.round((newApproved / newTotal) * 100);
+
+          const updatedRemarks = [
+            ...(currentVotes.citizenRemarks || []),
+            {
+              user: 'Heer Patel (You)',
+              text: citizenRemark || (approved ? 'Confirmed fixed by citizen inspection.' : 'Defect still persists on site.'),
+              votedApproved: approved,
+              time: 'Just now'
+            }
+          ];
+
+          // 70% threshold rule
+          let newStatus: any = t.status;
+          if (approvalPct >= 70 && newTotal >= 2) {
+            newStatus = 'VERIFIED_RESOLVED';
+            speakText('Resolution verified with over 70 percent citizen approval.');
+          } else if (approvalPct < 70) {
+            newStatus = 'RE_DISPATCHED_TO_GOV';
+            speakText('Citizen satisfaction below 70 percent. Re-dispatched to department.');
+          }
+
+          return {
+            ...t,
+            status: newStatus,
+            resolvedAt: newStatus === 'VERIFIED_RESOLVED' ? new Date().toISOString() : t.resolvedAt,
+            communityVotes: {
+              totalVotes: newTotal,
+              approvedVotes: newApproved,
+              rejectedVotes: newRejected,
+              citizenRemarks: updatedRemarks
+            }
+          };
+        }
+        return t;
+      })
+    );
   };
 
   // Resolve Ticket in Verification Studio
@@ -309,6 +435,8 @@ export const App: React.FC = () => {
             onOpenVerificationStudio={(t) => setVerificationTicket(t)}
             onSelectTicket={setInspectTicket}
             selectedCity={selectedCity}
+            onVoteOnGovResolution={handleVoteOnGovResolution}
+            onSimulateGovFix={handleSimulateGovFix}
           />
         )}
       </main>

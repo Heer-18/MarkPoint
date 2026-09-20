@@ -242,10 +242,6 @@ export const ProblemMap: React.FC<ProblemMapProps> = ({
               <span>Water</span>
             </div>
             <div className="flex items-center space-x-1">
-              <span className="w-2 h-2 rounded-full bg-purple-500" />
-              <span>Assets</span>
-            </div>
-            <div className="flex items-center space-x-1">
               <span className="w-2 h-2 rounded-full bg-pink-500" />
               <span>Other</span>
             </div>
