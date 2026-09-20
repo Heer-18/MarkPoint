@@ -1,44 +1,17 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { ArrowLeft, X, MapPin, Search, ChevronDown, Check, Crosshair } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ArrowLeft, X, MapPin, Search, ChevronDown, Check, Crosshair, Loader2, Navigation } from 'lucide-react';
+import { searchPlacesLive, CityLocation, POPULAR_CITIES } from '../../services/citySearchService';
+
+export { POPULAR_CITIES as CITIES };
 
 interface TopSearchBarProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   selectedCity: string;
-  onCitySelect: (city: string) => void;
+  onCitySelect: (city: string, coords?: { lat: number; lng: number }) => void;
   onLocateMe: () => void;
   isLocating?: boolean;
 }
-
-export const CITIES = [
-  { name: 'Surat', lat: 21.1702, lng: 72.8311, state: 'Gujarat', defaultArea: 'Majura Gate & Ring Road' },
-  { name: 'Ahmedabad', lat: 23.0225, lng: 72.5714, state: 'Gujarat', defaultArea: 'SG Highway & Riverfront' },
-  { name: 'Vadodara', lat: 22.3072, lng: 73.1812, state: 'Gujarat', defaultArea: 'Alkapuri & Sayajigunj' },
-  { name: 'Rajkot', lat: 22.3039, lng: 70.8022, state: 'Gujarat', defaultArea: 'Kalawad Road & Yagnik Road' },
-  { name: 'Gandhinagar', lat: 23.2156, lng: 72.6369, state: 'Gujarat', defaultArea: 'Infocity & Sector 21' },
-  { name: 'Bhavnagar', lat: 21.7645, lng: 72.1519, state: 'Gujarat', defaultArea: 'Waghawadi Road' },
-  { name: 'Jamnagar', lat: 22.4707, lng: 70.0577, state: 'Gujarat', defaultArea: 'Digjam & Town Hall' },
-  { name: 'Mumbai', lat: 19.0760, lng: 72.8777, state: 'Maharashtra', defaultArea: 'Bandra & Andheri' },
-  { name: 'Pune', lat: 18.5204, lng: 73.8567, state: 'Maharashtra', defaultArea: 'Shivajinagar & Kothrud' },
-  { name: 'Nagpur', lat: 21.1458, lng: 79.0882, state: 'Maharashtra', defaultArea: 'Dharampeth & Civil Lines' },
-  { name: 'Nashik', lat: 19.9975, lng: 73.7898, state: 'Maharashtra', defaultArea: 'College Road & Panchavati' },
-  { name: 'Thane', lat: 19.2183, lng: 72.9781, state: 'Maharashtra', defaultArea: 'Ghubunder Road' },
-  { name: 'Delhi NCR', lat: 28.6345, lng: 77.2182, state: 'Delhi', defaultArea: 'Connaught Place & Ring Road' },
-  { name: 'Bengaluru', lat: 12.9716, lng: 77.5946, state: 'Karnataka', defaultArea: 'Indiranagar & Koramangala' },
-  { name: 'Hyderabad', lat: 17.3850, lng: 78.4867, state: 'Telangana', defaultArea: 'Hitec City & Banjara Hills' },
-  { name: 'Chennai', lat: 13.0827, lng: 80.2707, state: 'Tamil Nadu', defaultArea: 'T. Nagar & Anna Nagar' },
-  { name: 'Kolkata', lat: 22.5726, lng: 88.3639, state: 'West Bengal', defaultArea: 'Salt Lake & Park Street' },
-  { name: 'Jaipur', lat: 26.9124, lng: 75.7873, state: 'Rajasthan', defaultArea: 'Malviya Nagar & C-Scheme' },
-  { name: 'Lucknow', lat: 26.8467, lng: 80.9462, state: 'Uttar Pradesh', defaultArea: 'Hazratganj & Gomti Nagar' },
-  { name: 'Chandigarh', lat: 30.7333, lng: 76.7794, state: 'Punjab / Haryana', defaultArea: 'Sector 17 & 35' },
-  { name: 'Indore', lat: 22.7196, lng: 75.8577, state: 'Madhya Pradesh', defaultArea: 'Vijay Nagar & Palasia' },
-  { name: 'Bhopal', lat: 23.2599, lng: 77.4126, state: 'Madhya Pradesh', defaultArea: 'MP Nagar & Arera Colony' },
-  { name: 'Patna', lat: 25.5941, lng: 85.1376, state: 'Bihar', defaultArea: 'Boring Road & Kankarbagh' },
-  { name: 'Kochi', lat: 9.9312, lng: 76.2673, state: 'Kerala', defaultArea: 'MG Road & Kakkanad' },
-  { name: 'Visakhapatnam', lat: 17.6868, lng: 83.2185, state: 'Andhra Pradesh', defaultArea: 'Beach Road & MVP Colony' },
-  { name: 'Goa', lat: 15.2993, lng: 74.1240, state: 'Goa', defaultArea: 'Panaji & Margao' },
-  { name: 'Dehradun', lat: 30.3165, lng: 78.0322, state: 'Uttarakhand', defaultArea: 'Rajpur Road & Clock Tower' }
-];
 
 export const TopSearchBar: React.FC<TopSearchBarProps> = ({
   searchQuery,
@@ -49,7 +22,10 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
   isLocating
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSearchingLive, setIsSearchingLive] = useState(false);
+  const [searchResults, setSearchResults] = useState<CityLocation[]>(POPULAR_CITIES.slice(0, 12));
   const containerRef = useRef<HTMLDivElement>(null);
+  const searchTimeoutRef = useRef<any>(null);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -62,17 +38,39 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Filter cities by search term
-  const filteredCities = useMemo(() => {
-    if (!searchQuery.trim()) return CITIES;
-    const q = searchQuery.toLowerCase().trim();
-    return CITIES.filter(
-      (c) => c.name.toLowerCase().includes(q) || c.state.toLowerCase().includes(q)
-    );
+  // Live place search with debounce (Google Maps style)
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults(POPULAR_CITIES.slice(0, 12));
+      setIsSearchingLive(false);
+      return;
+    }
+
+    setIsSearchingLive(true);
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    searchTimeoutRef.current = setTimeout(async () => {
+      try {
+        const results = await searchPlacesLive(searchQuery);
+        setSearchResults(results);
+      } catch (err) {
+        console.warn('Place search error:', err);
+      } finally {
+        setIsSearchingLive(false);
+      }
+    }, 200);
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
   }, [searchQuery]);
 
-  const handleSelectCity = (cityName: string) => {
-    onCitySelect(cityName);
+  const handleSelectPlace = (place: CityLocation) => {
+    onCitySelect(place.name, { lat: place.lat, lng: place.lng });
     onSearchChange('');
     setIsDropdownOpen(false);
   };
@@ -84,7 +82,7 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
         {/* Main Header & Search Row */}
         <div className="flex items-center space-x-2">
           
-          {/* Clean MarkPoint App Logo (No outer box frame) */}
+          {/* Clean MarkPoint App Logo */}
           <div className="flex items-center flex-shrink-0">
             <svg
               viewBox="0 0 24 24"
@@ -126,9 +124,13 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
                 setIsDropdownOpen(true);
               }}
               onFocus={() => setIsDropdownOpen(true)}
-              placeholder="Search city, ward or problem..."
+              placeholder="Search any city, town, ward (e.g. Nadiad)..."
               className="flex-1 bg-transparent text-xs sm:text-sm font-medium text-slate-100 placeholder-slate-400 focus:outline-none min-w-0"
             />
+
+            {isSearchingLive && (
+              <Loader2 className="w-4 h-4 text-emerald-400 animate-spin mr-1 flex-shrink-0" />
+            )}
 
             {searchQuery && (
               <button
@@ -152,17 +154,18 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
             className="flex items-center space-x-1.5 px-3 py-2 rounded-2xl bg-slate-900 hover:bg-slate-850 border border-slate-700/90 text-xs font-bold text-emerald-400 shadow-md transition-all flex-shrink-0"
           >
             <MapPin className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-            <span className="whitespace-nowrap font-bold">{selectedCity}</span>
+            <span className="whitespace-nowrap font-bold max-w-[110px] truncate">{selectedCity}</span>
             <ChevronDown className="w-3.5 h-3.5 text-slate-400 flex-shrink-0 ml-0.5" />
           </button>
         </div>
 
-        {/* City Dropdown & Search Suggestions Menu */}
+        {/* Google Maps-Style Autocomplete Results List */}
         {isDropdownOpen && (
-          <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-700/90 shadow-2xl animate-in fade-in slide-in-from-top-2 z-50 max-h-80 overflow-y-auto space-y-2">
-            <div className="flex items-center justify-between px-1">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                {searchQuery ? `Matching Cities (${filteredCities.length})` : 'Select City'}
+          <div className="p-3 rounded-2xl bg-slate-900 border border-slate-700/90 shadow-2xl animate-in fade-in slide-in-from-top-2 z-50 max-h-80 overflow-y-auto space-y-2">
+            <div className="flex items-center justify-between px-1 pb-1 border-b border-slate-800">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
+                <Navigation className="w-3.5 h-3.5 text-emerald-400" />
+                <span>{searchQuery ? `Places matching "${searchQuery}"` : 'Popular Cities'}</span>
               </span>
               <button
                 type="button"
@@ -178,44 +181,49 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
               </button>
             </div>
 
-            {/* City Grid */}
-            {filteredCities.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {filteredCities.map((city) => (
+            {/* Google Maps Style Autocomplete Row Items */}
+            <div className="space-y-1 pt-1">
+              {searchResults.map((place, idx) => {
+                const isSelected = selectedCity.toLowerCase() === place.name.toLowerCase();
+                return (
                   <button
-                    key={city.name}
+                    key={`${place.name}-${idx}`}
                     type="button"
-                    onClick={() => handleSelectCity(city.name)}
-                    className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
-                      selectedCity.toLowerCase() === city.name.toLowerCase()
+                    onClick={() => handleSelectPlace(place)}
+                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-all ${
+                      isSelected
                         ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm'
-                        : 'text-slate-300 hover:bg-slate-800 border border-transparent'
+                        : 'hover:bg-slate-800 text-slate-200 border border-transparent'
                     }`}
                   >
-                    <div className="min-w-0 flex-1">
-                      <div className="font-bold truncate">{city.name}</div>
-                      <div className="text-[10px] text-slate-400 font-normal truncate">{city.state}</div>
+                    <div className="flex items-center space-x-3 min-w-0 flex-1">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-slate-950 border border-slate-800 text-emerald-400 flex-shrink-0">
+                        <MapPin className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs font-bold text-white truncate">
+                            {place.name}
+                          </span>
+                          {place.type && (
+                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 font-mono">
+                              {place.type}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[11px] text-slate-400 truncate">
+                          {place.fullName}
+                        </div>
+                      </div>
                     </div>
-                    {selectedCity.toLowerCase() === city.name.toLowerCase() && (
-                      <Check className="w-4 h-4 text-emerald-400 ml-1 flex-shrink-0" />
+
+                    {isSelected && (
+                      <Check className="w-4 h-4 text-emerald-400 ml-2 flex-shrink-0" />
                     )}
                   </button>
-                ))}
-              </div>
-            ) : (
-              <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 text-center space-y-2">
-                <p className="text-xs text-slate-300">
-                  No predefined city found for "<strong className="text-emerald-400">{searchQuery}</strong>"
-                </p>
-                <button
-                  type="button"
-                  onClick={() => handleSelectCity(searchQuery.trim())}
-                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all"
-                >
-                  Set Location to "{searchQuery.trim()}"
-                </button>
-              </div>
-            )}
+                );
+              })}
+            </div>
           </div>
         )}
       </div>

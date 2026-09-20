@@ -419,3 +419,249 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
   }
 ];
 
+// Area templates for popular cities to ensure accurate, hyper-local street addresses
+const CITY_AREAS: Record<string, string[]> = {
+  Rajkot: [
+    'Kalawad Road, Near KKV Hall, Rajkot',
+    '150 Feet Ring Road, Near Indira Circle, Rajkot',
+    'Yagnik Road, Near Jagnath Mandir, Rajkot',
+    'Aji Riverfront Causeway, Near Chunarwad, Rajkot',
+    'Race Course Ring Road, Near Sports Complex, Rajkot',
+    'Gondal Road, Near ST Central Workshop, Rajkot',
+    'Bhaktinagar Station Road, Rajkot',
+    'University Road, Near Saurashtra University, Rajkot'
+  ],
+  Nadiad: [
+    'College Road, Near DDIT Engineering College, Nadiad',
+    'Santram Mandir Road, Near Main Chowk, Nadiad',
+    'Station Road, Near Nadiad Railway Station, Nadiad',
+    'Mill Road, Near Circuit House, Nadiad',
+    'Dabhan Road, Near Express Highway Cross, Nadiad',
+    'Pij Road, Near Sharda Mandir School, Nadiad',
+    'Salun Road, Near Uttarsanda Crossing, Nadiad',
+    'Vaso Road, Near Canal Bridge, Nadiad'
+  ],
+  Ahmedabad: [
+    'SG Highway, Near Iscon Cross Road, Ahmedabad',
+    'Sabarmati Riverfront Promenade, Near Ellis Bridge, Ahmedabad',
+    'CG Road, Near Municipal Market, Navrangpura, Ahmedabad',
+    'Sindhu Bhavan Road, Bodakdev, Ahmedabad',
+    'Maninagar Railway Cross Road, Ahmedabad',
+    'Prahlad Nagar Garden Road, Satellite, Ahmedabad',
+    'Vastrapur Lake Periphery, Ahmedabad'
+  ],
+  Vadodara: [
+    'Alkapuri Main Road, Near Railway Station, Vadodara',
+    'Sayajigunj Circle, Near Dairy Den, Vadodara',
+    'Karelibaug Water Tank Road, Vadodara',
+    'Gotri Road, Near Yash Complex, Vadodara',
+    'Manjalpur GIDC Cross Road, Vadodara',
+    'Fatehgunj Main Road, Vadodara'
+  ],
+  Surat: [
+    'Ring Road Flyover Junction, Near Majura Gate, Surat',
+    'Adajan Patia Main Market, Near Star Bazaar, Surat',
+    'Tapi Riverfront Promenade, Near Causeway, Surat',
+    'Varachha Main Road, Near Mini Bazaar, Surat',
+    'Dumas Road, Near VR Mall, Surat',
+    'Katargam GIDC Main Road, Surat'
+  ],
+  Mumbai: [
+    'SV Road, Near Bandra Station West, Mumbai',
+    'Link Road, Near Infinity Mall, Andheri West, Mumbai',
+    'Marine Drive Promenade, South Mumbai',
+    'Eastern Express Highway, Near Chembur, Mumbai',
+    'LBS Marg, Near Ghatkopar West, Mumbai'
+  ],
+  'Delhi NCR': [
+    'Connaught Place Outer Circle, New Delhi',
+    'Ring Road, Near AIIMS Flyover, New Delhi',
+    'Vikas Marg, Near Laxmi Nagar, East Delhi',
+    'Outer Ring Road, Near Nehru Place, South Delhi'
+  ]
+};
+
+/**
+ * Returns localized civic issues for any selected city in India.
+ * If city is Surat, returns the master curated list.
+ * For Rajkot, Nadiad, Ahmedabad or any custom city, returns localized tickets centered around that city's coordinates!
+ */
+export function getTicketsForCity(cityName: string, coords: { lat: number; lng: number }): CivicIssue[] {
+  const normCity = (cityName || 'Surat').trim();
+
+  // If Surat, return initial master list
+  if (normCity.toLowerCase() === 'surat') {
+    return INITIAL_MOCK_TICKETS;
+  }
+
+  const areas = CITY_AREAS[normCity] || [
+    `Main Market Road, Near Town Hall, ${normCity}`,
+    `Station Road, Near Central Bus Stand, ${normCity}`,
+    `Ring Road Highway Junction, ${normCity}`,
+    `Gandhi Chowk & Civil Hospital Road, ${normCity}`,
+    `Riverfront / Lake Promenade, ${normCity}`,
+    `Industrial GIDC Main Entrance Road, ${normCity}`,
+    `College Road & University Gate, ${normCity}`
+  ];
+
+  const cityDept = `${normCity} Municipal Corporation`;
+
+  // Localized templates
+  const cityTemplates: Partial<CivicIssue>[] = [
+    {
+      taxonomyId: 'RD-01',
+      category: 'Roads & Mobility',
+      subCategory: 'Potholes (Deep / Hazardous)',
+      vertical: 'ROADS_MOBILITY',
+      status: 'IN_PROGRESS',
+      priority: 'URGENT',
+      slaHours: 48,
+      assignedDepartment: `${cityDept} (PWD / Roads Division)`,
+      l2EscalationRole: 'Executive Engineer (Roads)',
+      imageUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+      imageAfterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
+      aiConfidence: 0.95,
+      detectedObjects: [{ label: 'Deep Asphalt Cavity', confidence: 0.96, box: [20, 25, 75, 75] }],
+      detectedCvTriggers: ['Asphalt cavity', 'Edge depth shadow', 'Circular depression pattern'],
+      formalComplaintDraft: `FORMAL GRIEVANCE // ${normCity.substring(0, 3).toUpperCase()}-RD-01\nTo: Executive Engineer (Roads), ${cityDept}\nDepth > 85mm. Rapid cold-mix patching requested.`
+    },
+    {
+      taxonomyId: 'SW-02',
+      category: 'Solid Waste',
+      subCategory: 'Overflowing Community Waste Bin',
+      vertical: 'SOLID_WASTE',
+      status: 'WORK_SUBMITTED',
+      priority: 'URGENT',
+      slaHours: 6,
+      assignedDepartment: `${cityDept} (Health & Solid Waste Management)`,
+      l2EscalationRole: 'Zonal Sanitation Superintendent',
+      imageUrl: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=800&q=80',
+      imageAfterUrl: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80',
+      aiConfidence: 0.94,
+      detectedObjects: [{ label: 'Overflowing Municipal Bin', confidence: 0.95, box: [15, 20, 85, 80] }],
+      detectedCvTriggers: ['Bin brim overflow volume > 85%', 'Spill periphery footprint'],
+      formalComplaintDraft: `FORMAL GRIEVANCE // ${normCity.substring(0, 3).toUpperCase()}-SW-02\nTo: Sanitation Superintendent\nWaste overflow spilling on public road. Compactor truck dispatch requested.`
+    },
+    {
+      taxonomyId: 'WB-02',
+      category: 'Water Bodies',
+      subCategory: 'Industrial Chemical Effluent Discharge',
+      vertical: 'WATER_BODIES_ECOLOGY',
+      status: 'ESCALATED_SLA_BREACH',
+      priority: 'CRITICAL',
+      slaHours: 12,
+      assignedDepartment: `Gujarat Pollution Control Board / ${cityDept} Drainage`,
+      l2EscalationRole: 'Regional Environmental Officer (GPCB)',
+      imageUrl: 'https://images.unsplash.com/photo-1621451537084-482c73073a0f?auto=format&fit=crop&w=800&q=80',
+      aiConfidence: 0.97,
+      detectedObjects: [{ label: 'Toxic Chemical Froth', confidence: 0.98, box: [25, 10, 70, 90] }],
+      detectedCvTriggers: ['Chromatic water discoloration', 'Effluent outfall'],
+      formalComplaintDraft: `STATUTORY ESCALATION // GPCB-${normCity.substring(0, 3).toUpperCase()}\nTo: Regional Officer\nStatus: SLA EXCEEDED. Immediate drainage sample collection requested.`
+    },
+    {
+      taxonomyId: 'RD-03',
+      category: 'Roads & Mobility',
+      subCategory: 'Open / Broken Sewer Manhole',
+      vertical: 'ROADS_MOBILITY',
+      status: 'IN_PROGRESS',
+      priority: 'CRITICAL',
+      slaHours: 24,
+      assignedDepartment: `${cityDept} (Underground Drainage Dept)`,
+      l2EscalationRole: 'Superintending Engineer (Drainage)',
+      imageUrl: 'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?auto=format&fit=crop&w=800&q=80',
+      aiConfidence: 0.98,
+      detectedObjects: [{ label: 'Missing Cast Iron Manhole Cover', confidence: 0.99, box: [30, 30, 70, 70] }],
+      detectedCvTriggers: ['Exposed vertical shaft drop > 1.2m', 'Perimeter fracture'],
+      formalComplaintDraft: `EMERGENCY ACTION NOTICE // ${normCity.substring(0, 3).toUpperCase()}-RD-03\nTo: Chief Drainage Officer\nOpen shaft pose fatal hazard to pedestrians. Barricade and replace SFRC cover immediately.`
+    },
+    {
+      taxonomyId: 'SW-01',
+      category: 'Solid Waste',
+      subCategory: 'Illegal Roadside Garbage Dump',
+      vertical: 'SOLID_WASTE',
+      status: 'IN_PROGRESS',
+      priority: 'HIGH',
+      slaHours: 24,
+      assignedDepartment: `${cityDept} (Sanitation & Cleanliness)`,
+      l2EscalationRole: 'Chief Sanitary Inspector',
+      imageUrl: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80',
+      aiConfidence: 0.93,
+      detectedObjects: [{ label: 'Garbage Vulnerable Point', confidence: 0.94, box: [10, 20, 90, 80] }],
+      detectedCvTriggers: ['Litter footprint', 'Solid waste density'],
+      formalComplaintDraft: `SANITATION DISPATCH // ${normCity.substring(0, 3).toUpperCase()}-SW-01\nTo: Sanitary Inspector\nRoadside garbage dump clearing required.`
+    },
+    {
+      taxonomyId: 'RD-05',
+      category: 'Roads & Mobility',
+      subCategory: 'Stormwater Drain Clogging & Waterlogging',
+      vertical: 'WATER_BODIES_ECOLOGY',
+      status: 'VERIFIED_RESOLVED',
+      priority: 'HIGH',
+      slaHours: 24,
+      assignedDepartment: `${cityDept} (Stormwater Drainage)`,
+      l2EscalationRole: 'Executive Engineer (Drainage)',
+      imageUrl: 'https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=800&q=80',
+      imageAfterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
+      aiConfidence: 0.94,
+      detectedObjects: [{ label: 'Silt Blocked Catchpit', confidence: 0.95, box: [20, 30, 80, 70] }],
+      detectedCvTriggers: ['Standing water pool', 'Debris accumulation'],
+      formalComplaintDraft: `DRAIN CLEARANCE REPORT // ${normCity.substring(0, 3).toUpperCase()}-RD-05\nCatchpit desilted and waterflow restored.`
+    }
+  ];
+
+  // Distribute tickets spatially around the city center
+  const offsets = [
+    { dLat: 0.0062, dLng: 0.0051 },
+    { dLat: -0.0075, dLng: -0.0063 },
+    { dLat: 0.0121, dLng: -0.0042 },
+    { dLat: -0.0051, dLng: 0.0084 },
+    { dLat: 0.0084, dLng: -0.0091 },
+    { dLat: -0.0112, dLng: 0.0035 }
+  ];
+
+  const cityCode = normCity.substring(0, 3).toUpperCase();
+
+  return cityTemplates.map((t, idx) => {
+    const offset = offsets[idx % offsets.length];
+    const area = areas[idx % areas.length];
+    const ticketId = `TKT-${cityCode}-${8000 + idx * 117}`;
+
+    return {
+      id: ticketId,
+      taxonomyId: t.taxonomyId || 'RD-01',
+      category: t.category || 'Roads & Mobility',
+      subCategory: t.subCategory || 'Civic Issue',
+      vertical: t.vertical || 'ROADS_MOBILITY',
+      status: t.status || 'IN_PROGRESS',
+      priority: t.priority || 'HIGH',
+      slaHours: t.slaHours || 24,
+      slaDeadline: new Date(Date.now() + (t.slaHours || 24) * 3600 * 1000).toISOString(),
+      reportedAt: new Date(Date.now() - (idx + 1) * 5 * 3600 * 1000).toISOString(),
+      lastUpdatedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+      reporterId: idx === 0 ? 'usr-current' : `usr-${cityCode.toLowerCase()}-${idx + 1}`,
+      reporterName: idx === 0 ? 'Heer Patel (You)' : `Citizen ${normCity} #${idx + 1}`,
+      reporterDeviceHash: `sha256-${cityCode.toLowerCase()}-${idx}`,
+      location: {
+        lat: coords.lat + offset.dLat,
+        lng: coords.lng + offset.dLng,
+        accuracy: 3.5
+      },
+      address: area,
+      upvoteCount: 5 + idx * 6,
+      upvotedBy: idx === 0 ? ['usr-current'] : [],
+      assignedDepartment: t.assignedDepartment || `${cityDept}`,
+      l2EscalationRole: t.l2EscalationRole || 'Zonal Officer',
+      geofenceZone: `${normCity} Central Ward ${idx + 1}`,
+      isEscalated: t.status === 'ESCALATED_SLA_BREACH',
+      imageUrl: t.imageUrl || 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+      imageAfterUrl: t.imageAfterUrl || null,
+      aiConfidence: t.aiConfidence || 0.94,
+      detectedObjects: t.detectedObjects || [],
+      detectedCvTriggers: t.detectedCvTriggers || [],
+      formalComplaintDraft: t.formalComplaintDraft || `FORMAL GRIEVANCE // ${ticketId}`,
+      citizenVoiceTranscript: `Reported issue near ${area}.`
+    } as CivicIssue;
+  });
+}
+
+

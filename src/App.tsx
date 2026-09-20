@@ -13,7 +13,7 @@ import { AIAnalysisModal } from './components/CitizenView/AIAnalysisModal';
 import { TicketDetailModal } from './components/DashboardView/TicketDetailModal';
 import { AppSplashScreen } from './components/Navigation/AppSplashScreen';
 
-import { INITIAL_MOCK_TICKETS } from './data/mockTickets';
+import { INITIAL_MOCK_TICKETS, getTicketsForCity } from './data/mockTickets';
 import { CivicIssue, CVAnalysisResult, SpatialCoordinate } from './types/civic';
 import { checkSpatialDeduplication, getGeofenceZoneForLocation } from './services/postgisEngine';
 import { runCvInference } from './services/cvInference';
@@ -23,14 +23,16 @@ export const App: React.FC = () => {
   // Navigation State
   const [activeTab, setActiveTab] = useState<NavTab>('home');
   const [selectedCity, setSelectedCity] = useState<string>('Surat');
+  const [selectedCityCoords, setSelectedCityCoords] = useState<{ lat: number; lng: number }>({ lat: 21.1702, lng: 72.8311 });
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isLocating, setIsLocating] = useState<boolean>(false);
   const [gpsCoords, setGpsCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   // Tickets & Telemetry State
   const [showSplash, setShowSplash] = useState<boolean>(true);
-  const [tickets, setTickets] = useState<CivicIssue[]>(INITIAL_MOCK_TICKETS);
-  const [likedTickets, setLikedTickets] = useState<string[]>(['TKT-101', 'TKT-103']);
+  const [userCreatedTickets, setUserCreatedTickets] = useState<CivicIssue[]>([]);
+  const [cityOverrides, setCityOverrides] = useState<Record<string, CivicIssue[]>>({});
+  const [likedTickets, setLikedTickets] = useState<string[]>(['TKT-101', 'TKT-103', 'TKT-SRT-8812']);
   const [spamPreventedCount, setSpamPreventedCount] = useState<number>(42);
   const [isLoadingAnalysis, setIsLoadingAnalysis] = useState<boolean>(false);
   const [apiKey, setApiKey] = useState<string>('');
@@ -50,7 +52,45 @@ export const App: React.FC = () => {
   } | null>(null);
 
   const [inspectTicket, setInspectTicket] = useState<CivicIssue | null>(null);
-  const [verificationTicket, setVerificationTicket] = useState<CivicIssue | null>(null);
+
+  // Compute Active City Coordinates
+  const currentCityCoords = useMemo(() => {
+    return selectedCityCoords;
+  }, [selectedCityCoords]);
+
+  // Dynamic City-Specific Tickets: Updates immediately when switching between Surat, Rajkot, Nadiad, etc.!
+  const tickets = useMemo(() => {
+    const baseTickets = cityOverrides[selectedCity] || getTicketsForCity(selectedCity, currentCityCoords);
+    return [...userCreatedTickets, ...baseTickets];
+  }, [selectedCity, currentCityCoords, userCreatedTickets, cityOverrides]);
+
+  const setTickets = (updater: React.SetStateAction<CivicIssue[]>) => {
+    if (typeof updater === 'function') {
+      const updated = updater(tickets);
+      setCityOverrides((prev) => ({
+        ...prev,
+        [selectedCity]: updated
+      }));
+    } else {
+      setCityOverrides((prev) => ({
+        ...prev,
+        [selectedCity]: updater
+      }));
+    }
+  };
+
+  const handleCitySelect = (cityName: string, coords?: { lat: number; lng: number }) => {
+    setSelectedCity(cityName);
+    if (coords) {
+      setSelectedCityCoords(coords);
+    } else {
+      const matched = CITIES.find((c) => c.name.toLowerCase() === cityName.toLowerCase());
+      if (matched) {
+        setSelectedCityCoords({ lat: matched.lat, lng: matched.lng });
+      }
+    }
+    speakText(`Switched city to ${cityName}.`);
+  };
 
   // Initialize Lenis Smooth Scrolling
   useEffect(() => {
@@ -73,7 +113,7 @@ export const App: React.FC = () => {
     };
   }, []);
 
-  // Android Hardware Back Button Handler (Prevents app exiting when switching tabs/closing modals)
+  // Android Hardware Back Button Handler
   useEffect(() => {
     let handlerPromise: any = null;
     try {
@@ -84,8 +124,6 @@ export const App: React.FC = () => {
           setAiAnalysisModalData(null);
         } else if (inspectTicket) {
           setInspectTicket(null);
-        } else if (verificationTicket) {
-          setVerificationTicket(null);
         } else if (activeTab !== 'home') {
           setActiveTab('home');
         } else {
@@ -101,16 +139,7 @@ export const App: React.FC = () => {
         handlerPromise.then((h: any) => h?.remove?.());
       }
     };
-  }, [dedupModalData, aiAnalysisModalData, inspectTicket, verificationTicket, activeTab]);
-
-  // Compute Active City Coordinates
-  const currentCityCoords = useMemo(() => {
-    if (gpsCoords && selectedCity === 'Your Location') {
-      return gpsCoords;
-    }
-    const matched = CITIES.find((c) => c.name.toLowerCase() === selectedCity.toLowerCase());
-    return matched ? { lat: matched.lat, lng: matched.lng } : { lat: 21.1702, lng: 72.8311 }; // Surat default
-  }, [selectedCity, gpsCoords]);
+  }, [dedupModalData, aiAnalysisModalData, inspectTicket, activeTab]);
 
   // GPS Locate Me Handler with City Name Detection
   const handleLocateMe = () => {
@@ -122,6 +151,7 @@ export const App: React.FC = () => {
           const lat = pos.coords.latitude;
           const lng = pos.coords.longitude;
           setGpsCoords({ lat, lng });
+          setSelectedCityCoords({ lat, lng });
 
           // 1. Find closest city from CITIES list
           let detectedCity = 'Surat';
@@ -134,8 +164,8 @@ export const App: React.FC = () => {
             }
           }
 
-          // 2. If closest known city is close (approx within 50km), use it directly
-          if (minDistance < 0.5) {
+          // 2. If closest known city is close, use it directly
+          if (minDistance < 0.45) {
             setSelectedCity(detectedCity);
             setSearchQuery('');
             speakText(`Location set to ${detectedCity}.`);
@@ -426,7 +456,7 @@ export const App: React.FC = () => {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         selectedCity={selectedCity}
-        onCitySelect={setSelectedCity}
+        onCitySelect={handleCitySelect}
         onLocateMe={handleLocateMe}
         isLocating={isLocating}
       />
