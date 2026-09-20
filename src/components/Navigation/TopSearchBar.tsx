@@ -31,7 +31,7 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
   const displayCityName = selectedCity === 'Your Location' ? 'Live GPS' : selectedCity;
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-slate-950/95 backdrop-blur-2xl border-b border-slate-800/80 px-3.5 pt-[max(env(safe-area-inset-top,0px),34px)] pb-2 transition-all">
+    <header className="sticky top-0 z-40 w-full bg-slate-950/95 backdrop-blur-2xl border-b border-slate-800/80 px-3.5 pt-[max(env(safe-area-inset-top,0px),44px)] pb-2 transition-all">
       <div className="max-w-3xl mx-auto space-y-2">
         
         {/* Main Header & Search Row */}
