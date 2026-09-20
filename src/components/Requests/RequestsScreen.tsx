@@ -219,8 +219,8 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
                   key={ticket.id}
                   className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg"
                 >
-                  <div className="flex items-start space-x-3 min-w-0">
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-slate-700">
+                  <div className="flex items-start space-x-3 min-w-0 flex-1">
+                    <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden flex-shrink-0 border border-slate-700">
                       <img
                         src={ticket.imageUrl}
                         alt={ticket.subCategory}
@@ -228,35 +228,35 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
                       />
                     </div>
 
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xs font-bold text-white">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-1 flex-wrap">
+                        <span className="text-xs font-bold text-white truncate max-w-[200px]">
                           {ticket.subCategory}
                         </span>
                         {isResolved ? (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold">
+                          <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold flex-shrink-0">
                             Fixed
                           </span>
                         ) : isBreached ? (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-bold animate-pulse">
+                          <span className="text-[9px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-bold animate-pulse flex-shrink-0">
                             Escalated
                           </span>
                         ) : (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-bold">
+                          <span className="text-[9px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-bold flex-shrink-0">
                             In Progress
                           </span>
                         )}
                       </div>
 
-                      <p className="text-xs text-slate-400 flex items-center space-x-1 mt-1">
+                      <p className="text-xs text-slate-400 flex items-center space-x-1 mt-1 truncate">
                         <MapPin className="w-3 h-3 text-cyan-400 flex-shrink-0" />
                         <span className="truncate">{ticket.address}</span>
                       </p>
 
-                      <div className="flex items-center space-x-3 text-[11px] text-slate-500 mt-1">
-                        <span>Assigned: {ticket.assignedDepartment}</span>
+                      <div className="flex items-center flex-wrap gap-x-2 gap-y-0.5 text-[10px] text-slate-500 mt-1">
+                        <span className="truncate max-w-[170px]">{ticket.assignedDepartment}</span>
                         <span>•</span>
-                        <span>SLA: {ticket.slaHours}h</span>
+                        <span className="flex-shrink-0">SLA: {ticket.slaHours}h</span>
                       </div>
                     </div>
                   </div>

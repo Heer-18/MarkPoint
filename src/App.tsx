@@ -431,6 +431,7 @@ export const App: React.FC = () => {
         {activeTab === 'profile' && (
           <ProfileScreen
             tickets={tickets}
+            likedTickets={likedTickets}
             spamPreventedCount={spamPreventedCount}
             onOpenVerificationStudio={(t) => setVerificationTicket(t)}
             onSelectTicket={setInspectTicket}

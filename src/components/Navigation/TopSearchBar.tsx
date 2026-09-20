@@ -37,13 +37,20 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
         {/* Main Header & Search Row */}
         <div className="flex items-center space-x-2">
           
-          {/* Minimal MarkPoint Geometric Icon (NO TEXT) */}
+          {/* Clean MarkPoint App Logo (No outer box frame) */}
           <div className="flex items-center flex-shrink-0">
-            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-cyan-400 p-0.5 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
-              <div className="w-full h-full bg-slate-950 rounded-[13px] flex items-center justify-center">
-                <span className="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-300 shadow-sm animate-pulse" />
-              </div>
-            </div>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              className="w-7 h-7 text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" />
+              <circle cx="12" cy="10" r="3" fill="#10b981" />
+            </svg>
           </div>
 
           {/* Search Box */}

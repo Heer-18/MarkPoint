@@ -24,12 +24,15 @@ import {
   Wrench, 
   SendHorizontal, 
   ShieldAlert,
-  HelpCircle
+  HelpCircle,
+  Hourglass,
+  Users
 } from 'lucide-react';
 import { CivicIssue } from '../../types/civic';
 
 interface ProfileScreenProps {
   tickets: CivicIssue[];
+  likedTickets?: string[];
   spamPreventedCount: number;
   onOpenVerificationStudio: (ticket: CivicIssue) => void;
   onSelectTicket: (ticket: CivicIssue) => void;
@@ -40,6 +43,7 @@ interface ProfileScreenProps {
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   tickets,
+  likedTickets = [],
   spamPreventedCount,
   onOpenVerificationStudio,
   onSelectTicket,
@@ -55,13 +59,14 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   const [name, setName] = useState('Heer Patel');
   const [activeReportTab, setActiveReportTab] = useState<'ALL' | 'VOTING_PENDING' | 'IN_PROGRESS' | 'RESOLVED'>('ALL');
 
-  // Voting Comments State for each card
+  // Voting State for each card
   const [citizenRemarksMap, setCitizenRemarksMap] = useState<Record<string, string>>({});
-  const [votingSuccessId, setVotingSuccessId] = useState<string | null>(null);
+  const [userVotedIds, setUserVotedIds] = useState<Record<string, boolean>>({});
+  const [revealedResultIds, setRevealedResultIds] = useState<Record<string, boolean>>({});
 
-  // Filter user's own reports (reports with reporterId 'usr-current' or reporterName containing Heer, or mock sample)
+  // All reports the user has either directly reported OR liked/supported (co-reported)
   const myReports = tickets.filter(
-    (t) => t.reporterId === 'usr-current' || t.reporterName.includes('Heer') || t.id === 'TKT-101' || t.id === 'TKT-102'
+    (t) => t.reporterId === 'usr-current' || likedTickets.includes(t.id) || t.reporterName.includes('Heer') || t.id === 'TKT-101' || t.id === 'TKT-102'
   );
 
   const pendingVotes = myReports.filter((t) => t.status === 'GOV_RESOLVED_PENDING_VOTE' || t.status === 'WORK_SUBMITTED');
@@ -84,9 +89,12 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
     const remark = citizenRemarksMap[ticketId] || '';
     if (onVoteOnGovResolution) {
       onVoteOnGovResolution(ticketId, approved, remark);
-      setVotingSuccessId(ticketId);
-      setTimeout(() => setVotingSuccessId(null), 3500);
+      setUserVotedIds((prev) => ({ ...prev, [ticketId]: true }));
     }
+  };
+
+  const handleReveal24hResults = (ticketId: string) => {
+    setRevealedResultIds((prev) => ({ ...prev, [ticketId]: true }));
   };
 
   return (
@@ -103,7 +111,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
               {authMode === 'login' ? 'Welcome Back to MarkPoint' : 'Create a MarkPoint Account'}
             </h2>
             <p className="text-xs text-slate-400">
-              Track your reported potholes, garbage cleanups, and vote on municipal repair proofs
+              Track your reported & supported complaints, and audit government repair proofs
             </p>
           </div>
 
@@ -229,11 +237,11 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
             <div className="grid grid-cols-3 gap-2.5 pt-3 border-t border-slate-800/80 text-center">
               <div className="p-2.5 rounded-2xl bg-slate-950/70 border border-slate-800/90">
                 <div className="text-lg font-black text-white">{myReports.length}</div>
-                <div className="text-[9px] text-slate-400 uppercase font-semibold mt-0.5">My Reports</div>
+                <div className="text-[9px] text-slate-400 uppercase font-semibold mt-0.5">My & Liked Issues</div>
               </div>
               <div className="p-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/30">
                 <div className="text-lg font-black text-amber-400">{pendingVotes.length}</div>
-                <div className="text-[9px] text-amber-300 uppercase font-semibold mt-0.5">Vote Required</div>
+                <div className="text-[9px] text-amber-300 uppercase font-semibold mt-0.5">Votes Required</div>
               </div>
               <div className="p-2.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30">
                 <div className="text-lg font-black text-emerald-400">{resolvedCount.length}</div>
@@ -250,19 +258,19 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                 <span>Municipal Repair Proof Awaiting Your Audit</span>
               </div>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Government field crew uploaded a repair photo. AI verified genuine ground remediation. 
-                <strong className="text-emerald-400"> 70% citizen consensus</strong> is required to formally close the grievance.
+                All citizens who reported or liked this issue are notified to vote. 
+                <strong className="text-emerald-400"> 70% community consensus</strong> is required within 24 hours to formally close the grievance.
               </p>
             </div>
           )}
 
-          {/* 4. My Submitted Reports with 70% Consensus Workflow */}
+          {/* 4. My Submitted & Liked Reports with 24h Consensus Workflow */}
           <div className="space-y-3">
             <div className="flex items-center justify-between px-1">
               <div className="flex items-center space-x-2">
                 <FileText className="w-4 h-4 text-emerald-400" />
                 <h3 className="text-sm font-bold text-white">
-                  My Reports & Resolution Audits
+                  My Reports & Liked Issues ({myReports.length})
                 </h3>
               </div>
 
@@ -299,7 +307,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                       : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
-                  In Progress ({inProgressCount.length})
+                  Active ({inProgressCount.length})
                 </button>
                 <button
                   type="button"
@@ -315,14 +323,19 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
               </div>
             </div>
 
-            {/* List of User's Reports */}
+            {/* List of User's Reports & Liked Issues */}
             {filteredReports.length > 0 ? (
               <div className="space-y-4">
                 {filteredReports.map((report) => {
                   const isDone = report.status === 'VERIFIED_RESOLVED' || report.status === 'RESOLVED_DEMO';
                   const isPendingVote = report.status === 'GOV_RESOLVED_PENDING_VOTE' || report.status === 'WORK_SUBMITTED';
                   const isReDispatched = report.status === 'RE_DISPATCHED_TO_GOV';
+                  const isLikedByMe = likedTickets.includes(report.id);
+                  const isCreatedByMe = report.reporterId === 'usr-current' || report.reporterName.includes('Heer');
                   
+                  const hasUserVoted = !!userVotedIds[report.id];
+                  const isRevealed = !!revealedResultIds[report.id] || isDone || isReDispatched;
+
                   const votes = report.communityVotes || { totalVotes: 3, approvedVotes: 2, rejectedVotes: 0, citizenRemarks: [] };
                   const approvalPercentage = votes.totalVotes > 0 
                     ? Math.round((votes.approvedVotes / votes.totalVotes) * 100) 
@@ -335,33 +348,47 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                     >
                       {/* Top Header Row */}
                       <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center space-x-3 min-w-0">
+                        <div className="flex items-start space-x-3 min-w-0 flex-1">
                           <img
                             src={report.imageUrl}
                             alt={report.subCategory}
                             className="w-14 h-14 rounded-2xl object-cover flex-shrink-0 border border-slate-700 shadow-md"
                           />
 
-                          <div className="min-w-0">
-                            <div className="flex items-center space-x-2">
-                              <span className="text-xs font-bold text-white truncate">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center space-x-2 flex-wrap">
+                              <span className="text-xs font-bold text-white truncate max-w-[180px]">
                                 {report.subCategory}
                               </span>
                               <span className="text-[10px] font-mono text-slate-500">#{report.id}</span>
+
+                              {/* Reporter / Liked Badge */}
+                              {isCreatedByMe ? (
+                                <span className="text-[9px] px-2 py-0.5 rounded-md bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 font-bold">
+                                  You Reported
+                                </span>
+                              ) : isLikedByMe ? (
+                                <span className="text-[9px] px-2 py-0.5 rounded-md bg-cyan-950/80 text-cyan-300 border border-cyan-500/30 font-bold flex items-center space-x-1">
+                                  <ThumbsUp className="w-2.5 h-2.5 fill-current" />
+                                  <span>Co-Reported / Liked</span>
+                                </span>
+                              ) : null}
                             </div>
 
                             <p className="text-[11px] text-slate-400 truncate mt-0.5">
                               {report.address}
                             </p>
 
-                            <div className="text-[10px] text-slate-500 mt-0.5">
-                              {report.assignedDepartment} • SLA {report.slaHours}h
+                            <div className="flex items-center flex-wrap gap-x-2 text-[10px] text-slate-500 mt-0.5">
+                              <span className="truncate max-w-[170px]">{report.assignedDepartment}</span>
+                              <span>•</span>
+                              <span>SLA: {report.slaHours}h</span>
                             </div>
                           </div>
                         </div>
 
                         {/* Status Badge */}
-                        <div>
+                        <div className="flex-shrink-0">
                           {isDone ? (
                             <span className="px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30 flex items-center space-x-1">
                               <CheckCircle2 className="w-3 h-3 text-emerald-400" />
@@ -370,7 +397,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                           ) : isPendingVote ? (
                             <span className="px-2.5 py-1 rounded-xl bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/40 flex items-center space-x-1 animate-pulse">
                               <Clock className="w-3 h-3 text-amber-400" />
-                              <span>Audit & Vote ({approvalPercentage}%)</span>
+                              <span>24h Audit Voting</span>
                             </span>
                           ) : isReDispatched ? (
                             <span className="px-2.5 py-1 rounded-xl bg-rose-500/20 text-rose-300 text-[10px] font-bold border border-rose-500/40 flex items-center space-x-1">
@@ -441,95 +468,147 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                             </span>
                           </div>
 
-                          {/* 70% Citizen Consensus Threshold Bar */}
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between text-[11px]">
-                              <span className="font-bold text-slate-300">
-                                Citizen Consensus Approval: <strong className={approvalPercentage >= 70 ? 'text-emerald-400' : 'text-amber-400'}>{approvalPercentage}%</strong>
-                              </span>
-                              <span className="text-[10px] text-slate-400">
-                                {votes.approvedVotes} / {votes.totalVotes} Votes (Requires ≥ 70%)
-                              </span>
-                            </div>
-
-                            {/* Progress bar */}
-                            <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden relative">
-                              <div
-                                className={`h-full transition-all duration-500 ${
-                                  approvalPercentage >= 70 ? 'bg-emerald-500' : 'bg-amber-500'
-                                }`}
-                                style={{ width: `${Math.min(100, approvalPercentage)}%` }}
-                              />
-                              {/* 70% threshold indicator line */}
-                              <div className="absolute top-0 bottom-0 left-[70%] w-0.5 bg-white shadow-sm z-10" />
-                            </div>
-                          </div>
-
-                          {/* Citizen Remarks List */}
-                          {votes.citizenRemarks && votes.citizenRemarks.length > 0 && (
-                            <div className="space-y-1 pt-1">
-                              <span className="text-[9px] font-bold text-slate-400 uppercase">Community Remarks:</span>
-                              <div className="space-y-1 max-h-24 overflow-y-auto pr-1">
-                                {votes.citizenRemarks.map((rem, idx) => (
-                                  <div key={idx} className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-[10px] text-slate-300 flex items-center justify-between">
-                                    <span><strong>{rem.user}:</strong> {rem.text}</span>
-                                    <span className={rem.votedApproved ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}>
-                                      {rem.votedApproved ? '✓ Fixed' : '✗ Rejected'}
-                                    </span>
-                                  </div>
-                                ))}
+                          {/* ---------------- 24-HOUR SEALED VOTING OR UNSEALED RESULTS ---------------- */}
+                          {!isRevealed ? (
+                            /* Live Voting Window: Sealed Ballot Mode */
+                            <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+                              <div className="flex items-center justify-between text-xs">
+                                <div className="flex items-center space-x-1.5 text-amber-300 font-bold">
+                                  <Hourglass className="w-4 h-4 animate-pulse" />
+                                  <span>24-Hour Voting Period Active</span>
+                                </div>
+                                <span className="text-[10px] text-slate-400 font-mono">
+                                  Closes in 23h 40m
+                                </span>
                               </div>
+                              <p className="text-[11px] text-slate-400 leading-relaxed">
+                                🔒 <strong>Ballot Sealed:</strong> Live voter count and percentages are hidden until the 24-hour cycle completes to ensure unbiased community verification.
+                              </p>
+
+                              {/* Voting Input & Buttons */}
+                              {!hasUserVoted ? (
+                                <div className="space-y-2 pt-2 border-t border-slate-800">
+                                  <div className="space-y-1">
+                                    <label className="text-[10px] font-bold text-slate-300 uppercase">
+                                      Your Ground Audit Feedback / Remark:
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={citizenRemarksMap[report.id] || ''}
+                                      onChange={(e) =>
+                                        setCitizenRemarksMap({
+                                          ...citizenRemarksMap,
+                                          [report.id]: e.target.value
+                                        })
+                                      }
+                                      placeholder="e.g., Visited site, road is smooth / Or: Pothole filled only halfway..."
+                                      className="w-full px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                                    />
+                                  </div>
+
+                                  <div className="flex items-center space-x-2 pt-1">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleCitizenVote(report.id, true)}
+                                      className="flex-1 flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-xs uppercase tracking-wide shadow-md transition-all"
+                                    >
+                                      <Check className="w-3.5 h-3.5 text-slate-950" />
+                                      <span>Confirm Fixed</span>
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => handleCitizenVote(report.id, false)}
+                                      className="flex-1 flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 font-bold text-xs transition-all"
+                                    >
+                                      <X className="w-3.5 h-3.5 text-rose-400" />
+                                      <span>Reject Fix</span>
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center justify-between">
+                                  <div className="flex items-center space-x-2">
+                                    <Check className="w-4 h-4 text-emerald-400" />
+                                    <span>Your vote has been securely recorded!</span>
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Testing button to immediately complete 24h cycle */}
+                              <button
+                                type="button"
+                                onClick={() => handleReveal24hResults(report.id)}
+                                className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-bold border border-slate-700 flex items-center justify-center space-x-1.5 mt-2"
+                              >
+                                <Users className="w-3.5 h-3.5 text-cyan-400" />
+                                <span>Complete 24h Period & Reveal Voter Tally</span>
+                              </button>
+                            </div>
+                          ) : (
+                            /* Unsealed 24-Hour Outcome Mode */
+                            <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2.5">
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="font-bold text-white flex items-center space-x-1.5">
+                                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                                  <span>24-Hour Voting Period Concluded</span>
+                                </span>
+                                <span className="text-[11px] font-mono text-cyan-400">
+                                  {votes.totalVotes} Total Voters
+                                </span>
+                              </div>
+
+                              {/* Progress bar */}
+                              <div className="space-y-1">
+                                <div className="flex items-center justify-between text-[11px]">
+                                  <span className="font-bold text-slate-300">
+                                    Consensus Result: <strong className={approvalPercentage >= 70 ? 'text-emerald-400' : 'text-rose-400'}>{approvalPercentage}% Approved</strong>
+                                  </span>
+                                  <span className="text-[10px] text-slate-400">
+                                    {votes.approvedVotes} Approved / {votes.rejectedVotes} Rejected
+                                  </span>
+                                </div>
+
+                                <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden relative">
+                                  <div
+                                    className={`h-full transition-all duration-500 ${
+                                      approvalPercentage >= 70 ? 'bg-emerald-500' : 'bg-rose-500'
+                                    }`}
+                                    style={{ width: `${Math.min(100, approvalPercentage)}%` }}
+                                  />
+                                  <div className="absolute top-0 bottom-0 left-[70%] w-0.5 bg-white shadow-sm z-10" />
+                                </div>
+                              </div>
+
+                              {/* Result Verdict Alert */}
+                              {approvalPercentage >= 70 ? (
+                                <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-300 text-[11px] font-bold border border-emerald-500/30">
+                                  ✓ 70%+ Community Consensus Passed: Problem marked as officially fixed!
+                                </div>
+                              ) : (
+                                <div className="p-2 rounded-lg bg-rose-500/20 text-rose-300 text-[11px] font-bold border border-rose-500/30">
+                                  ⚠️ 70% Consensus Not Met: Re-dispatched to Municipal Executive Engineer with citizen remarks.
+                                </div>
+                              )}
+
+                              {/* Citizen Remarks List */}
+                              {votes.citizenRemarks && votes.citizenRemarks.length > 0 && (
+                                <div className="space-y-1 pt-1">
+                                  <span className="text-[9px] font-bold text-slate-400 uppercase">Audit Comments:</span>
+                                  <div className="space-y-1 max-h-24 overflow-y-auto pr-1">
+                                    {votes.citizenRemarks.map((rem, idx) => (
+                                      <div key={idx} className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 text-[10px] text-slate-300 flex items-center justify-between">
+                                        <span><strong>{rem.user}:</strong> {rem.text}</span>
+                                        <span className={rem.votedApproved ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}>
+                                          {rem.votedApproved ? '✓ Fixed' : '✗ Rejected'}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           )}
-
-                          {/* Voting Input & Buttons */}
-                          <div className="space-y-2 pt-2 border-t border-slate-800">
-                            <div className="space-y-1">
-                              <label className="text-[10px] font-bold text-slate-300 uppercase">
-                                Your Inspection Feedback / Additional Remark:
-                              </label>
-                              <input
-                                type="text"
-                                value={citizenRemarksMap[report.id] || ''}
-                                onChange={(e) =>
-                                  setCitizenRemarksMap({
-                                    ...citizenRemarksMap,
-                                    [report.id]: e.target.value
-                                  })
-                                }
-                                placeholder="e.g., Road surface is flat now / Or: Still rough and uneven..."
-                                className="w-full px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
-                              />
-                            </div>
-
-                            <div className="flex items-center space-x-2 pt-1">
-                              {/* Confirm Fixed Button */}
-                              <button
-                                type="button"
-                                onClick={() => handleCitizenVote(report.id, true)}
-                                className="flex-1 flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-xs uppercase tracking-wide shadow-md transition-all"
-                              >
-                                <Check className="w-3.5 h-3.5 text-slate-950" />
-                                <span>Confirm Fixed</span>
-                              </button>
-
-                              {/* Reject / Still Broken Button */}
-                              <button
-                                type="button"
-                                onClick={() => handleCitizenVote(report.id, false)}
-                                className="flex-1 flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 font-bold text-xs transition-all"
-                              >
-                                <X className="w-3.5 h-3.5 text-rose-400" />
-                                <span>Still Broken (Reject)</span>
-                              </button>
-                            </div>
-
-                            {votingSuccessId === report.id && (
-                              <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-300 text-[11px] font-bold text-center border border-emerald-500/30 animate-in fade-in">
-                                ✓ Your vote & comment have been recorded into the community consensus ledger!
-                              </div>
-                            )}
-                          </div>
 
                         </div>
                       )}
@@ -564,7 +643,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                             <span>Closed with 70%+ Community Sign-off</span>
                           </div>
                           <span className="text-[10px] font-mono text-emerald-400">
-                            {votes.approvedVotes}/{votes.totalVotes} Votes ({approvalPercentage}%)
+                            {votes.approvedVotes}/{votes.totalVotes} Voters ({approvalPercentage}%)
                           </span>
                         </div>
                       )}
@@ -576,7 +655,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
             ) : (
               <div className="p-6 rounded-2xl bg-slate-900/50 border border-slate-800 text-center space-y-1">
                 <p className="text-xs font-bold text-slate-300">No reports found in this tab</p>
-                <p className="text-[11px] text-slate-500">Tap "Report" in the bottom menu to submit your first civic issue</p>
+                <p className="text-[11px] text-slate-500">Tap "Report" or like any issue on the map to track it here</p>
               </div>
             )}
           </div>
