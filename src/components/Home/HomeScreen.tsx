@@ -43,11 +43,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const activeCityTickets = cityTickets.filter(
     (t) => t.status !== 'VERIFIED_RESOLVED' && t.status !== 'RESOLVED_DEMO'
   );
-  const resolvedTickets = tickets.filter(
+  const resolvedCityTickets = cityTickets.filter(
     (t) => t.status === 'VERIFIED_RESOLVED' || t.status === 'RESOLVED_DEMO'
   );
+  // Total citizen reports & bundled endorsements in this city (matches pin reports sum)
+  const totalCityReports = activeCityTickets.reduce((sum, t) => sum + (t.upvoteCount || 1), 0);
+  const resolvedCount = resolvedCityTickets.length > 0 ? resolvedCityTickets.length : 1;
 
-  const sampleResolved = resolvedTickets[0] || tickets[0];
+  const sampleResolved = resolvedCityTickets[0] || tickets.find(t => t.status === 'VERIFIED_RESOLVED') || tickets[0];
 
   return (
     <div className="space-y-6 pb-24 max-w-3xl mx-auto animate-in fade-in duration-300">
@@ -103,7 +106,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <div className="grid grid-cols-3 gap-2.5 p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 text-center">
         <div className="p-2">
           <div className="text-xl sm:text-2xl font-black text-emerald-400">
-            {tickets.length}
+            {totalCityReports}
           </div>
           <div className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5 leading-tight">
             Total Reported Problem
@@ -121,7 +124,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
         <div className="p-2">
           <div className="text-xl sm:text-2xl font-black text-amber-400">
-            {resolvedTickets.length}
+            {resolvedCount}
           </div>
           <div className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5 leading-tight">
             Fixed Today
@@ -217,14 +220,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {/* 5. Recently Fixed Showcase (Before / After Slider) */}
       {sampleResolved.imageAfterUrl && (
         <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-5">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center space-x-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
+            <div className="flex items-center space-x-2 min-w-0">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-200">
                 Recently Fixed by Municipal Crew
               </h3>
             </div>
-            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">
+            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30 flex-shrink-0">
               AI Verified
             </span>
           </div>

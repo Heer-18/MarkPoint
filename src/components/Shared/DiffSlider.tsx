@@ -13,8 +13,8 @@ interface DiffSliderProps {
 export const DiffSlider: React.FC<DiffSliderProps> = ({
   beforeImage,
   afterImage,
-  beforeLabel = 'ORIGINAL REPORT (BEFORE)',
-  afterLabel = 'MUNICIPAL REPAIR (AFTER)',
+  beforeLabel = 'BEFORE',
+  afterLabel = 'AFTER (FIXED)',
   heightClass = 'h-56 sm:h-64',
   verified = true
 }) => {
