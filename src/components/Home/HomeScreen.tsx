@@ -16,6 +16,7 @@ import {
 import { CivicIssue } from '../../types/civic';
 import { ProblemMap } from '../Common/ProblemMap';
 import { DiffSlider } from '../Shared/DiffSlider';
+import { triggerHapticImpact, triggerHapticSelection } from '../../services/hapticsService';
 
 interface HomeScreenProps {
   onNavigateTab: (tab: 'home' | 'notices' | 'new_request' | 'requests' | 'profile') => void;
@@ -34,8 +35,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   spamPreventedCount,
   centerCoords
 }) => {
-  const activeTickets = tickets.filter(
-    (t) => t.status !== 'VERIFIED_RESOLVED' && t.status !== 'RESOLVED_DEMO'
+  const activeInPlaceOnly = tickets.filter(
+    (t) =>
+      t.status !== 'VERIFIED_RESOLVED' &&
+      t.status !== 'RESOLVED_DEMO' &&
+      t.address.toLowerCase().includes(selectedCity.toLowerCase())
   );
   const resolvedTickets = tickets.filter(
     (t) => t.status === 'VERIFIED_RESOLVED' || t.status === 'RESOLVED_DEMO'
@@ -66,8 +70,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <div className="space-y-2.5 sm:space-y-0 sm:grid sm:grid-cols-2 gap-3">
           <button
             type="button"
-            onClick={() => onNavigateTab('new_request')}
-            className="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl bg-white text-slate-900 font-bold text-sm shadow-xl hover:bg-amber-50 transition-all group"
+            onClick={() => { triggerHapticSelection(); onNavigateTab('new_request'); }}
+            className="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl bg-white text-slate-900 font-bold text-sm shadow-xl hover:bg-amber-50 transition-all group active:scale-[0.98]"
           >
             <div className="flex items-center space-x-2.5">
               <PlusCircle className="w-5 h-5 text-amber-600 group-hover:scale-110 transition-transform" />
@@ -78,8 +82,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           <button
             type="button"
-            onClick={() => onNavigateTab('requests')}
-            className="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl bg-black/25 hover:bg-black/35 border border-white/25 text-white font-bold text-sm backdrop-blur-md transition-all"
+            onClick={() => { triggerHapticSelection(); onNavigateTab('requests'); }}
+            className="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl bg-black/25 hover:bg-black/35 border border-white/25 text-white font-bold text-sm backdrop-blur-md transition-all active:scale-[0.98]"
           >
             <div className="flex items-center space-x-2.5">
               <ListFilter className="w-5 h-5 text-amber-300" />
@@ -93,23 +97,23 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <div className="absolute -right-10 -bottom-10 w-48 h-48 rounded-full bg-white/10 pointer-events-none blur-xl" />
       </div>
 
-      {/* 2. City Impact Telemetry Bar */}
+      {/* 2. City Impact Telemetry Bar (Updated: total reported problem, active in place only, fixed today) */}
       <div className="grid grid-cols-3 gap-2.5 p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 text-center">
         <div className="p-2">
           <div className="text-xl sm:text-2xl font-black text-emerald-400">
-            {spamPreventedCount}
+            {tickets.length}
           </div>
-          <div className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">
-            Duplicates Bundled
+          <div className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5 leading-tight">
+            Total Reported Problem
           </div>
         </div>
 
         <div className="p-2 border-x border-slate-800">
           <div className="text-xl sm:text-2xl font-black text-cyan-400">
-            {activeTickets.length}
+            {activeInPlaceOnly.length}
           </div>
-          <div className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">
-            Active in {selectedCity}
+          <div className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5 leading-tight">
+            Active in Place Only
           </div>
         </div>
 
@@ -117,8 +121,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="text-xl sm:text-2xl font-black text-amber-400">
             {resolvedTickets.length}
           </div>
-          <div className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">
-            Verified Fixed
+          <div className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5 leading-tight">
+            Fixed Today
           </div>
         </div>
       </div>

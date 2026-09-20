@@ -1,59 +1,57 @@
-import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
+
+let lastHapticTime = 0;
+const HAPTIC_DEBOUNCE_MS = 60; // Prevent jitter / vibration pile-up on rapid taps
 
 /**
- * Perform subtle haptic impact feedback
+ * Perform smooth, gentle micro-haptic impact feedback
  */
 export async function triggerHapticImpact(style: 'light' | 'medium' | 'heavy' = 'light'): Promise<void> {
+  const now = Date.now();
+  if (now - lastHapticTime < HAPTIC_DEBOUNCE_MS) return;
+  lastHapticTime = now;
+
   try {
-    const impactMap = {
-      light: ImpactStyle.Light,
-      medium: ImpactStyle.Medium,
-      heavy: ImpactStyle.Heavy,
-    };
-    await Haptics.impact({ style: impactMap[style] });
+    // Keep it light and smooth
+    await Haptics.impact({ style: style === 'heavy' ? ImpactStyle.Medium : ImpactStyle.Light });
   } catch (e) {
-    // Fallback to web vibration if supported
     if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-      const durationMap = { light: 15, medium: 30, heavy: 50 };
-      navigator.vibrate(durationMap[style]);
+      navigator.vibrate(8);
     }
   }
 }
 
 /**
- * Perform notification style haptics (success, warning, error)
+ * Perform smooth notification style haptics (gentle pulse, no harsh vibrations)
  */
-export async function triggerHapticNotification(type: 'success' | 'warning' | 'error' = 'success'): Promise<void> {
-  try {
-    const notifMap = {
-      success: NotificationType.Success,
-      warning: NotificationType.Warning,
-      error: NotificationType.Error,
-    };
-    await Haptics.notification({ type: notifMap[type] });
-  } catch (e) {
-    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-      const patternMap = {
-        success: [20, 50, 20],
-        warning: [30, 70, 30],
-        error: [50, 50, 50, 50, 50],
-      };
-      navigator.vibrate(patternMap[type]);
-    }
-  }
-}
+export async function triggerHapticNotification(_type: 'success' | 'warning' | 'error' = 'success'): Promise<void> {
+  const now = Date.now();
+  if (now - lastHapticTime < HAPTIC_DEBOUNCE_MS) return;
+  lastHapticTime = now;
 
-/**
- * Perform light selection feedback (tab switches, toggles, filter clicks)
- */
-export async function triggerHapticSelection(): Promise<void> {
   try {
-    await Haptics.selectionStart();
-    await Haptics.selectionChanged();
-    await Haptics.selectionEnd();
+    // Use crisp light impact instead of harsh system notification vibration patterns
+    await Haptics.impact({ style: ImpactStyle.Light });
   } catch (e) {
     if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
       navigator.vibrate(10);
+    }
+  }
+}
+
+/**
+ * Perform subtle selection tick (for tab switching, chips, buttons)
+ */
+export async function triggerHapticSelection(): Promise<void> {
+  const now = Date.now();
+  if (now - lastHapticTime < HAPTIC_DEBOUNCE_MS) return;
+  lastHapticTime = now;
+
+  try {
+    await Haptics.selectionChanged();
+  } catch (e) {
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate(6);
     }
   }
 }
