@@ -233,7 +233,8 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
               return (
                 <div
                   key={ticket.id}
-                  className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg overflow-hidden"
+                  onClick={() => onSelectTicket(ticket)}
+                  className="p-4 rounded-2xl bg-slate-900/90 hover:bg-slate-850 border border-slate-800 hover:border-slate-700 cursor-pointer active:scale-[0.99] transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg overflow-hidden"
                 >
                   <div className="flex items-start space-x-3 min-w-0 flex-1 w-full sm:w-auto">
                     <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden flex-shrink-0 border border-slate-700">

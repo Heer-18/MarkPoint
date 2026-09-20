@@ -112,22 +112,63 @@ export const App: React.FC = () => {
     return matched ? { lat: matched.lat, lng: matched.lng } : { lat: 21.1702, lng: 72.8311 }; // Surat default
   }, [selectedCity, gpsCoords]);
 
-  // GPS Locate Me Handler
+  // GPS Locate Me Handler with City Name Detection
   const handleLocateMe = () => {
     setIsLocating(true);
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (pos) => {
+        async (pos) => {
           setIsLocating(false);
-          setGpsCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-          setSelectedCity('Your Location');
-          setSearchQuery('Current GPS Location');
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          setGpsCoords({ lat, lng });
+
+          // 1. Find closest city from CITIES list
+          let detectedCity = 'Surat';
+          let minDistance = 999999;
+          for (const c of CITIES) {
+            const dist = Math.hypot(lat - c.lat, lng - c.lng);
+            if (dist < minDistance) {
+              minDistance = dist;
+              detectedCity = c.name;
+            }
+          }
+
+          // 2. If closest known city is close (approx within 50km), use it directly
+          if (minDistance < 0.5) {
+            setSelectedCity(detectedCity);
+            setSearchQuery('');
+            speakText(`Location set to ${detectedCity}.`);
+            return;
+          }
+
+          // 3. Otherwise try reverse geocode from OpenStreetMap
+          try {
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=12&addressdetails=1`
+            );
+            if (res.ok) {
+              const data = await res.json();
+              const addr = data.address || {};
+              const cityFound = addr.city || addr.town || addr.municipality || addr.district || addr.county || detectedCity;
+              setSelectedCity(cityFound);
+              setSearchQuery('');
+              speakText(`Location set to ${cityFound}.`);
+              return;
+            }
+          } catch (e) {
+            console.warn('Reverse geocode error:', e);
+          }
+
+          setSelectedCity(detectedCity);
+          setSearchQuery('');
+          speakText(`Location set to ${detectedCity}.`);
         },
         () => {
           setIsLocating(false);
           setSelectedCity('Surat');
         },
-        { enableHighAccuracy: true }
+        { enableHighAccuracy: true, timeout: 8000 }
       );
     } else {
       setIsLocating(false);

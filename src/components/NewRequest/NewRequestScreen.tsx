@@ -17,7 +17,6 @@ import {
 } from 'lucide-react';
 import { SpatialCoordinate } from '../../types/civic';
 import { QuickPresets, PresetScenario } from '../CitizenView/QuickPresets';
-import { VoiceReporter } from '../CitizenView/VoiceReporter';
 
 interface NewRequestScreenProps {
   onCaptureAndIngest: (payload: {
@@ -130,10 +129,10 @@ export const NewRequestScreen: React.FC<NewRequestScreenProps> = ({
       {/* Header */}
       <div>
         <h2 className="text-xl font-black tracking-tight text-white">
-          Report a Problem in {selectedCity === 'Your Location' ? 'Your Area' : selectedCity}
+          Report a Problem in {selectedCity}
         </h2>
         <p className="text-xs text-slate-400 mt-0.5">
-          Snap a photo or say what is broken. AI automatically categorizes and routes it to the right department.
+          Capture or upload a photo of the civic defect. Smart AI automatically classifies, extracts telemetry, and routes it to the right department.
         </p>
       </div>
 
@@ -156,7 +155,7 @@ export const NewRequestScreen: React.FC<NewRequestScreenProps> = ({
           </div>
           <div className="flex items-center space-x-1.5 text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-xl border border-emerald-500/30">
             <MapPin className="w-3.5 h-3.5" />
-            <span>{selectedCity === 'Your Location' ? 'GPS Active' : selectedCity}</span>
+            <span>{selectedCity}</span>
           </div>
         </div>
 
@@ -269,12 +268,6 @@ export const NewRequestScreen: React.FC<NewRequestScreenProps> = ({
           )}
         </div>
       </div>
-
-      {/* 3. Voice Note Option */}
-      <VoiceReporter
-        currentTranscript={voiceTranscript}
-        onTranscriptReady={setVoiceTranscript}
-      />
 
     </div>
   );
