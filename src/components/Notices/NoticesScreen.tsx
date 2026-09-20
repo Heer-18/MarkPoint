@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Bell, AlertTriangle, CheckCircle2, Calendar, MapPin, Building2, X, ChevronRight, Info, Zap } from 'lucide-react';
+import { triggerHapticImpact, triggerHapticSelection } from '../../services/hapticsService';
 
 interface Notice {
   id: string;
@@ -55,6 +56,7 @@ export const NoticesScreen: React.FC<NoticesScreenProps> = ({ selectedCity, onNo
   ];
 
   const handleOpen = (notice: Notice) => {
+    triggerHapticImpact('light');
     setSelectedNotice(notice);
     if (onNoticeRead && !readNoticeIds.includes(notice.id)) {
       onNoticeRead(notice.id);

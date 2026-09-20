@@ -97,12 +97,6 @@ export function createVoiceRecorder(): VoiceRecordingSession {
 /**
  * Text to speech feedback helper
  */
-export function speakText(text: string) {
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1.05;
-    utterance.pitch = 1.0;
-    window.speechSynthesis.speak(utterance);
-  }
+export function speakText(_text: string) {
+  // TTS voice feedback disabled per user preference
 }

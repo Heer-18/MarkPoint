@@ -16,6 +16,7 @@ import {
 import { CivicIssue } from '../../types/civic';
 import { ProblemMap } from '../Common/ProblemMap';
 import { LikeReportConfirmModal } from '../CitizenView/LikeReportConfirmModal';
+import { triggerHapticImpact, triggerHapticSelection } from '../../services/hapticsService';
 
 interface RequestsScreenProps {
   tickets: CivicIssue[];
@@ -99,7 +100,7 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
         <div className="flex items-center p-1 rounded-2xl bg-slate-900 border border-slate-800 flex-shrink-0">
           <button
             type="button"
-            onClick={() => setViewMode('map')}
+            onClick={() => { triggerHapticSelection(); setViewMode('map'); }}
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
               viewMode === 'map'
                 ? 'bg-emerald-600 text-white shadow-md'
@@ -112,7 +113,7 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
           
           <button
             type="button"
-            onClick={() => setViewMode('list')}
+            onClick={() => { triggerHapticSelection(); setViewMode('list'); }}
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
               viewMode === 'list'
                 ? 'bg-emerald-600 text-white shadow-md'
@@ -138,7 +139,7 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
           <button
             key={tab.id}
             type="button"
-            onClick={() => setSelectedVertical(tab.id)}
+            onClick={() => { triggerHapticSelection(); setSelectedVertical(tab.id); }}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex-shrink-0 ${
               selectedVertical === tab.id
                 ? 'bg-slate-800 text-emerald-400 border border-emerald-500/40 shadow-sm'
@@ -156,7 +157,7 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
           <ProblemMap
             tickets={sortedTickets}
             selectedTicket={null}
-            onSelectTicket={onSelectTicket}
+            onSelectTicket={(t) => { triggerHapticImpact('light'); onSelectTicket(t); }}
             centerCoords={centerCoords}
             heightClass="h-[420px] sm:h-[480px]"
           />

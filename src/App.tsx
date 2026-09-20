@@ -17,7 +17,7 @@ import { INITIAL_MOCK_TICKETS, getTicketsForCity, ALL_LOCATIONS_INITIAL_TICKETS 
 import { CivicIssue, CVAnalysisResult, SpatialCoordinate } from './types/civic';
 import { checkSpatialDeduplication, getGeofenceZoneForLocation } from './services/postgisEngine';
 import { runCvInference } from './services/cvInference';
-import { speakText } from './services/voiceService';
+import { triggerHapticImpact, triggerHapticNotification, triggerHapticSelection } from './services/hapticsService';
 
 export const App: React.FC = () => {
   // Navigation State
@@ -93,7 +93,7 @@ export const App: React.FC = () => {
       return prev;
     });
 
-    speakText(`Switched city to ${cityName}.`);
+    triggerHapticSelection();
   };
 
   // Initialize Lenis Smooth Scrolling
@@ -172,7 +172,7 @@ export const App: React.FC = () => {
           if (minDistance < 0.45) {
             setSelectedCity(detectedCity);
             setSearchQuery('');
-            speakText(`Location set to ${detectedCity}.`);
+            triggerHapticNotification('success');
             return;
           }
 
@@ -187,7 +187,7 @@ export const App: React.FC = () => {
               const cityFound = addr.city || addr.town || addr.municipality || addr.district || addr.county || detectedCity;
               setSelectedCity(cityFound);
               setSearchQuery('');
-              speakText(`Location set to ${cityFound}.`);
+              triggerHapticNotification('success');
               return;
             }
           } catch (e) {
@@ -196,11 +196,12 @@ export const App: React.FC = () => {
 
           setSelectedCity(detectedCity);
           setSearchQuery('');
-          speakText(`Location set to ${detectedCity}.`);
+          triggerHapticNotification('success');
         },
         () => {
           setIsLocating(false);
           setSelectedCity('Surat');
+          triggerHapticNotification('warning');
         },
         { enableHighAccuracy: true, timeout: 8000 }
       );
@@ -220,7 +221,7 @@ export const App: React.FC = () => {
           t.id === ticketId ? { ...t, upvoteCount: Math.max(0, t.upvoteCount - 1) } : t
         )
       );
-      speakText('Upvote removed.');
+      triggerHapticImpact('light');
     } else {
       setLikedTickets((prev) => [...prev, ticketId]);
       setTickets((prev) =>
@@ -228,7 +229,7 @@ export const App: React.FC = () => {
           t.id === ticketId ? { ...t, upvoteCount: t.upvoteCount + 1 } : t
         )
       );
-      speakText('Priority upvote added.');
+      triggerHapticImpact('medium');
     }
   };
 
@@ -381,7 +382,7 @@ export const App: React.FC = () => {
         return t;
       })
     );
-    speakText('Government work proof uploaded. AI authenticity verified. Awaiting citizen voting.');
+    triggerHapticNotification('success');
   };
 
   // Citizen 70% Consensus Voting Handler
@@ -409,10 +410,10 @@ export const App: React.FC = () => {
           let newStatus: any = t.status;
           if (approvalPct >= 70 && newTotal >= 2) {
             newStatus = 'VERIFIED_RESOLVED';
-            speakText('Resolution verified with over 70 percent citizen approval.');
+            triggerHapticNotification('success');
           } else if (approvalPct < 70) {
             newStatus = 'RE_DISPATCHED_TO_GOV';
-            speakText('Citizen satisfaction below 70 percent. Re-dispatched to department.');
+            triggerHapticNotification('warning');
           }
 
           return {
@@ -446,9 +447,11 @@ export const App: React.FC = () => {
           : t
       )
     );
+    triggerHapticNotification('success');
   };
 
   const handleTabChange = (tab: NavTab) => {
+    triggerHapticSelection();
     setActiveTab(tab);
     if (tab === 'notices') {
       setHasSeenNoticesTab(true);
