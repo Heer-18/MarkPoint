@@ -350,41 +350,6 @@ export const App: React.FC = () => {
     setActiveTab('requests'); // Switch to map and focus on the new report!
   };
 
-  // Simulate Government Crew Uploading Repair Photo & AI Check
-  const handleSimulateGovFix = (ticketId: string) => {
-    setTickets((prev) =>
-      prev.map((t) => {
-        if (t.id === ticketId) {
-          return {
-            ...t,
-            status: 'GOV_RESOLVED_PENDING_VOTE',
-            imageAfterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
-            govResolutionDetails: {
-              resolvedByWorker: 'Municipal Ground Rapid Response Unit #4',
-              department: t.assignedDepartment,
-              resolvedAt: new Date().toISOString(),
-              repairNotes: 'Applied high-grade cold asphalt mix and roller compaction to seal cavity.',
-              imageAfterUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
-              aiProofScore: 94,
-              aiAuthenticityCheck: 'PASSED_GENUINE'
-            },
-            communityVotes: t.communityVotes || {
-              totalVotes: 3,
-              approvedVotes: 2,
-              rejectedVotes: 0,
-              citizenRemarks: [
-                { user: 'Suresh M.', text: 'Road surface is smooth now.', votedApproved: true, time: '10m ago' },
-                { user: 'Priya K.', text: 'Checked during morning commute, cavity closed.', votedApproved: true, time: '5m ago' }
-              ]
-            }
-          };
-        }
-        return t;
-      })
-    );
-    triggerHapticNotification('success');
-  };
-
   // Citizen 70% Consensus Voting Handler
   const handleVoteOnGovResolution = (ticketId: string, approved: boolean, citizenRemark?: string) => {
     setTickets((prev) =>
@@ -533,7 +498,6 @@ export const App: React.FC = () => {
             onSelectTicket={setInspectTicket}
             selectedCity={selectedCity}
             onVoteOnGovResolution={handleVoteOnGovResolution}
-            onSimulateGovFix={handleSimulateGovFix}
           />
         )}
       </main>

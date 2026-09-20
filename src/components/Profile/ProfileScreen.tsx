@@ -37,7 +37,6 @@ interface ProfileScreenProps {
   onSelectTicket: (ticket: CivicIssue) => void;
   selectedCity: string;
   onVoteOnGovResolution?: (ticketId: string, approved: boolean, citizenRemark?: string) => void;
-  onSimulateGovFix?: (ticketId: string) => void;
 }
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({
@@ -46,8 +45,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   spamPreventedCount,
   onSelectTicket,
   selectedCity,
-  onVoteOnGovResolution,
-  onSimulateGovFix
+  onVoteOnGovResolution
 }) => {
   // Authentication State
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -644,20 +642,13 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                         </div>
                       )}
 
-                      {/* ----------------- IN PROGRESS: SIMULATE GOV FIX BUTTON ----------------- */}
+                      {/* ----------------- IN PROGRESS: MUNICIPAL STATUS ----------------- */}
                       {!isDone && !isPendingVote && (
                         <div className="pt-2 border-t border-slate-800 flex items-center justify-between gap-2">
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onSimulateGovFix && onSimulateGovFix(report.id);
-                            }}
-                            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 text-[11px] font-bold border border-amber-500/30 transition-all"
-                          >
-                            <Wrench className="w-3.5 h-3.5 text-amber-400" />
-                            <span>Simulate Govt Crew Uploading Repair Photo & AI Check</span>
-                          </button>
+                          <div className="flex items-center space-x-1.5 text-[11px] text-amber-300 font-medium">
+                            <Clock className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Municipal team dispatched • Awaiting crew repair upload</span>
+                          </div>
 
                           <button
                             type="button"
@@ -666,7 +657,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                               onSelectTicket(report);
                             }}
                             title="Inspect ticket details"
-                            className="flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 hover:text-white border border-slate-700 text-xs font-bold"
+                            className="flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 hover:text-white border border-slate-700 text-xs font-bold transition-all"
                           >
                             <Eye className="w-3.5 h-3.5" />
                             <span>View Details</span>

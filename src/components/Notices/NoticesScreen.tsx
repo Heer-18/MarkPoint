@@ -24,6 +24,16 @@ export const NoticesScreen: React.FC<NoticesScreenProps> = ({ selectedCity, onNo
 
   const notices: Notice[] = [
     {
+      id: 'NTC-GOV-01',
+      title: 'Govt Crew Uploaded Repair Proof — Citizen Audit Active',
+      department: `${selectedCity} Municipal Corporation (Civil Works)`,
+      date: 'Just Now',
+      type: 'UPDATE',
+      content: `Municipal rapid response crews have uploaded repair photos on the government portal for review in ${selectedCity}. Citizens can now audit the proof and cast their 70% consensus verification vote.`,
+      location: `${selectedCity} Central & Zonal Wards`,
+      details: `Official Resolution Notice from ${selectedCity} Municipal Corporation:\n\n• Municipal ground response teams have completed physical remediation on site.\n• Post-repair photograph uploaded to the government portal and passed AI authenticity check.\n• As per the MarkPoint 70% Citizen Consensus protocol, this ticket is now open for citizen verification voting.\n• Check your Profile / Track Requests tab to inspect the before/after repair proof and cast your vote.\n\nOnly official government portal submissions trigger this citizen audit stage.`
+    },
+    {
       id: 'NTC-01',
       title: 'Monsoon Stormwater Drain De-silting Drive',
       department: 'Drainage & Flood Control Wing',
