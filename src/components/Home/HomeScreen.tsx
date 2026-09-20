@@ -35,11 +35,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   spamPreventedCount,
   centerCoords
 }) => {
-  const activeInPlaceOnly = tickets.filter(
+  const cityTickets = tickets.filter(
     (t) =>
-      t.status !== 'VERIFIED_RESOLVED' &&
-      t.status !== 'RESOLVED_DEMO' &&
-      t.address.toLowerCase().includes(selectedCity.toLowerCase())
+      t.address.toLowerCase().includes(selectedCity.toLowerCase()) ||
+      t.id.toLowerCase().includes(selectedCity.substring(0, 3).toLowerCase())
+  );
+  const activeCityTickets = cityTickets.filter(
+    (t) => t.status !== 'VERIFIED_RESOLVED' && t.status !== 'RESOLVED_DEMO'
   );
   const resolvedTickets = tickets.filter(
     (t) => t.status === 'VERIFIED_RESOLVED' || t.status === 'RESOLVED_DEMO'
@@ -97,7 +99,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <div className="absolute -right-10 -bottom-10 w-48 h-48 rounded-full bg-white/10 pointer-events-none blur-xl" />
       </div>
 
-      {/* 2. City Impact Telemetry Bar (Updated: total reported problem, active in place only, fixed today) */}
+      {/* 2. City Impact Telemetry Bar (Updated: total reported problem, active in <City>, fixed today) */}
       <div className="grid grid-cols-3 gap-2.5 p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 text-center">
         <div className="p-2">
           <div className="text-xl sm:text-2xl font-black text-emerald-400">
@@ -110,10 +112,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
         <div className="p-2 border-x border-slate-800">
           <div className="text-xl sm:text-2xl font-black text-cyan-400">
-            {activeInPlaceOnly.length}
+            {activeCityTickets.length}
           </div>
           <div className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5 leading-tight">
-            Active in Place Only
+            Active in {selectedCity}
           </div>
         </div>
 
@@ -164,7 +166,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         />
       </div>
 
-      {/* 4. How It Works (Super Easy 3-Step Guide) */}
+      {/* 4. How It Works (3 Core Architecture Steps) */}
       <div className="rounded-3xl bg-slate-900/60 border border-slate-800 p-5">
         <div className="flex items-center space-x-2 mb-4">
           <Sparkles className="w-4 h-4 text-emerald-400" />
@@ -179,10 +181,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               1
             </div>
             <h4 className="text-xs font-bold text-white mb-1">
-              Snap or Say It
+              AI Vision & Auto-Dispatch
             </h4>
             <p className="text-[11px] text-slate-400 leading-relaxed">
-              Take a quick photo or speak a voice note. Smart AI instantly classifies the hazard.
+              Snap a photo of the civic issue. Computer Vision detects severity, generates the formal complaint, and routes to the right municipal team.
             </p>
           </div>
 
@@ -191,10 +193,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               2
             </div>
             <h4 className="text-xs font-bold text-white mb-1">
-              Smart Anti-Spam
+              25m Spatial Anti-Spam
             </h4>
             <p className="text-[11px] text-slate-400 leading-relaxed">
-              If 20 people report the same pothole, it bundles them into 1 master ticket with 20 upvotes.
+              If multiple citizens report the same issue within 25 meters, reports are merged into 1 prioritized master ticket with combined community upvotes.
             </p>
           </div>
 
@@ -203,10 +205,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               3
             </div>
             <h4 className="text-xs font-bold text-white mb-1">
-              No Fake Closures
+              70% Citizen Verification
             </h4>
             <p className="text-[11px] text-slate-400 leading-relaxed">
-              When fixed, AI checks the repair photo against the original to ensure genuine resolution.
+              When municipal crews upload repair proof, citizens vote with a 70% satisfaction consensus before official closure. No fake closures.
             </p>
           </div>
         </div>
