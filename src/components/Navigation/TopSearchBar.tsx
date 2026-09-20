@@ -82,19 +82,21 @@ export const TopSearchBar: React.FC<TopSearchBarProps> = ({
         {/* Main Header & Search Row */}
         <div className="flex items-center space-x-2">
           
-          {/* Clean MarkPoint App Logo */}
-          <div className="flex items-center flex-shrink-0">
+          {/* Clean MarkPoint App Logo (Heart-Handshake Theme) */}
+          <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 flex-shrink-0 shadow-[0_0_12px_rgba(16,185,129,0.3)]">
             <svg
               viewBox="0 0 24 24"
               fill="none"
-              className="w-7 h-7 text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+              className="w-5 h-5 text-emerald-400"
               stroke="currentColor"
               strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" />
-              <circle cx="12" cy="10" r="3" fill="#10b981" />
+              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+              <path d="M12 5 9.04 7.96a2.17 2.17 0 0 0 0 3.08v0c.82.82 2.13.85 3 .07l2.07-1.9a2.82 2.82 0 0 1 3.79 0l2.96 2.66" />
+              <path d="m18 15-2-2" />
+              <path d="m15 18-2-2" />
             </svg>
           </div>
 
