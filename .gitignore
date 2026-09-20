@@ -30,3 +30,4 @@ dist-ssr
 
 # APK builds
 *.apk
+!MarkPoint.apk
