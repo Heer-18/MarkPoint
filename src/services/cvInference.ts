@@ -256,47 +256,54 @@ Return ONLY valid JSON matching this schema:
   "formalComplaintDraft": "Official complaint notice text..."
 }`;
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: prompt },
+  const modelTargets = ['gemini-3.6-flash', 'gemini-flash-latest', 'gemini-3.5-flash'];
+  let lastError: any = null;
+
+  for (const model of modelTargets) {
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [
               {
-                inline_data: {
-                  mime_type: mimeType,
-                  data: base64Data
-                }
+                parts: [
+                  { text: prompt },
+                  {
+                    inline_data: {
+                      mime_type: mimeType,
+                      data: base64Data
+                    }
+                  }
+                ]
               }
-            ]
-          }
-        ],
-        generationConfig: {
-          response_mime_type: 'application/json',
-          temperature: 0.1
+            ],
+            generationConfig: {
+              response_mime_type: 'application/json',
+              temperature: 0.1
+            }
+          })
         }
-      })
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) {
+          const parsed = JSON.parse(text);
+          return parsed as CVAnalysisResult;
+        }
+      }
+    } catch (e) {
+      lastError = e;
     }
-  );
-
-  if (!response.ok) {
-    throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
   }
 
-  const data = await response.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) return null;
-
-  try {
-    const parsed = JSON.parse(text);
-    return parsed as CVAnalysisResult;
-  } catch (err) {
-    console.warn('Failed to parse Gemini response JSON:', text);
-    return null;
+  if (lastError) {
+    console.warn('Gemini vision API error:', lastError);
   }
+  return null;
 }
 
