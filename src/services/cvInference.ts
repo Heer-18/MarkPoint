@@ -7,23 +7,6 @@ export interface InferenceOptions {
   presetHint?: string;
 }
 
-// Built-in failover Gemini API keys provided for zero-friction mobile deployment
-const ENCODED_KEYS = [
-  'QVEuQWI4Uk42TF8zanAtLUpPakxsTG41N2dZMGUxaUh5b0RGNExncUNBR2FDVFBJWEk2YlE=',
-  'QVEuQWI4Uk42S0l4WU8xbVFyMUZKV1plWmI2VGFsR0xGZkJrLUZYVUh5T1QwN2NOT1dLQ3c=',
-  'QVEuQWI4Uk42SzRTQmY0bjd3UDZXSjM0eU1GX250QUlyUXp6N1Zzdlg3UUNSOG9XZkttVEE=',
-  'QVEuQWI4Uk42S3BfUTRGSHFTZ2twcVVkSXVqNFBSV3EzWFVSUGxCemhsa1ZSWG9vOEFqUWc=',
-  'QVEuQWI4Uk42SVF3Q3VrOFdVUGUxRk1UdEFxSGoyUmlrQkkyeGVydEhDSGFCYnV1cmV4N2c='
-];
-
-const BUILT_IN_KEYS = ENCODED_KEYS.map((k) => {
-  try {
-    return typeof atob !== 'undefined' ? atob(k) : Buffer.from(k, 'base64').toString('utf8');
-  } catch {
-    return '';
-  }
-}).filter(Boolean);
-
 /**
  * Computer Vision Screening & Gemini Multimodal Inference Pipeline
  * User only uploads a photo - AI automatically determines the category, department,
@@ -35,9 +18,9 @@ export async function runCvInference(
 ): Promise<CVAnalysisResult> {
   const envKey = (import.meta as any).env?.VITE_GEMINI_API_KEY || '';
   const storedKey = typeof window !== 'undefined' ? localStorage.getItem('gemini_api_key') || '' : '';
-  const candidateKeys = [options.apiKey?.trim(), envKey, storedKey, ...BUILT_IN_KEYS].filter(Boolean) as string[];
+  const candidateKeys = [options.apiKey?.trim(), envKey, storedKey].filter(Boolean) as string[];
 
-  // Attempt live Gemini Vision analysis across candidate keys
+  // Attempt live Gemini Vision analysis if a user-supplied or environment API key is configured
   for (const key of candidateKeys) {
     if (imageDataUrl.startsWith('data:image/') || imageDataUrl.startsWith('http')) {
       try {
@@ -46,7 +29,7 @@ export async function runCvInference(
           return liveResult;
         }
       } catch (err) {
-        console.warn('Gemini API key failover attempt:', err);
+        console.warn('Gemini API key attempt failed, falling back:', err);
       }
     }
   }
