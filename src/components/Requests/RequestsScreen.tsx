@@ -74,6 +74,13 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
     return true;
   });
 
+  // Sort so that tickets in the currently selected city appear at the top, while keeping all location tickets accessible
+  const sortedTickets = [...filteredTickets].sort((a, b) => {
+    const aMatches = a.address.toLowerCase().includes(selectedCity.toLowerCase()) ? 1 : 0;
+    const bMatches = b.address.toLowerCase().includes(selectedCity.toLowerCase()) ? 1 : 0;
+    return bMatches - aMatches;
+  });
+
   return (
     <div className="space-y-4 pb-28 max-w-3xl mx-auto animate-in fade-in duration-300 overflow-x-hidden">
       
@@ -84,7 +91,7 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
             Civic Problem Map & Requests
           </h2>
           <p className="text-xs text-slate-400 truncate">
-            {filteredTickets.length} issues reported in {selectedCity}
+            {filteredTickets.length} total issues across all locations
           </p>
         </div>
 
@@ -147,7 +154,7 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
       {viewMode === 'map' && (
         <div className="space-y-4">
           <ProblemMap
-            tickets={filteredTickets}
+            tickets={sortedTickets}
             selectedTicket={null}
             onSelectTicket={onSelectTicket}
             centerCoords={centerCoords}
@@ -156,13 +163,13 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
 
           {/* Quick List Below Map */}
           <div className="space-y-2">
-            {filteredTickets.length > 0 ? (
+            {sortedTickets.length > 0 ? (
               <>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 px-1">
-                  Issues in {selectedCity} ({filteredTickets.length})
+                  Issues ({sortedTickets.length} total, {selectedCity} first)
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {filteredTickets.slice(0, 6).map((ticket) => {
+                  {sortedTickets.slice(0, 6).map((ticket) => {
                     const isLiked = likedTickets.includes(ticket.id);
                     return (
                       <div
@@ -174,6 +181,9 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
                           <img
                             src={ticket.imageUrl}
                             alt={ticket.subCategory}
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80';
+                            }}
                             className="w-11 h-11 rounded-xl object-cover flex-shrink-0 border border-slate-700"
                           />
                           <div className="min-w-0 flex-1">
@@ -212,7 +222,7 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
                 <div className="space-y-1">
                   <h4 className="text-sm font-bold text-white">No Issues Reported in this Category</h4>
                   <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">
-                    There are currently no active complaints for this category in <strong className="text-emerald-400">{selectedCity}</strong>. Area status is clear!
+                    There are currently no active complaints for this category. Area status is clear!
                   </p>
                 </div>
               </div>
@@ -224,8 +234,8 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
       {/* View 2: List View */}
       {viewMode === 'list' && (
         <div className="space-y-3">
-          {filteredTickets.length > 0 ? (
-            filteredTickets.map((ticket) => {
+          {sortedTickets.length > 0 ? (
+            sortedTickets.map((ticket) => {
               const isResolved = ticket.status === 'VERIFIED_RESOLVED' || ticket.status === 'RESOLVED_DEMO';
               const isBreached = ticket.status === 'ESCALATED_SLA_BREACH';
               const isLiked = likedTickets.includes(ticket.id);
@@ -241,6 +251,9 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
                       <img
                         src={ticket.imageUrl}
                         alt={ticket.subCategory}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80';
+                        }}
                         className="w-full h-full object-cover"
                       />
                     </div>

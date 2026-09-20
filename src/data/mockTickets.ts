@@ -568,7 +568,7 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       slaHours: 24,
       assignedDepartment: `${cityDept} (Underground Drainage Dept)`,
       l2EscalationRole: 'Superintending Engineer (Drainage)',
-      imageUrl: 'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?auto=format&fit=crop&w=800&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80',
       aiConfidence: 0.98,
       detectedObjects: [{ label: 'Missing Cast Iron Manhole Cover', confidence: 0.99, box: [30, 30, 70, 70] }],
       detectedCvTriggers: ['Exposed vertical shaft drop > 1.2m', 'Perimeter fracture'],
@@ -663,5 +663,20 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
     } as CivicIssue;
   });
 }
+
+// Master Pre-Populated Database across all cities so all location reports are preserved
+const RAJKOT_PRESET = getTicketsForCity('Rajkot', { lat: 22.3039, lng: 70.8022 });
+const NADIAD_PRESET = getTicketsForCity('Nadiad', { lat: 22.6916, lng: 72.8634 });
+const AHMEDABAD_PRESET = getTicketsForCity('Ahmedabad', { lat: 23.0225, lng: 72.5714 });
+const VADODARA_PRESET = getTicketsForCity('Vadodara', { lat: 22.3072, lng: 73.1812 });
+
+export const ALL_LOCATIONS_INITIAL_TICKETS: CivicIssue[] = [
+  ...INITIAL_MOCK_TICKETS, // Surat tickets
+  ...RAJKOT_PRESET,
+  ...NADIAD_PRESET,
+  ...AHMEDABAD_PRESET,
+  ...VADODARA_PRESET
+];
+
 
 

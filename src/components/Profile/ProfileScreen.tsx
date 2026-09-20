@@ -342,7 +342,8 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                   return (
                     <div
                       key={report.id}
-                      className="p-4 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl space-y-3.5 transition-all"
+                      onClick={() => onSelectTicket(report)}
+                      className="p-4 rounded-3xl bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-slate-700 shadow-xl space-y-3.5 transition-all cursor-pointer active:scale-[0.99]"
                     >
                       {/* Top Header Row */}
                       <div className="flex items-start justify-between gap-3">
@@ -350,6 +351,9 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                           <img
                             src={report.imageUrl}
                             alt={report.subCategory}
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80';
+                            }}
                             className="w-14 h-14 rounded-2xl object-cover flex-shrink-0 border border-slate-700 shadow-md"
                           />
 
@@ -385,8 +389,8 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                           </div>
                         </div>
 
-                        {/* Status Badge */}
-                        <div className="flex-shrink-0">
+                        {/* Status Badge & Detail Inspector Button */}
+                        <div className="flex items-center space-x-2 flex-shrink-0">
                           {isDone ? (
                             <span className="px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30 flex items-center space-x-1">
                               <CheckCircle2 className="w-3 h-3 text-emerald-400" />
@@ -408,6 +412,19 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                               <span>In Progress</span>
                             </span>
                           )}
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSelectTicket(report);
+                            }}
+                            title="Open ticket detail inspector"
+                            className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-all flex items-center space-x-1 text-[10px] font-bold"
+                          >
+                            <Eye className="w-3.5 h-3.5 text-cyan-400" />
+                            <span className="hidden sm:inline">Details</span>
+                          </button>
                         </div>
                       </div>
 
@@ -439,6 +456,9 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                                 <img
                                   src={report.imageUrl}
                                   alt="Before defect"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80';
+                                  }}
                                   className="w-full h-24 rounded-xl object-cover border border-slate-800"
                                 />
                               </div>
@@ -447,6 +467,9 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                                 <img
                                   src={report.imageAfterUrl || 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80'}
                                   alt="Govt repair proof"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80';
+                                  }}
                                   className="w-full h-24 rounded-xl object-cover border border-emerald-500/40"
                                 />
                               </div>
@@ -485,7 +508,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
 
                               {/* Voting Input & Buttons */}
                               {!hasUserVoted ? (
-                                <div className="space-y-2 pt-2 border-t border-slate-800">
+                                <div className="space-y-2 pt-2 border-t border-slate-800" onClick={(e) => e.stopPropagation()}>
                                   <div className="space-y-1">
                                     <label className="text-[10px] font-bold text-slate-300 uppercase">
                                       Your Ground Audit Feedback / Remark:
@@ -493,6 +516,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                                     <input
                                       type="text"
                                       value={citizenRemarksMap[report.id] || ''}
+                                      onClick={(e) => e.stopPropagation()}
                                       onChange={(e) =>
                                         setCitizenRemarksMap({
                                           ...citizenRemarksMap,
@@ -507,7 +531,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                                   <div className="flex items-center space-x-2 pt-1">
                                     <button
                                       type="button"
-                                      onClick={() => handleCitizenVote(report.id, true)}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleCitizenVote(report.id, true);
+                                      }}
                                       className="flex-1 flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-xs uppercase tracking-wide shadow-md transition-all"
                                     >
                                       <Check className="w-3.5 h-3.5 text-slate-950" />
@@ -516,7 +543,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
 
                                     <button
                                       type="button"
-                                      onClick={() => handleCitizenVote(report.id, false)}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleCitizenVote(report.id, false);
+                                      }}
                                       className="flex-1 flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 font-bold text-xs transition-all"
                                     >
                                       <X className="w-3.5 h-3.5 text-rose-400" />
@@ -536,7 +566,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                               {/* Testing button to immediately complete 24h cycle */}
                               <button
                                 type="button"
-                                onClick={() => handleReveal24hResults(report.id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleReveal24hResults(report.id);
+                                }}
                                 className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-bold border border-slate-700 flex items-center justify-center space-x-1.5 mt-2"
                               >
                                 <Users className="w-3.5 h-3.5 text-cyan-400" />
@@ -616,7 +649,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                         <div className="pt-2 border-t border-slate-800 flex items-center justify-between gap-2">
                           <button
                             type="button"
-                            onClick={() => onSimulateGovFix && onSimulateGovFix(report.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSimulateGovFix && onSimulateGovFix(report.id);
+                            }}
                             className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 text-[11px] font-bold border border-amber-500/30 transition-all"
                           >
                             <Wrench className="w-3.5 h-3.5 text-amber-400" />
@@ -625,10 +661,15 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
 
                           <button
                             type="button"
-                            onClick={() => onSelectTicket(report)}
-                            className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSelectTicket(report);
+                            }}
+                            title="Inspect ticket details"
+                            className="flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 hover:text-white border border-slate-700 text-xs font-bold"
                           >
-                            <Eye className="w-4 h-4" />
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>View Details</span>
                           </button>
                         </div>
                       )}

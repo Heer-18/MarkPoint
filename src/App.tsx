@@ -13,7 +13,7 @@ import { AIAnalysisModal } from './components/CitizenView/AIAnalysisModal';
 import { TicketDetailModal } from './components/DashboardView/TicketDetailModal';
 import { AppSplashScreen } from './components/Navigation/AppSplashScreen';
 
-import { INITIAL_MOCK_TICKETS, getTicketsForCity } from './data/mockTickets';
+import { INITIAL_MOCK_TICKETS, getTicketsForCity, ALL_LOCATIONS_INITIAL_TICKETS } from './data/mockTickets';
 import { CivicIssue, CVAnalysisResult, SpatialCoordinate } from './types/civic';
 import { checkSpatialDeduplication, getGeofenceZoneForLocation } from './services/postgisEngine';
 import { runCvInference } from './services/cvInference';
@@ -28,10 +28,9 @@ export const App: React.FC = () => {
   const [isLocating, setIsLocating] = useState<boolean>(false);
   const [gpsCoords, setGpsCoords] = useState<{ lat: number; lng: number } | null>(null);
 
-  // Tickets & Telemetry State
+  // Tickets & Telemetry State: Preserves all location reports across all cities
   const [showSplash, setShowSplash] = useState<boolean>(true);
-  const [userCreatedTickets, setUserCreatedTickets] = useState<CivicIssue[]>([]);
-  const [cityOverrides, setCityOverrides] = useState<Record<string, CivicIssue[]>>({});
+  const [tickets, setTickets] = useState<CivicIssue[]>(ALL_LOCATIONS_INITIAL_TICKETS);
   const [likedTickets, setLikedTickets] = useState<string[]>(['TKT-101', 'TKT-103', 'TKT-SRT-8812']);
   const [spamPreventedCount, setSpamPreventedCount] = useState<number>(42);
   const [isLoadingAnalysis, setIsLoadingAnalysis] = useState<boolean>(false);
@@ -58,37 +57,32 @@ export const App: React.FC = () => {
     return selectedCityCoords;
   }, [selectedCityCoords]);
 
-  // Dynamic City-Specific Tickets: Updates immediately when switching between Surat, Rajkot, Nadiad, etc.!
-  const tickets = useMemo(() => {
-    const baseTickets = cityOverrides[selectedCity] || getTicketsForCity(selectedCity, currentCityCoords);
-    return [...userCreatedTickets, ...baseTickets];
-  }, [selectedCity, currentCityCoords, userCreatedTickets, cityOverrides]);
-
-  const setTickets = (updater: React.SetStateAction<CivicIssue[]>) => {
-    if (typeof updater === 'function') {
-      const updated = updater(tickets);
-      setCityOverrides((prev) => ({
-        ...prev,
-        [selectedCity]: updated
-      }));
-    } else {
-      setCityOverrides((prev) => ({
-        ...prev,
-        [selectedCity]: updater
-      }));
-    }
-  };
-
   const handleCitySelect = (cityName: string, coords?: { lat: number; lng: number }) => {
     setSelectedCity(cityName);
-    if (coords) {
-      setSelectedCityCoords(coords);
-    } else {
+    let targetCoords = coords;
+    if (!targetCoords) {
       const matched = CITIES.find((c) => c.name.toLowerCase() === cityName.toLowerCase());
       if (matched) {
-        setSelectedCityCoords({ lat: matched.lat, lng: matched.lng });
+        targetCoords = { lat: matched.lat, lng: matched.lng };
+      } else {
+        targetCoords = selectedCityCoords;
       }
     }
+    setSelectedCityCoords(targetCoords);
+
+    // If this city is not yet in our tickets dataset, generate and append its tickets so all location reports are preserved
+    setTickets((prev) => {
+      const hasCityTickets = prev.some((t) =>
+        t.address.toLowerCase().includes(cityName.toLowerCase()) ||
+        t.id.toLowerCase().includes(cityName.substring(0, 3).toLowerCase())
+      );
+      if (!hasCityTickets) {
+        const newCityTickets = getTicketsForCity(cityName, targetCoords!);
+        return [...newCityTickets, ...prev];
+      }
+      return prev;
+    });
+
     speakText(`Switched city to ${cityName}.`);
   };
 
