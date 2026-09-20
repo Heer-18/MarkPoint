@@ -90,7 +90,7 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
     category: 'Civic Assets',
     subCategory: 'Fallen Tree / Roadway Obstruction',
     taxonomyId: 'PA-01',
-    imageUrl: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=800&q=80',
     voiceTranscript: 'Heavy tree trunk collapsed across two traffic lanes after storm winds. Road completely blocked.',
     location: { lat: 28.6080, lng: 77.2400, accuracy: 3.2 },
     address: 'Lodhi Colony Main Road, Near Park Gate 2',
