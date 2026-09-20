@@ -18,13 +18,12 @@ import { CivicIssue } from '../../types/civic';
 interface TicketDetailModalProps {
   ticket: CivicIssue | null;
   onClose: () => void;
-  onOpenVerificationStudio: (ticket: CivicIssue) => void;
+  onOpenVerificationStudio?: (ticket: CivicIssue) => void;
 }
 
 export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
   ticket,
-  onClose,
-  onOpenVerificationStudio
+  onClose
 }) => {
   if (!ticket) return null;
 
@@ -148,20 +147,13 @@ export const TicketDetailModal: React.FC<TicketDetailModalProps> = ({
             Reported: {new Date(ticket.reportedAt).toLocaleString()}
           </div>
 
-          <div className="flex items-center space-x-2">
-            {!isResolved && (
-              <button
-                onClick={() => {
-                  onClose();
-                  onOpenVerificationStudio(ticket);
-                }}
-                className="flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-cyan-900/30 transition-all"
-              >
-                <Sliders className="w-4 h-4" />
-                <span>Open Verification Studio</span>
-              </button>
-            )}
-          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors"
+          >
+            Close
+          </button>
         </div>
 
       </div>

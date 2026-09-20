@@ -34,7 +34,6 @@ interface ProfileScreenProps {
   tickets: CivicIssue[];
   likedTickets?: string[];
   spamPreventedCount: number;
-  onOpenVerificationStudio: (ticket: CivicIssue) => void;
   onSelectTicket: (ticket: CivicIssue) => void;
   selectedCity: string;
   onVoteOnGovResolution?: (ticketId: string, approved: boolean, citizenRemark?: string) => void;
@@ -45,7 +44,6 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   tickets,
   likedTickets = [],
   spamPreventedCount,
-  onOpenVerificationStudio,
   onSelectTicket,
   selectedCity,
   onVoteOnGovResolution,
@@ -658,30 +656,6 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                 <p className="text-[11px] text-slate-500">Tap "Report" or like any issue on the map to track it here</p>
               </div>
             )}
-          </div>
-
-          {/* 5. Municipal Staff Verification Studio Modal Trigger */}
-          <div className="p-4 rounded-3xl bg-slate-900/60 border border-slate-800/90 flex items-center justify-between gap-3">
-            <div>
-              <h4 className="text-xs font-bold text-white flex items-center space-x-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>Municipal Staff Audit Portal</span>
-              </h4>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                Test Before vs After repair proof verification
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => {
-                const target = tickets.find((t) => t.status === 'WORK_SUBMITTED') || tickets[0];
-                onOpenVerificationStudio(target);
-              }}
-              className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-bold whitespace-nowrap"
-            >
-              Verify Fixes
-            </button>
           </div>
         </>
       )}

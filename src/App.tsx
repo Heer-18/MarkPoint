@@ -11,7 +11,6 @@ import { ProfileScreen } from './components/Profile/ProfileScreen';
 import { DeduplicationModal } from './components/CitizenView/DeduplicationModal';
 import { AIAnalysisModal } from './components/CitizenView/AIAnalysisModal';
 import { TicketDetailModal } from './components/DashboardView/TicketDetailModal';
-import { VerificationStudio } from './components/DashboardView/VerificationStudio';
 import { AppSplashScreen } from './components/Navigation/AppSplashScreen';
 
 import { INITIAL_MOCK_TICKETS } from './data/mockTickets';
@@ -433,7 +432,6 @@ export const App: React.FC = () => {
             tickets={tickets}
             likedTickets={likedTickets}
             spamPreventedCount={spamPreventedCount}
-            onOpenVerificationStudio={(t) => setVerificationTicket(t)}
             onSelectTicket={setInspectTicket}
             selectedCity={selectedCity}
             onVoteOnGovResolution={handleVoteOnGovResolution}
@@ -476,19 +474,6 @@ export const App: React.FC = () => {
         <TicketDetailModal
           ticket={inspectTicket}
           onClose={() => setInspectTicket(null)}
-          onOpenVerificationStudio={(t) => {
-            setInspectTicket(null);
-            setVerificationTicket(t);
-          }}
-        />
-      )}
-
-      {/* Modal 4: AI "No Fake Closures" Verification Studio */}
-      {verificationTicket && (
-        <VerificationStudio
-          ticket={verificationTicket}
-          onClose={() => setVerificationTicket(null)}
-          onResolvedSuccessfully={handleResolveTicket}
         />
       )}
 

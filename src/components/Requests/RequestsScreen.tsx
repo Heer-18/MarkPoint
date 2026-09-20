@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { CivicIssue } from '../../types/civic';
 import { ProblemMap } from '../Common/ProblemMap';
+import { LikeReportConfirmModal } from '../CitizenView/LikeReportConfirmModal';
 
 interface RequestsScreenProps {
   tickets: CivicIssue[];
@@ -37,6 +38,24 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
   const [selectedVertical, setSelectedVertical] = useState<string>('ALL');
   const [selectedStatus, setSelectedStatus] = useState<string>('ALL');
   const [filterText, setFilterText] = useState<string>('');
+  const [pendingLikeTicket, setPendingLikeTicket] = useState<CivicIssue | null>(null);
+
+  const handleLikeClick = (e: React.MouseEvent, ticket: CivicIssue) => {
+    e.stopPropagation();
+    const isAlreadyLiked = likedTickets.includes(ticket.id);
+    if (isAlreadyLiked) {
+      // Direct 2nd click removes like and removes from profile
+      onUpvoteTicket(ticket.id);
+    } else {
+      // First click opens prompt/popup asking user to co-report and add to profile
+      setPendingLikeTicket(ticket);
+    }
+  };
+
+  const handleConfirmCoReport = (ticket: CivicIssue) => {
+    onUpvoteTicket(ticket.id);
+    setPendingLikeTicket(null);
+  };
 
   const filteredTickets = tickets.filter((t) => {
     if (selectedVertical !== 'ALL') {
@@ -56,21 +75,21 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
   });
 
   return (
-    <div className="space-y-4 pb-28 max-w-3xl mx-auto animate-in fade-in duration-300">
+    <div className="space-y-4 pb-28 max-w-3xl mx-auto animate-in fade-in duration-300 overflow-x-hidden">
       
       {/* Header & View Switcher */}
       <div className="flex items-center justify-between gap-2 pb-1">
-        <div>
-          <h2 className="text-xl font-black tracking-tight text-white">
+        <div className="min-w-0 flex-1">
+          <h2 className="text-xl font-black tracking-tight text-white truncate">
             Civic Problem Map & Requests
           </h2>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-400 truncate">
             {filteredTickets.length} issues reported in {selectedCity}
           </p>
         </div>
 
         {/* Map / List View Toggle */}
-        <div className="flex items-center p-1 rounded-2xl bg-slate-900 border border-slate-800">
+        <div className="flex items-center p-1 rounded-2xl bg-slate-900 border border-slate-800 flex-shrink-0">
           <button
             type="button"
             onClick={() => setViewMode('map')}
@@ -149,19 +168,19 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
                       <div
                         key={ticket.id}
                         onClick={() => onSelectTicket(ticket)}
-                        className="p-3 rounded-2xl bg-slate-900/80 hover:bg-slate-850 border border-slate-800 hover:border-slate-700 cursor-pointer transition-all flex items-center justify-between shadow-md"
+                        className="p-3 rounded-2xl bg-slate-900/80 hover:bg-slate-850 border border-slate-800 hover:border-slate-700 cursor-pointer transition-all flex items-center justify-between shadow-md overflow-hidden"
                       >
-                        <div className="flex items-center space-x-3 min-w-0">
+                        <div className="flex items-center space-x-3 min-w-0 flex-1 mr-2">
                           <img
                             src={ticket.imageUrl}
                             alt={ticket.subCategory}
                             className="w-11 h-11 rounded-xl object-cover flex-shrink-0 border border-slate-700"
                           />
-                          <div className="min-w-0">
-                            <div className="text-xs font-bold text-white truncate">
+                          <div className="min-w-0 flex-1">
+                            <div className="text-xs font-bold text-white truncate break-words">
                               {ticket.subCategory}
                             </div>
-                            <div className="text-[11px] text-slate-400 truncate">
+                            <div className="text-[11px] text-slate-400 truncate break-words">
                               {ticket.address}
                             </div>
                           </div>
@@ -169,12 +188,9 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
 
                         <button
                           type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onUpvoteTicket(ticket.id);
-                          }}
+                          onClick={(e) => handleLikeClick(e, ticket)}
                           title={isLiked ? "Click to remove like" : "Click to like / upvote"}
-                          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ml-2 flex-shrink-0 ${
+                          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex-shrink-0 ${
                             isLiked 
                               ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20' 
                               : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
@@ -217,9 +233,9 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
               return (
                 <div
                   key={ticket.id}
-                  className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg"
+                  className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg overflow-hidden"
                 >
-                  <div className="flex items-start space-x-3 min-w-0 flex-1">
+                  <div className="flex items-start space-x-3 min-w-0 flex-1 w-full sm:w-auto">
                     <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden flex-shrink-0 border border-slate-700">
                       <img
                         src={ticket.imageUrl}
@@ -228,9 +244,9 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
                       />
                     </div>
 
-                    <div className="min-w-0 flex-1">
+                    <div className="min-w-0 flex-1 overflow-hidden">
                       <div className="flex items-center justify-between gap-1 flex-wrap">
-                        <span className="text-xs font-bold text-white truncate max-w-[200px]">
+                        <span className="text-xs font-bold text-white truncate max-w-[200px] break-words">
                           {ticket.subCategory}
                         </span>
                         {isResolved ? (
@@ -248,7 +264,7 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
                         )}
                       </div>
 
-                      <p className="text-xs text-slate-400 flex items-center space-x-1 mt-1 truncate">
+                      <p className="text-xs text-slate-400 flex items-center space-x-1 mt-1 truncate break-words">
                         <MapPin className="w-3 h-3 text-cyan-400 flex-shrink-0" />
                         <span className="truncate">{ticket.address}</span>
                       </p>
@@ -261,12 +277,12 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-2 w-full sm:w-auto justify-end pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800">
+                  <div className="flex items-center space-x-2 w-full sm:w-auto justify-end pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800 flex-shrink-0">
                     <button
                       type="button"
-                      onClick={() => onUpvoteTicket(ticket.id)}
-                      title={isLiked ? "Click to remove like" : "Click to like"}
-                      className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                      onClick={(e) => handleLikeClick(e, ticket)}
+                      title={isLiked ? "Click to remove like" : "Click to like / co-report"}
+                      className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex-shrink-0 ${
                         isLiked
                           ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
                           : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'
@@ -279,7 +295,7 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
                     <button
                       type="button"
                       onClick={() => onSelectTicket(ticket)}
-                      className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white"
+                      className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex-shrink-0"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
@@ -299,6 +315,16 @@ export const RequestsScreen: React.FC<RequestsScreenProps> = ({
             </div>
           )}
         </div>
+      )}
+
+      {/* Confirmation Modal when liking an issue to co-report and add to profile */}
+      {pendingLikeTicket && (
+        <LikeReportConfirmModal
+          isOpen={!!pendingLikeTicket}
+          ticket={pendingLikeTicket}
+          onConfirmReport={handleConfirmCoReport}
+          onCancel={() => setPendingLikeTicket(null)}
+        />
       )}
 
     </div>
