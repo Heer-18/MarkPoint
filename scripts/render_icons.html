@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>MarkPoint Icon Generator</title>
+</head>
+<body style="background: #111; color: #fff; font-family: sans-serif; padding: 20px;">
+  <h2>MarkPoint Heart-Handshake Icon Renderer</h2>
+  <div id="canvases" style="display: flex; gap: 20px; flex-wrap: wrap;"></div>
+
+  <script>
+    const sizes = [
+      { name: 'mipmap-mdpi/ic_launcher.png', size: 48, round: false },
+      { name: 'mipmap-mdpi/ic_launcher_round.png', size: 48, round: true },
+      { name: 'mipmap-mdpi/ic_launcher_foreground.png', size: 108, round: false, fgOnly: true },
+
+      { name: 'mipmap-hdpi/ic_launcher.png', size: 72, round: false },
+      { name: 'mipmap-hdpi/ic_launcher_round.png', size: 72, round: true },
+      { name: 'mipmap-hdpi/ic_launcher_foreground.png', size: 162, round: false, fgOnly: true },
+
+      { name: 'mipmap-xhdpi/ic_launcher.png', size: 96, round: false },
+      { name: 'mipmap-xhdpi/ic_launcher_round.png', size: 96, round: true },
+      { name: 'mipmap-xhdpi/ic_launcher_foreground.png', size: 216, round: false, fgOnly: true },
+
+      { name: 'mipmap-xxhdpi/ic_launcher.png', size: 144, round: false },
+      { name: 'mipmap-xxhdpi/ic_launcher_round.png', size: 144, round: true },
+      { name: 'mipmap-xxhdpi/ic_launcher_foreground.png', size: 324, round: false, fgOnly: true },
+
+      { name: 'mipmap-xxxhdpi/ic_launcher.png', size: 192, round: false },
+      { name: 'mipmap-xxxhdpi/ic_launcher_round.png', size: 192, round: true },
+      { name: 'mipmap-xxxhdpi/ic_launcher_foreground.png', size: 432, round: false, fgOnly: true },
+
+      { name: 'drawable/splash.png', size: 512, round: false }
+    ];
+
+    function drawIcon(ctx, size, isRound, isFgOnly) {
+      ctx.clearRect(0, 0, size, size);
+
+      const scale = size / 100;
+      ctx.save();
+      ctx.scale(scale, scale);
+
+      if (!isFgOnly) {
+        // Draw background
+        ctx.save();
+        if (isRound) {
+          ctx.beginPath();
+          ctx.arc(50, 50, 48, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.clip();
+        } else {
+          // Smooth squircle / rounded rect
+          ctx.beginPath();
+          ctx.roundRect(4, 4, 92, 92, 24);
+          ctx.closePath();
+          ctx.clip();
+        }
+
+        // Vibrant Emerald Gradient (MarkPoint Civic Theme)
+        const grad = ctx.createLinearGradient(0, 0, 100, 100);
+        grad.addColorStop(0, '#047857'); // Emerald 700
+        grad.addColorStop(0.5, '#10b981'); // Emerald 500
+        grad.addColorStop(1, '#059669'); // Emerald 600
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 100, 100);
+
+        // Subtle diagonal gloss highlight
+        const gloss = ctx.createLinearGradient(0, 0, 0, 100);
+        gloss.addColorStop(0, 'rgba(255, 255, 255, 0.25)');
+        gloss.addColorStop(0.5, 'rgba(255, 255, 255, 0.0)');
+        gloss.addColorStop(1, 'rgba(0, 0, 0, 0.15)');
+        ctx.fillStyle = gloss;
+        ctx.fillRect(0, 0, 100, 100);
+
+        ctx.restore();
+      }
+
+      // Draw Heart-Handshake Glyph
+      ctx.save();
+      
+      // Center and scale glyph
+      const glyphScale = isFgOnly ? 0.60 : 0.65;
+      ctx.translate(50, 50);
+      ctx.scale(glyphScale, glyphScale);
+      ctx.translate(-50, -50);
+
+      ctx.lineWidth = 7.2;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = '#ffffff';
+
+      // 1. Continuous Heart-Handshake Loop matching reference image
+      // Left Heart lobe -> bottom point -> lower hand wrist
+      ctx.beginPath();
+      ctx.moveTo(50, 36);
+      ctx.bezierCurveTo(40, 20, 22, 20, 16, 36);
+      ctx.bezierCurveTo(10, 52, 24, 70, 50, 86);
+      ctx.stroke();
+
+      // Right Heart lobe -> right arm looping into upper handshake
+      ctx.beginPath();
+      ctx.moveTo(50, 36);
+      ctx.bezierCurveTo(60, 20, 78, 20, 84, 36);
+      ctx.bezierCurveTo(90, 52, 78, 70, 68, 56);
+      // Hand arm reaches across left
+      ctx.lineTo(44, 46);
+      // Rounded loop of the upper thumb / hand
+      ctx.arc(42, 53, 7, -Math.PI * 0.5, Math.PI * 0.5, true);
+      // Hand returns rightward under grip
+      ctx.lineTo(66, 60);
+      ctx.stroke();
+
+      // 2. Interlocking Lower Hand Gripping Fingers (from lower left to center)
+      ctx.beginPath();
+      ctx.moveTo(34, 68);
+      ctx.lineTo(46, 56);
+      ctx.moveTo(44, 76);
+      ctx.lineTo(56, 64);
+      ctx.moveTo(54, 82);
+      ctx.lineTo(64, 72);
+      ctx.stroke();
+
+      ctx.restore();
+      ctx.restore();
+    }
+
+    const outputData = {};
+
+    sizes.forEach(item => {
+      const container = document.createElement('div');
+      container.style.textAlign = 'center';
+      const label = document.createElement('div');
+      label.innerText = item.name + ' (' + item.size + 'x' + item.size + ')';
+      label.style.fontSize = '11px';
+      label.style.marginBottom = '4px';
+
+      const canvas = document.createElement('canvas');
+      canvas.width = item.size;
+      canvas.height = item.size;
+      canvas.style.border = '1px solid #333';
+      const ctx = canvas.getContext('2d');
+
+      drawIcon(ctx, item.size, item.round, item.fgOnly);
+
+      container.appendChild(label);
+      container.appendChild(canvas);
+      document.getElementById('canvases').appendChild(container);
+
+      outputData[item.name] = canvas.toDataURL('image/png');
+    });
+
+    window.MARKPOINT_ICONS = outputData;
+
+    const pre = document.createElement('pre');
+    pre.id = 'json-data';
+    pre.textContent = JSON.stringify(outputData);
+    document.body.appendChild(pre);
+  </script>
+</body>
+</html>
