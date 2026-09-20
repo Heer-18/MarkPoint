@@ -2,14 +2,20 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>MarkPoint Icon Generator</title>
+  <title>MarkPoint Icon Reference Matcher</title>
+  <style>
+    body { background: #0b1120; color: #fff; font-family: sans-serif; padding: 20px; }
+    .grid { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+    .card { background: #1e293b; padding: 16px; border-radius: 16px; text-align: center; }
+    canvas { display: block; margin: 10px auto; }
+  </style>
 </head>
-<body style="background: #111; color: #fff; font-family: sans-serif; padding: 20px;">
-  <h2>MarkPoint Heart-Handshake Icon Renderer</h2>
-  <div id="canvases" style="display: flex; gap: 20px; flex-wrap: wrap;"></div>
+<body>
+  <h2>MarkPoint App Icon - Precision Reference Match</h2>
+  <div class="grid" id="container"></div>
 
   <script>
-    const sizes = [
+    const SIZES = [
       { name: 'mipmap-mdpi/ic_launcher.png', size: 48, round: false },
       { name: 'mipmap-mdpi/ic_launcher_round.png', size: 48, round: true },
       { name: 'mipmap-mdpi/ic_launcher_foreground.png', size: 108, round: false, fgOnly: true },
@@ -33,15 +39,14 @@
       { name: 'drawable/splash.png', size: 512, round: false }
     ];
 
-    function drawIcon(ctx, size, isRound, isFgOnly) {
+    function drawExactReferenceIcon(ctx, size, isRound, isFgOnly) {
       ctx.clearRect(0, 0, size, size);
-
-      const scale = size / 100;
+      const s = size / 100;
       ctx.save();
-      ctx.scale(scale, scale);
+      ctx.scale(s, s);
 
       if (!isFgOnly) {
-        // Draw background
+        // Draw container background for legacy launcher & splash
         ctx.save();
         if (isRound) {
           ctx.beginPath();
@@ -49,75 +54,90 @@
           ctx.closePath();
           ctx.clip();
         } else {
-          // Smooth squircle / rounded rect
           ctx.beginPath();
-          ctx.roundRect(4, 4, 92, 92, 24);
+          ctx.roundRect(4, 4, 92, 92, 22);
           ctx.closePath();
           ctx.clip();
         }
 
-        // Vibrant Emerald Gradient (MarkPoint Civic Theme)
+        // Vibrant MarkPoint Emerald Green Gradient
         const grad = ctx.createLinearGradient(0, 0, 100, 100);
         grad.addColorStop(0, '#047857'); // Emerald 700
-        grad.addColorStop(0.5, '#10b981'); // Emerald 500
+        grad.addColorStop(0.4, '#10b981'); // Emerald 500
         grad.addColorStop(1, '#059669'); // Emerald 600
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, 100, 100);
 
-        // Subtle diagonal gloss highlight
-        const gloss = ctx.createLinearGradient(0, 0, 0, 100);
-        gloss.addColorStop(0, 'rgba(255, 255, 255, 0.25)');
-        gloss.addColorStop(0.5, 'rgba(255, 255, 255, 0.0)');
-        gloss.addColorStop(1, 'rgba(0, 0, 0, 0.15)');
-        ctx.fillStyle = gloss;
+        // Subtle gradient highlight
+        const shine = ctx.createLinearGradient(0, 0, 0, 100);
+        shine.addColorStop(0, 'rgba(255, 255, 255, 0.20)');
+        shine.addColorStop(0.5, 'rgba(255, 255, 255, 0.0)');
+        shine.addColorStop(1, 'rgba(0, 0, 0, 0.10)');
+        ctx.fillStyle = shine;
         ctx.fillRect(0, 0, 100, 100);
 
         ctx.restore();
       }
 
-      // Draw Heart-Handshake Glyph
+      // Draw the exact Heart-Handshake glyph
       ctx.save();
-      
-      // Center and scale glyph
       const glyphScale = isFgOnly ? 0.60 : 0.65;
       ctx.translate(50, 50);
       ctx.scale(glyphScale, glyphScale);
       ctx.translate(-50, -50);
 
-      ctx.lineWidth = 7.2;
+      ctx.lineWidth = 7.4;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.strokeStyle = '#ffffff';
 
-      // 1. Continuous Heart-Handshake Loop matching reference image
-      // Left Heart lobe -> bottom point -> lower hand wrist
+      // Drop shadow for glyph
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.16)';
+      ctx.shadowBlur = 3;
+      ctx.shadowOffsetY = 1.5;
+
+      // ----------------------------------------------------
+      // 1. LEFT LOBE & LOWER FOREARM
+      // ----------------------------------------------------
       ctx.beginPath();
-      ctx.moveTo(50, 36);
-      ctx.bezierCurveTo(40, 20, 22, 20, 16, 36);
-      ctx.bezierCurveTo(10, 52, 24, 70, 50, 86);
+      ctx.moveTo(50, 34);
+      // Left lobe
+      ctx.bezierCurveTo(36, 18, 18, 22, 16, 38);
+      ctx.bezierCurveTo(15, 52, 28, 66, 50, 84);
+      // Lower forearm (up-right)
+      ctx.lineTo(74, 60);
       ctx.stroke();
 
-      // Right Heart lobe -> right arm looping into upper handshake
+      // ----------------------------------------------------
+      // 2. FINGER NOTCHES (Lower Hand Fingers)
+      // ----------------------------------------------------
+      // Lower finger stub
       ctx.beginPath();
-      ctx.moveTo(50, 36);
-      ctx.bezierCurveTo(60, 20, 78, 20, 84, 36);
-      ctx.bezierCurveTo(90, 52, 78, 70, 68, 56);
-      // Hand arm reaches across left
-      ctx.lineTo(44, 46);
-      // Rounded loop of the upper thumb / hand
-      ctx.arc(42, 53, 7, -Math.PI * 0.5, Math.PI * 0.5, true);
-      // Hand returns rightward under grip
-      ctx.lineTo(66, 60);
+      ctx.moveTo(57, 77);
+      ctx.lineTo(51, 71);
       ctx.stroke();
 
-      // 2. Interlocking Lower Hand Gripping Fingers (from lower left to center)
+      // Upper finger stub
       ctx.beginPath();
-      ctx.moveTo(34, 68);
-      ctx.lineTo(46, 56);
-      ctx.moveTo(44, 76);
-      ctx.lineTo(56, 64);
-      ctx.moveTo(54, 82);
-      ctx.lineTo(64, 72);
+      ctx.moveTo(65, 69);
+      ctx.lineTo(59, 63);
+      ctx.stroke();
+
+      // ----------------------------------------------------
+      // 3. RIGHT LOBE & UPPER HAND CLASP
+      // ----------------------------------------------------
+      ctx.beginPath();
+      ctx.moveTo(50, 34);
+      // Right lobe
+      ctx.bezierCurveTo(64, 18, 82, 22, 84, 38);
+      // Outer right curve transitioning into upper hand
+      ctx.bezierCurveTo(85, 46, 75, 44, 62, 43);
+      // Angled clasp sweeping down-left
+      ctx.lineTo(46, 47);
+      // Smooth 180° loop around the hand/thumb
+      ctx.bezierCurveTo(38, 49, 39, 58, 47, 58);
+      // Returns down-right parallel to fingers
+      ctx.lineTo(66, 54);
       ctx.stroke();
 
       ctx.restore();
@@ -125,26 +145,28 @@
     }
 
     const outputData = {};
+    const container = document.getElementById('container');
 
-    sizes.forEach(item => {
-      const container = document.createElement('div');
-      container.style.textAlign = 'center';
+    SIZES.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'card';
       const label = document.createElement('div');
-      label.innerText = item.name + ' (' + item.size + 'x' + item.size + ')';
-      label.style.fontSize = '11px';
-      label.style.marginBottom = '4px';
+      label.textContent = item.name + ' (' + item.size + 'x' + item.size + ')';
+      label.style.fontSize = '12px';
 
       const canvas = document.createElement('canvas');
       canvas.width = item.size;
       canvas.height = item.size;
-      canvas.style.border = '1px solid #333';
+      canvas.style.border = '1px solid #475569';
+      canvas.style.borderRadius = item.round ? '50%' : '8px';
+      if (item.fgOnly) canvas.style.background = '#064e3b';
+
       const ctx = canvas.getContext('2d');
+      drawExactReferenceIcon(ctx, item.size, item.round, item.fgOnly);
 
-      drawIcon(ctx, item.size, item.round, item.fgOnly);
-
-      container.appendChild(label);
-      container.appendChild(canvas);
-      document.getElementById('canvases').appendChild(container);
+      card.appendChild(label);
+      card.appendChild(canvas);
+      container.appendChild(card);
 
       outputData[item.name] = canvas.toDataURL('image/png');
     });
