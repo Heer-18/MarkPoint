@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MarkPoint</string>
+    <string name="title_activity_main">MarkPoint</string>
+    <string name="package_name">com.markpoint.app</string>
+    <string name="custom_url_scheme">com.markpoint.app</string>
+</resources>
