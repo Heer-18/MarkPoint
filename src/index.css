@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #0b0f19;
+    --bg-surface: #111827;
+    --bg-card: rgba(17, 24, 39, 0.8);
+    --border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  html.lenis, html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
+  }
+
+  body {
+    background-color: #080c14;
+    color: #f3f4f6;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+}
+
+/* Modern Minimal Card / Inspira Glass Effect */
+.card-modern {
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+}
+
+.card-highlight {
+  background: rgba(17, 24, 39, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.2);
+}
+
+.card-warm {
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.15) 0%, rgba(17, 24, 39, 0.8) 100%);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #080c14;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}
+
+/* Leaflet Dark & Minimal Tile Filter */
+.leaflet-container {
+  background: #0b0f19 !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.dark-map .leaflet-tile-pane {
+  filter: brightness(0.7) invert(1) contrast(1.15) hue-rotate(200deg) saturate(0.3);
+}
+
+/* Pulsing Problem Pin Animation */
+@keyframes pinPulse {
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  70% {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
+  }
+  100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.problem-pin-pulse {
+  animation: pinPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
