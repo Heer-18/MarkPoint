@@ -142,15 +142,12 @@ export const ProblemMap: React.FC<ProblemMapProps> = ({
       const isResolved = ticket.status === 'VERIFIED_RESOLVED' || ticket.status === 'RESOLVED_DEMO';
       const isBreached = ticket.status === 'ESCALATED_SLA_BREACH';
 
-      let markerColor = '#f59e0b'; // amber for waste default
-      if (ticket.vertical === 'ROADS_MOBILITY') markerColor = '#f97316'; // orange for road
-      else if (ticket.vertical === 'WATER_BODIES_ECOLOGY') markerColor = '#06b6d4'; // cyan for water
-      else if (ticket.vertical === 'CIVIC_ASSETS') markerColor = '#a855f7'; // purple for assets / power
-      else if (ticket.vertical === 'SOLID_WASTE') markerColor = '#eab308'; // yellow-amber for waste
-      else markerColor = '#ec4899'; // pink for other
-
-      if (isResolved) markerColor = '#10b981'; // emerald for resolved
-      if (isBreached) markerColor = '#ef4444'; // red for breached
+      // Category Pin Colors matching the Map Legend exactly
+      let markerColor = '#f97316'; // orange for Roads
+      if (ticket.vertical === 'ROADS_MOBILITY') markerColor = '#f97316'; // orange for Roads
+      else if (ticket.vertical === 'WATER_BODIES_ECOLOGY') markerColor = '#06b6d4'; // cyan for Water
+      else if (ticket.vertical === 'SOLID_WASTE') markerColor = '#eab308'; // yellow for Waste
+      else markerColor = '#ec4899'; // pink for Other (Civic Assets, Power, etc.)
 
       // 25m Radius Anti-Spam Buffer
       if (!isResolved) {
