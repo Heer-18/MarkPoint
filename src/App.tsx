@@ -350,12 +350,14 @@ export const App: React.FC = () => {
     setActiveTab('requests'); // Switch to map and focus on the new report!
   };
 
-  // Citizen 70% Consensus Voting Handler
+  // Citizen 70% Consensus Voting Handler (prototype: seeded 2/2 so Approve closes, Reject re-dispatches)
   const handleVoteOnGovResolution = (ticketId: string, approved: boolean, citizenRemark?: string) => {
+    let voteOutcome: 'verified' | 'redispatched' | null = null;
+
     setTickets((prev) =>
       prev.map((t) => {
         if (t.id === ticketId) {
-          const currentVotes = t.communityVotes || { totalVotes: 2, approvedVotes: 1, rejectedVotes: 0, citizenRemarks: [] };
+          const currentVotes = t.communityVotes || { totalVotes: 2, approvedVotes: 2, rejectedVotes: 0, citizenRemarks: [] };
           const newApproved = approved ? currentVotes.approvedVotes + 1 : currentVotes.approvedVotes;
           const newRejected = !approved ? currentVotes.rejectedVotes + 1 : currentVotes.rejectedVotes;
           const newTotal = currentVotes.totalVotes + 1;
@@ -371,14 +373,13 @@ export const App: React.FC = () => {
             }
           ];
 
-          // 70% threshold rule
-          let newStatus: any = t.status;
-          if (approvalPct >= 70 && newTotal >= 2) {
+          let newStatus = t.status;
+          if (approvalPct >= 70) {
             newStatus = 'VERIFIED_RESOLVED';
-            triggerHapticNotification('success');
-          } else if (approvalPct < 70) {
+            voteOutcome = 'verified';
+          } else {
             newStatus = 'RE_DISPATCHED_TO_GOV';
-            triggerHapticNotification('warning');
+            voteOutcome = 'redispatched';
           }
 
           return {
@@ -396,6 +397,12 @@ export const App: React.FC = () => {
         return t;
       })
     );
+
+    if (voteOutcome === 'verified') {
+      triggerHapticNotification('success');
+    } else if (voteOutcome === 'redispatched') {
+      triggerHapticNotification('warning');
+    }
   };
 
   // Resolve Ticket in Verification Studio

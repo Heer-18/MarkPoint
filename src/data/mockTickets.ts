@@ -66,7 +66,13 @@ export const INITIAL_MOCK_TICKETS: CivicIssue[] = [
     detectedObjects: [{ label: 'Overflowing Municipal Bin', confidence: 0.95, box: [15, 20, 85, 80] }],
     detectedCvTriggers: ['Bin brim overflow volume > 85%', 'Spill periphery footprint'],
     formalComplaintDraft: 'FORMAL GRIEVANCE // SMC-SW-02\nTo: Zonal Sanitation Superintendent, West Zone\nLocation: Adajan Patia [21.1920, 72.7950]\nOverflow > 90%. Compactor truck dispatch requested.',
-    citizenVoiceTranscript: 'The green waste bin at Adajan market is overflowing onto the road.'
+    citizenVoiceTranscript: 'The green waste bin at Adajan market is overflowing onto the road.',
+    communityVotes: {
+      totalVotes: 2,
+      approvedVotes: 2,
+      rejectedVotes: 0,
+      citizenRemarks: []
+    }
   },
   {
     id: 'TKT-SRT-7734',
@@ -737,7 +743,10 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       detectedObjects: t.detectedObjects || [],
       detectedCvTriggers: t.detectedCvTriggers || [],
       formalComplaintDraft: `FORMAL GRIEVANCE // ${ticketId}\nTo: ${t.l2EscalationRole}, ${cityDept}\nLocation: ${area}\nImmediate remediation requested.`,
-      citizenVoiceTranscript: `Reported civic defect near ${area}.`
+      citizenVoiceTranscript: `Reported civic defect near ${area}.`,
+      communityVotes: status === 'WORK_SUBMITTED'
+        ? { totalVotes: 2, approvedVotes: 2, rejectedVotes: 0, citizenRemarks: [] }
+        : undefined
     } as CivicIssue);
   }
 

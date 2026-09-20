@@ -36,8 +36,8 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
     taxonomyId: 'RD-01',
     imageUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
     voiceTranscript: 'Deep dangerous pothole right in the middle lane near pillar 42. Two-wheelers are swerving dangerously!',
-    location: { lat: 28.6346, lng: 77.2183, accuracy: 3.5 }, // Within 15m of existing ticket to test 25m deduplication!
-    address: 'Ring Road Outer Flyover Pillar 42',
+    location: { lat: 21.17808, lng: 72.83508, accuracy: 3.5 }, // ~12m from Surat TKT-SRT-8812 for 25m dedup demo
+    address: 'Ring Road Flyover Junction, Near Majura Gate, Surat',
     isDuplicateTarget: true
   },
   {
@@ -50,13 +50,13 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
     taxonomyId: 'SW-02',
     imageUrl: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=800&q=80',
     voiceTranscript: 'Commercial dumpster is overflowing all over the pavement, attracting stray animals and blocking the sidewalk.',
-    location: { lat: 28.6482, lng: 77.1852, accuracy: 4.1 },
-    address: 'Block C Community Center, Wholesale Market Road',
+    location: { lat: 21.19210, lng: 72.79505, accuracy: 4.1 }, // ~12m from Surat TKT-SRT-9041
+    address: 'Adajan Patia Main Market, Near Star Bazaar, Surat',
     isDuplicateTarget: true
   },
   {
     id: 'preset-river',
-    title: 'Chemical Effluent (Yamuna River)',
+    title: 'Chemical Effluent (Tapi River)',
     subtitle: 'Toxic lather & foam • Outfall discharge',
     icon: Waves,
     category: 'Water Bodies',
@@ -64,8 +64,8 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
     taxonomyId: 'WB-02',
     imageUrl: 'https://images.unsplash.com/photo-1621451537084-482c73073a0f?auto=format&fit=crop&w=800&q=80',
     voiceTranscript: 'Untreated chemical foam and black industrial discharge flowing directly into the river stream near the barrage.',
-    location: { lat: 28.6521, lng: 77.2552, accuracy: 5.0 },
-    address: 'Yamuna Barrage Drain Outfall #7',
+    location: { lat: 21.21508, lng: 72.84508, accuracy: 5.0 }, // ~12m from Surat TKT-SRT-7734
+    address: 'Tapi Riverfront Promenade, Near Causeway, Surat',
     isDuplicateTarget: true
   },
   {
@@ -78,8 +78,8 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
     taxonomyId: 'RD-03',
     imageUrl: 'https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80',
     voiceTranscript: 'Uncovered deep drainage hole right on the pedestrian crossing. Extremely dangerous at night.',
-    location: { lat: 28.6720, lng: 77.2250, accuracy: 2.8 }, // Unique coordinate to create fresh ticket
-    address: 'Civil Lines Northern Arterial Walkway',
+    location: { lat: 21.1480, lng: 72.8200, accuracy: 2.8 }, // Far from existing Surat roads tickets → new master
+    address: 'Piplod Canal Crossing, Near VR Mall Approach, Surat',
     isDuplicateTarget: false
   },
   {
@@ -92,8 +92,8 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
     taxonomyId: 'PA-01',
     imageUrl: 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=800&q=80',
     voiceTranscript: 'Heavy tree trunk collapsed across two traffic lanes after storm winds. Road completely blocked.',
-    location: { lat: 28.6080, lng: 77.2400, accuracy: 3.2 },
-    address: 'Lodhi Colony Main Road, Near Park Gate 2',
+    location: { lat: 21.1880, lng: 72.8600, accuracy: 3.2 }, // Far from existing Surat tree ticket → new master
+    address: 'City Light Road, Near Garden Gate, Surat',
     isDuplicateTarget: false
   }
 ];

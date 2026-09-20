@@ -47,7 +47,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     (t) => t.status === 'VERIFIED_RESOLVED' || t.status === 'RESOLVED_DEMO'
   );
   const totalCityReports = activeCityTickets.reduce((sum, t) => sum + (t.upvoteCount || 1), 0);
-  const resolvedCount = resolvedCityTickets.length > 0 ? resolvedCityTickets.length : 1;
+  const resolvedCount = resolvedCityTickets.length;
 
   const sampleResolved = resolvedCityTickets[0] || tickets.find(t => t.status === 'VERIFIED_RESOLVED') || tickets[0];
 

@@ -332,7 +332,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                   const hasUserVoted = !!userVotedIds[report.id];
                   const isRevealed = !!revealedResultIds[report.id] || isDone || isReDispatched;
 
-                  const votes = report.communityVotes || { totalVotes: 3, approvedVotes: 2, rejectedVotes: 0, citizenRemarks: [] };
+                  const votes = report.communityVotes || { totalVotes: 2, approvedVotes: 2, rejectedVotes: 0, citizenRemarks: [] };
                   const approvalPercentage = votes.totalVotes > 0 
                     ? Math.round((votes.approvedVotes / votes.totalVotes) * 100) 
                     : 0;
