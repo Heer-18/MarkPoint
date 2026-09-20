@@ -513,17 +513,30 @@ const CITY_AREAS: Record<string, string[]> = {
 };
 
 /**
- * Returns localized civic issues for any selected city in India.
- * If city is Surat, returns the master curated list.
- * For Rajkot, Nadiad, Ahmedabad or any custom city, returns localized tickets centered around that city's coordinates!
+ * Simple pseudo-random hash generator based on string seed
+ */
+function getCitySeed(cityName: string): number {
+  let hash = 0;
+  for (let i = 0; i < cityName.length; i++) {
+    hash = (hash * 31 + cityName.charCodeAt(i)) & 0xffffffff;
+  }
+  return Math.abs(hash);
+}
+
+/**
+ * Returns localized, realistic civic issues for any selected city.
+ * For Surat, returns the master curated list (5 active issues + 1 resolved = 98 total reports).
+ * For all other cities, dynamically generates a unique, realistic set of issues, active counts, and report sums!
  */
 export function getTicketsForCity(cityName: string, coords: { lat: number; lng: number }): CivicIssue[] {
   const normCity = (cityName || 'Surat').trim();
 
-  // If Surat, return initial master list
+  // If Surat, return initial master list (5 active issues + 1 resolved)
   if (normCity.toLowerCase() === 'surat') {
     return INITIAL_MOCK_TICKETS;
   }
+
+  const seed = getCitySeed(normCity);
 
   const areas = CITY_AREAS[normCity] || [
     `Main Market Road, Near Town Hall, ${normCity}`,
@@ -532,19 +545,20 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
     `Gandhi Chowk & Civil Hospital Road, ${normCity}`,
     `Riverfront / Lake Promenade, ${normCity}`,
     `Industrial GIDC Main Entrance Road, ${normCity}`,
-    `College Road & University Gate, ${normCity}`
+    `College Road & University Gate, ${normCity}`,
+    `Outer Bypass Corridor, Sector 5, ${normCity}`,
+    `Commercial Hub, MG Road, ${normCity}`
   ];
 
   const cityDept = `${normCity} Municipal Corporation`;
 
-  // Localized templates
-  const cityTemplates: Partial<CivicIssue>[] = [
+  // Expanded issue catalog to pick from
+  const issueCatalog: Partial<CivicIssue>[] = [
     {
       taxonomyId: 'RD-01',
       category: 'Roads & Mobility',
       subCategory: 'Potholes (Deep / Hazardous)',
       vertical: 'ROADS_MOBILITY',
-      status: 'IN_PROGRESS',
       priority: 'URGENT',
       slaHours: 48,
       assignedDepartment: `${cityDept} (PWD / Roads Division)`,
@@ -554,14 +568,12 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       aiConfidence: 0.95,
       detectedObjects: [{ label: 'Deep Asphalt Cavity', confidence: 0.96, box: [20, 25, 75, 75] }],
       detectedCvTriggers: ['Asphalt cavity', 'Edge depth shadow', 'Circular depression pattern'],
-      formalComplaintDraft: `FORMAL GRIEVANCE // ${normCity.substring(0, 3).toUpperCase()}-RD-01\nTo: Executive Engineer (Roads), ${cityDept}\nDepth > 85mm. Rapid cold-mix patching requested.`
     },
     {
       taxonomyId: 'SW-02',
       category: 'Solid Waste',
       subCategory: 'Overflowing Community Waste Bin',
       vertical: 'SOLID_WASTE',
-      status: 'WORK_SUBMITTED',
       priority: 'URGENT',
       slaHours: 6,
       assignedDepartment: `${cityDept} (Health & Solid Waste Management)`,
@@ -571,14 +583,12 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       aiConfidence: 0.94,
       detectedObjects: [{ label: 'Overflowing Municipal Bin', confidence: 0.95, box: [15, 20, 85, 80] }],
       detectedCvTriggers: ['Bin brim overflow volume > 85%', 'Spill periphery footprint'],
-      formalComplaintDraft: `FORMAL GRIEVANCE // ${normCity.substring(0, 3).toUpperCase()}-SW-02\nTo: Sanitation Superintendent\nWaste overflow spilling on public road. Compactor truck dispatch requested.`
     },
     {
       taxonomyId: 'WB-02',
       category: 'Water Bodies',
       subCategory: 'Industrial Chemical Effluent Discharge',
       vertical: 'WATER_BODIES_ECOLOGY',
-      status: 'ESCALATED_SLA_BREACH',
       priority: 'CRITICAL',
       slaHours: 12,
       assignedDepartment: `Gujarat Pollution Control Board / ${cityDept} Drainage`,
@@ -587,14 +597,12 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       aiConfidence: 0.97,
       detectedObjects: [{ label: 'Toxic Chemical Froth', confidence: 0.98, box: [25, 10, 70, 90] }],
       detectedCvTriggers: ['Chromatic water discoloration', 'Effluent outfall'],
-      formalComplaintDraft: `STATUTORY ESCALATION // GPCB-${normCity.substring(0, 3).toUpperCase()}\nTo: Regional Officer\nStatus: SLA EXCEEDED. Immediate drainage sample collection requested.`
     },
     {
       taxonomyId: 'RD-03',
       category: 'Roads & Mobility',
       subCategory: 'Open / Broken Sewer Manhole',
       vertical: 'ROADS_MOBILITY',
-      status: 'IN_PROGRESS',
       priority: 'CRITICAL',
       slaHours: 24,
       assignedDepartment: `${cityDept} (Underground Drainage Dept)`,
@@ -603,14 +611,12 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       aiConfidence: 0.98,
       detectedObjects: [{ label: 'Missing Cast Iron Manhole Cover', confidence: 0.99, box: [30, 30, 70, 70] }],
       detectedCvTriggers: ['Exposed vertical shaft drop > 1.2m', 'Perimeter fracture'],
-      formalComplaintDraft: `EMERGENCY ACTION NOTICE // ${normCity.substring(0, 3).toUpperCase()}-RD-03\nTo: Chief Drainage Officer\nOpen shaft pose fatal hazard to pedestrians. Barricade and replace SFRC cover immediately.`
     },
     {
       taxonomyId: 'SW-01',
       category: 'Solid Waste',
       subCategory: 'Illegal Roadside Garbage Dump',
       vertical: 'SOLID_WASTE',
-      status: 'IN_PROGRESS',
       priority: 'HIGH',
       slaHours: 24,
       assignedDepartment: `${cityDept} (Sanitation & Cleanliness)`,
@@ -619,14 +625,27 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       aiConfidence: 0.93,
       detectedObjects: [{ label: 'Garbage Vulnerable Point', confidence: 0.94, box: [10, 20, 90, 80] }],
       detectedCvTriggers: ['Litter footprint', 'Solid waste density'],
-      formalComplaintDraft: `SANITATION DISPATCH // ${normCity.substring(0, 3).toUpperCase()}-SW-01\nTo: Sanitary Inspector\nRoadside garbage dump clearing required.`
+    },
+    {
+      taxonomyId: 'PA-01',
+      category: 'Civic Assets',
+      subCategory: 'Fallen Tree / Roadway Obstruction',
+      vertical: 'CIVIC_ASSETS',
+      priority: 'HIGH',
+      slaHours: 12,
+      assignedDepartment: `${cityDept} (Parks & Horticulture Wing)`,
+      l2EscalationRole: 'Superintendent of Parks',
+      imageUrl: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=800&q=80',
+      imageAfterUrl: 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=800&q=80',
+      aiConfidence: 0.94,
+      detectedObjects: [{ label: 'Uprooted Trunk Obstruction', confidence: 0.95, box: [20, 20, 80, 80] }],
+      detectedCvTriggers: ['Carriageway obstacle', 'Foliage blockage'],
     },
     {
       taxonomyId: 'RD-05',
       category: 'Roads & Mobility',
       subCategory: 'Stormwater Drain Clogging & Waterlogging',
       vertical: 'WATER_BODIES_ECOLOGY',
-      status: 'VERIFIED_RESOLVED',
       priority: 'HIGH',
       slaHours: 24,
       assignedDepartment: `${cityDept} (Stormwater Drainage)`,
@@ -636,63 +655,104 @@ export function getTicketsForCity(cityName: string, coords: { lat: number; lng: 
       aiConfidence: 0.94,
       detectedObjects: [{ label: 'Silt Blocked Catchpit', confidence: 0.95, box: [20, 30, 80, 70] }],
       detectedCvTriggers: ['Standing water pool', 'Debris accumulation'],
-      formalComplaintDraft: `DRAIN CLEARANCE REPORT // ${normCity.substring(0, 3).toUpperCase()}-RD-05\nCatchpit desilted and waterflow restored.`
     }
   ];
 
-  // Distribute tickets spatially around the city center
-  const offsets = [
-    { dLat: 0.0062, dLng: 0.0051 },
-    { dLat: -0.0075, dLng: -0.0063 },
-    { dLat: 0.0121, dLng: -0.0042 },
-    { dLat: -0.0051, dLng: 0.0084 },
-    { dLat: 0.0084, dLng: -0.0091 },
-    { dLat: -0.0112, dLng: 0.0035 }
-  ];
+  // Specific city custom ticket counts
+  const cityCountsMap: { [c: string]: number } = {
+    ahmedabad: 7,
+    vadodara: 6,
+    rajkot: 4,
+    nadiad: 3,
+    gandhinagar: 4,
+    mumbai: 8,
+    pune: 6,
+    'delhi ncr': 7,
+    bengaluru: 7,
+    jaipur: 5,
+    indore: 5
+  };
 
+  const targetCount = cityCountsMap[normCity.toLowerCase()] || (3 + (seed % 5)); // 3 to 7 tickets
   const cityCode = normCity.substring(0, 3).toUpperCase();
 
-  return cityTemplates.map((t, idx) => {
-    const offset = offsets[idx % offsets.length];
-    const area = areas[idx % areas.length];
-    const ticketId = `TKT-${cityCode}-${8000 + idx * 117}`;
+  // Pseudo-random offsets around city
+  const offsets = [
+    { dLat: 0.0072, dLng: 0.0061 },
+    { dLat: -0.0085, dLng: -0.0073 },
+    { dLat: 0.0131, dLng: -0.0052 },
+    { dLat: -0.0061, dLng: 0.0094 },
+    { dLat: 0.0094, dLng: -0.0101 },
+    { dLat: -0.0122, dLng: 0.0045 },
+    { dLat: 0.0045, dLng: 0.0142 },
+    { dLat: -0.0145, dLng: -0.0031 }
+  ];
 
-    return {
+  const cityIssues: CivicIssue[] = [];
+
+  for (let i = 0; i < targetCount; i++) {
+    const templateIndex = (seed + i) % issueCatalog.length;
+    const t = issueCatalog[templateIndex];
+    const offset = offsets[i % offsets.length];
+    const area = areas[i % areas.length];
+    const ticketId = `TKT-${cityCode}-${7100 + i * 133 + (seed % 97)}`;
+
+    // Give each ticket a unique randomized upvote count (7 to 46)
+    const upvotes = 8 + ((seed * 7 + i * 13) % 39);
+
+    // Make last ticket resolved, others active
+    const isResolved = i === targetCount - 1;
+    const status = isResolved
+      ? 'VERIFIED_RESOLVED'
+      : i === 0
+      ? 'IN_PROGRESS'
+      : i === 1
+      ? 'WORK_SUBMITTED'
+      : i === 2
+      ? 'ESCALATED_SLA_BREACH'
+      : 'IN_PROGRESS';
+
+    cityIssues.push({
       id: ticketId,
       taxonomyId: t.taxonomyId || 'RD-01',
       category: t.category || 'Roads & Mobility',
       subCategory: t.subCategory || 'Civic Issue',
       vertical: t.vertical || 'ROADS_MOBILITY',
-      status: t.status || 'IN_PROGRESS',
-      priority: t.priority || 'HIGH',
+      status: status,
+      priority: isResolved ? 'NORMAL' : t.priority || 'HIGH',
       slaHours: t.slaHours || 24,
-      slaDeadline: new Date(Date.now() + (t.slaHours || 24) * 3600 * 1000).toISOString(),
-      reportedAt: new Date(Date.now() - (idx + 1) * 5 * 3600 * 1000).toISOString(),
-      lastUpdatedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-      reporterId: idx === 0 ? 'usr-current' : `usr-${cityCode.toLowerCase()}-${idx + 1}`,
-      reporterName: idx === 0 ? 'Heer Khunt (You)' : `Citizen ${normCity} #${idx + 1}`,
-      reporterDeviceHash: `sha256-${cityCode.toLowerCase()}-${idx}`,
+      slaDeadline: isResolved
+        ? new Date(Date.now() - 12 * 3600 * 1000).toISOString()
+        : new Date(Date.now() + (t.slaHours || 24) * 3600 * 1000).toISOString(),
+      reportedAt: new Date(Date.now() - (i + 1) * 4 * 3600 * 1000).toISOString(),
+      lastUpdatedAt: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+      resolvedAt: isResolved ? new Date(Date.now() - 4 * 3600 * 1000).toISOString() : undefined,
+      reporterId: i === 0 ? 'usr-current' : `usr-${cityCode.toLowerCase()}-${i + 1}`,
+      reporterName: i === 0 ? 'Heer Khunt (You)' : `Citizen ${normCity} #${i + 1}`,
+      reporterDeviceHash: `sha256-${cityCode.toLowerCase()}-${i}`,
       location: {
         lat: coords.lat + offset.dLat,
         lng: coords.lng + offset.dLng,
         accuracy: 3.5
       },
       address: area,
-      upvoteCount: 5 + idx * 6,
-      upvotedBy: idx === 0 ? ['usr-current'] : [],
+      upvoteCount: upvotes,
+      upvotedBy: i === 0 ? ['usr-current'] : [],
       assignedDepartment: t.assignedDepartment || `${cityDept}`,
       l2EscalationRole: t.l2EscalationRole || 'Zonal Officer',
-      geofenceZone: `${normCity} Central Ward ${idx + 1}`,
-      isEscalated: t.status === 'ESCALATED_SLA_BREACH',
+      geofenceZone: `${normCity} Municipal Ward ${i + 1}`,
+      isEscalated: status === 'ESCALATED_SLA_BREACH',
       imageUrl: t.imageUrl || 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
-      imageAfterUrl: t.imageAfterUrl || null,
+      imageAfterUrl: isResolved ? (t.imageAfterUrl || 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80') : null,
       aiConfidence: t.aiConfidence || 0.94,
       detectedObjects: t.detectedObjects || [],
       detectedCvTriggers: t.detectedCvTriggers || [],
-      formalComplaintDraft: t.formalComplaintDraft || `FORMAL GRIEVANCE // ${ticketId}`,
-      citizenVoiceTranscript: `Reported issue near ${area}.`
-    } as CivicIssue;
-  });
+      formalComplaintDraft: `FORMAL GRIEVANCE // ${ticketId}\nTo: ${t.l2EscalationRole}, ${cityDept}\nLocation: ${area}\nImmediate remediation requested.`,
+      citizenVoiceTranscript: `Reported civic defect near ${area}.`
+    } as CivicIssue);
+  }
+
+  return cityIssues;
 }
 
 // Master Pre-Populated Database across all cities so all location reports are preserved
@@ -702,12 +762,13 @@ const AHMEDABAD_PRESET = getTicketsForCity('Ahmedabad', { lat: 23.0225, lng: 72.
 const VADODARA_PRESET = getTicketsForCity('Vadodara', { lat: 22.3072, lng: 73.1812 });
 
 export const ALL_LOCATIONS_INITIAL_TICKETS: CivicIssue[] = [
-  ...INITIAL_MOCK_TICKETS, // Surat tickets
+  ...INITIAL_MOCK_TICKETS, // Surat tickets (5 active + 1 resolved = 6 tickets)
   ...RAJKOT_PRESET,
   ...NADIAD_PRESET,
   ...AHMEDABAD_PRESET,
   ...VADODARA_PRESET
 ];
+
 
 
 
